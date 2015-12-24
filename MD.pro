@@ -11,7 +11,8 @@ SOURCES += main.cpp \
     Integrators/eulercromer.cpp \
     vec.cpp \
     Potentials/potential.cpp \
-    Potentials/lennardjones.cpp
+    Potentials/lennardjones.cpp \
+    Potentials/gravitational.cpp
 
 HEADERS += \
     atom.h \
@@ -19,5 +20,6 @@ HEADERS += \
     Integrators/eulercromer.h \
     vec.h \
     Potentials/potential.h \
-    Potentials/lennardjones.h
+    Potentials/lennardjones.h \
+    Potentials/gravitational.h
 
