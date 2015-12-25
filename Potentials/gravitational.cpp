@@ -7,6 +7,8 @@ Gravitational::Gravitational(double G) {
 
 void Gravitational::computeForces(Atom* atoms, int n) {
 
+    Potential::setForcesToZero(atoms, n);
+
 
     for (int i=0; i < n; i++) {
         for (int j=0; j < n; j++) {
