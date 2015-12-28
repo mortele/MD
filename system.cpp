@@ -48,6 +48,8 @@ void System::setupSystem() {
 }
 
 void System::integrate(int Nt, bool plotting) {
+    this->setupSystem();
+
     this->plotting = plotting;
     this->Nt       = Nt;
     this->sampler->setNtDt(Nt,this->dt);
