@@ -5,6 +5,8 @@ EulerCromer::EulerCromer(double dt) : Integrator(dt) {
 }
 
 void EulerCromer::advance(Atom* atoms, int n) {
+    this->potential->computeForces(atoms, n);
+
     for (int i = 0; i < n; i++) {
         double mass = atoms[i].getMass();
 

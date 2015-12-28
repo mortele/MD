@@ -37,3 +37,4 @@ void LennardJones::computeForces(Atom* atoms, int n) {
     }
 }
 
+

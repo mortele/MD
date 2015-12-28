@@ -18,6 +18,7 @@ public:
 
     void setData(double* data);
     double computeLengthSquared(vec a);
+    double computeLengthSquared();
 
 private:
     double* data;

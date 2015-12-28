@@ -12,7 +12,12 @@ SOURCES += main.cpp \
     Potentials/lennardjones.cpp \
     Potentials/gravitational.cpp \
     ../../qcustomplot/qcustomplot.cpp \
-    GUI/mainwindow.cpp
+    GUI/mainwindow.cpp \
+    system.cpp \
+    InitialConditions/initialcondition.cpp \
+    InitialConditions/twobody.cpp \
+    sampler.cpp \
+    Integrators/velocityverlet.cpp
 
 HEADERS += \
     atom.h \
@@ -23,7 +28,12 @@ HEADERS += \
     Potentials/lennardjones.h \
     Potentials/gravitational.h \
     ../../qcustomplot/qcustomplot.h \
-    GUI/mainwindow.h
+    GUI/mainwindow.h \
+    system.h \
+    InitialConditions/initialcondition.h \
+    InitialConditions/twobody.h \
+    sampler.h \
+    Integrators/velocityverlet.h
 
 FORMS += \
     mainwindow.ui

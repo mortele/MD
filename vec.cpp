@@ -80,6 +80,7 @@ void vec::setData(double* data) {
     this->data = data;
 }
 
+
 double vec::computeLengthSquared(vec a) {
     double* x = this->data;
     double* y = a.getData();
@@ -90,6 +91,11 @@ double vec::computeLengthSquared(vec a) {
     }
     return lengthSquared;
 }
+
+double vec::computeLengthSquared() {
+    return this->computeLengthSquared(vec());
+}
+
 
 double* vec::getData() {
     return this->data;

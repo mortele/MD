@@ -9,12 +9,11 @@ void Gravitational::computeForces(Atom* atoms, int n) {
 
     Potential::setForcesToZero(atoms, n);
 
-
     for (int i=0; i < n; i++) {
         for (int j=0; j < n; j++) {
             if (i != j) {
                 double r2 = atoms[i].getPosition().
-                            computeLengthSquared(atoms[j].getPosition()) + 0.1;
+                            computeLengthSquared(atoms[j].getPosition());
 
                 vec posi = atoms[i].getPosition();
                 vec posj = atoms[j].getPosition();
@@ -31,3 +30,7 @@ void Gravitational::computeForces(Atom* atoms, int n) {
         }
     }
 }
+
+
+
+

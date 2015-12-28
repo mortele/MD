@@ -7,7 +7,8 @@ class LennardJones : public Potential {
 public:
     LennardJones(double epsilon, double sigma);
 
-    void computeForces(Atom* atoms, int n);
+    void   computeForces(Atom* atoms, int n);
+    //double computePotential(Atom* atoms, int n);
 
 private:
     double epsilon;
