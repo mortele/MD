@@ -42,8 +42,7 @@ void MainWindow::plot(int n,
         }
     }
 
-    cout << eMin << ", " << eMax << endl;
-    // Position plot.
+    // Energy plot.
     ui->customPlot->addGraph();
     ui->customPlot->graph(0)->setData(t, e);
     ui->customPlot->xAxis->setLabel("time");

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/Applications/VMD\ 1.9.2.app/Contents/Resources/VMD.app/Contents/MacOS/VMD ~/Documents/Master/MD/MD/movie.xyz -size 1080 720

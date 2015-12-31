@@ -144,9 +144,9 @@ void System::FileOutput::saveState(Atom* atoms, int n) {
         this->outFile << "Comment line" << endl;
 
         for (int i = 0; i < n; i++) {
-            this->outFile << "Ar " << atoms[i].getPosition()[0]
-                                   << atoms[i].getPosition()[1]
-                                   << atoms[i].getPosition()[2]
+            this->outFile << "Ar " << atoms[i].getPosition()[0] << " "
+                                   << atoms[i].getPosition()[1] << " "
+                                   << atoms[i].getPosition()[2] << " "
                                    << endl;
         }
     }

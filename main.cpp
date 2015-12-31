@@ -34,13 +34,13 @@ using std::endl;
  */
 
 int main(int argc, char* argv[]) {
-    int     n   = 100;                          // Number of particles.
-    int     Nt  = 1000;                         // Number of time steps.
-    double  dt  = 0.001;                        // Time step.
-    double  R0  = 20;                           // Initial sphere radius.
-    double  PI  = acos(-1.0);                   // Pi.
-    double  G   = 4*PI*PI*R0*R0*R0/(32*10);     // Gravitational constant.
-    double  eps = 0.01;                         // Smoothing factor.
+    int     n   = 250;                              // Number of particles.
+    int     Nt  = 2000;                             // Number of time steps.
+    double  dt  = 0.001;                            // Time step.
+    double  R0  = 20;                               // Initial sphere radius.
+    double  PI  = acos(-1.0);                       // Pi.
+    double  G   = 4*PI*PI*R0*R0*R0/(32*10.0*n);     // Gravitational constant.
+    double  eps = 0.01;                             // Smoothing factor.
 
     System system             (argc, argv);
     system.setupGUI           ();

@@ -6,6 +6,7 @@ RandomSpherical::RandomSpherical(int n, double R0) {
     this->R0 = R0;
 }
 
+
 void RandomSpherical::setupInitialCondition() {
     InitialCondition::n = this->n;
     this->atoms = new Atom[this->n];
@@ -18,9 +19,7 @@ void RandomSpherical::setupInitialCondition() {
             x = (Random::nextDouble())*R0;
             y = (Random::nextDouble())*R0;
             z = (Random::nextDouble())*R0;
-            r = std::sqrt( (x-R0/2.)*(x-R0/2.)
-                          +(y-R0/2.)*(y-R0/2.)
-                          +(z-R0/2.)*(z-R0/2.));
+            r = std::sqrt(x*x + y*y + z*z);
         }
         this->atoms[i].setMass(mass);
         this->atoms[i].setPosition(vec(x,y,z));
