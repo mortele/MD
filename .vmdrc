@@ -1,13 +1,7 @@
-# position the stage and axes 
 axes location lowerleft 
-stage location off
-
-# position and turn on menus 
-menu main move 5 196
-menu display move 386 90 
-menu graphics move 5 455 
-menu files move 5 496
-menu main on
-
-# start the scene a-rockin’ 
-rock y by 1
+menu main move 960 50  
+menu graphics move 1100 300
+menu main on 
+menu graphics on
+#display reposition 50 1000
+animate forward
