@@ -37,4 +37,8 @@ void LennardJones::computeForces(Atom* atoms, int n) {
     }
 }
 
+double LennardJones::computePotential(Atom* atoms, int n) {
+    return 0;
+}
+
 

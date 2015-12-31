@@ -1,15 +1,17 @@
 #pragma once
 #include <iostream>
+#include <fstream>
+#include <string>
 #include "QApplication"
-
+#include "Integrators/integrator.h"
+#include "Potentials/potential.h"
+#include "InitialConditions/initialcondition.h"
+#include "GUI/mainwindow.h"
+#include "vec.h"
+#include "atom.h"
+#include "sampler.h"
 
 class Sampler;
-class Atom;
-class InitialCondition;
-class MainWindow;
-class Potential;
-class Integrator;
-class vec;
 
 
 class System {
@@ -21,14 +23,29 @@ public:
     void setInitialCondition(InitialCondition*);
     void setupGUI();
     void setupSystem();
+    void integrate(int Nt);
     void integrate(int Nt, bool plotting);
+    void dumpInfoToTerminal();
     bool getPlotting() { return this->plotting; }
 
     QApplication app;
 
 private:
+
+    // Internal class for dumping positions to file.
+    class FileOutput {
+        public:
+            FileOutput(const char* fileName);
+            ~FileOutput();
+            void saveState(Atom* atoms, int n);
+
+        private:
+            std::fstream outFile;
+    }; // end FileOutput
+
     void plot();
 
+    int               skip;
     int               n;
     int               Nt;
     double            dt;
@@ -39,5 +56,6 @@ private:
     Atom*             atoms;
     MainWindow*       mainWindow;
     Sampler*          sampler;
+    FileOutput*       fileOutput;
 };
 

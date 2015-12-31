@@ -6,7 +6,7 @@
 class EulerCromer : public Integrator {
 public:
     EulerCromer(double dt);
-
     void advance(Atom *atoms, int n);
+    std::string getName() { return "Euler-Cromer"; }
 };
 

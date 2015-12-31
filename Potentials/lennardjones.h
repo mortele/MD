@@ -8,7 +8,8 @@ public:
     LennardJones(double epsilon, double sigma);
 
     void   computeForces(Atom* atoms, int n);
-    //double computePotential(Atom* atoms, int n);
+    double computePotential(Atom* atoms, int n);
+    std::string getName() { return "Lennard-Jones"; }
 
 private:
     double epsilon;

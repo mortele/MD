@@ -6,8 +6,9 @@ public:
     InitialCondition();
 
     virtual void  setupInitialCondition() = 0;
-    virtual Atom* getAtoms() = 0;
+    Atom* getAtoms() { return this->atoms; }
     int   getN() { return this->n; }
+    virtual std::string getName() = 0;
 
 protected:
     int   n;

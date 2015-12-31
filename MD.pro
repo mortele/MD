@@ -17,7 +17,9 @@ SOURCES += main.cpp \
     InitialConditions/initialcondition.cpp \
     InitialConditions/twobody.cpp \
     sampler.cpp \
-    Integrators/velocityverlet.cpp
+    Integrators/velocityverlet.cpp \
+    InitialConditions/randomspherical.cpp \
+    random.cpp
 
 HEADERS += \
     atom.h \
@@ -33,7 +35,9 @@ HEADERS += \
     InitialConditions/initialcondition.h \
     InitialConditions/twobody.h \
     sampler.h \
-    Integrators/velocityverlet.h
+    Integrators/velocityverlet.h \
+    InitialConditions/randomspherical.h \
+    random.h
 
 FORMS += \
     mainwindow.ui
