@@ -1,7 +1,21 @@
+# Make the atoms pretty. 
+mol color {colorID 1} 
+mol style {NewCartoon 0.300000 6.000000 4.100000 0} 
+mol material {Transparent}
+
+# Shift the menus out of the way.
 axes location lowerleft 
 menu main move 960 50  
 menu graphics move 1100 300
 menu main on 
 menu graphics on
-#display reposition 50 1000
+
+# Start the animation.
 animate forward
+
+mol representation {points 10.00000}
+
+  foreach mid [molinfo list] {
+    mol delrep 0 $mid
+    mol addrep $mid
+  }

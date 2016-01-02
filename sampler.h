@@ -16,7 +16,7 @@ public:
     double sampleKineticEnergy();
     double samplePotentialEnergy();
 
-    double*** getPositions() { return this->positions; }
+    //double*** getPositions() { return this->positions; }
     double*   getEnergies()  { return this->energies; }
     double*   getTime()      { return this->time; }
 
@@ -24,7 +24,7 @@ private:
     int        n;
     int        Nt;
     double     dt;
-    double***  positions;
+    //double***  positions;
     double*    energies;
     double*    potentialEnergies;
     double*    kineticEnergies;

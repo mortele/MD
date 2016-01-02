@@ -74,9 +74,9 @@ void System::integrate(int Nt, bool plotting) {
 }
 
 void System::dumpInfoToTerminal() {
-    cout << " ┌────────────────────────────────────────────────────┐ " << endl;
-    cout << " │               Starting integration                 │ " << endl;
-    cout << " └──┬─────────────────────────────────────────────────┘ " << endl;
+    cout << " ┌──────────────────────────────────────────────────────┐ " << endl;
+    cout << " │                Starting integration                  │ " << endl;
+    cout << " └──┬───────────────────────────────────────────────────┘ " << endl;
     cout << "    │  Initial condition type: " << this->initialCondition->getName() << endl;
     cout << "    │  Integrator in use:      " << this->integrator->getName()       << endl;
     cout << "    │  Potential in use:       " << this->potential->getName()        << endl;
@@ -120,14 +120,14 @@ void System::printProgress(int t) {
 }
 
 void System::plot() {
-    double*** positions = this->sampler->getPositions();
+    //double*** positions = this->sampler->getPositions();
     double*   xPosition = new double[this->Nt];
     double*   yPosition = new double[this->Nt];
 
-    for (int i=0; i < this->Nt; i++) {
+    /*for (int i=0; i < this->Nt; i++) {
         xPosition[i] = positions[i][1][0];
         yPosition[i] = positions[i][1][1];
-    }
+    }*/
 
     this->mainWindow->plot(this->Nt,
                            xPosition,

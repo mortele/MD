@@ -34,7 +34,7 @@ using std::endl;
  */
 
 int main(int argc, char* argv[]) {
-    int     n   = 250;                              // Number of particles.
+    int     n   = 1000;                              // Number of particles.
     int     Nt  = 2000;                             // Number of time steps.
     double  dt  = 0.001;                            // Time step.
     double  R0  = 20;                               // Initial sphere radius.
@@ -48,6 +48,7 @@ int main(int argc, char* argv[]) {
     system.setPotential       (new Gravitational(G, eps));
     system.setInitialCondition(new RandomSpherical(n, R0));
     system.integrate          (Nt);
+    //std::system("../MD/autoVMD");
 
     // If the plot is active, return the application handle.
     if (system.getPlotting()) {
