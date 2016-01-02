@@ -6,10 +6,11 @@ using std::endl;
 using std::ofstream;
 using std::fstream;
 
-System::System(int argc, char* argv[]) :
+System::System(int argc, char* argv[], char* fileName) :
     app(argc, argv) {
 
-    this->sampler = new Sampler;
+    this->fileName = fileName;
+    this->sampler  = new Sampler;
 }
 
 void System::setTimeStep(double dt) {
@@ -42,7 +43,7 @@ void System::setupSystem() {
     this->n = initialCondition->getN();
     this->sampler->setupSampler(this->atoms, this->n);
     this->integrator->setPotential(this->potential);
-    this->fileOutput = new FileOutput("../MD/movie.xyz");
+    this->fileOutput = new FileOutput(this->fileName);
 }
 
 void System::integrate(int Nt) {
@@ -63,44 +64,59 @@ void System::integrate(int Nt, bool plotting) {
     this->sampler->setNtDt(Nt,this->dt);
 
     for (int t=0; t < Nt; t++) {
-        //this->potential->computeForces(this->atoms, this->n);
         this->integrator->advance(this->atoms, this->n);
         this->fileOutput->saveState(this->atoms, this->n);
         this->sampler->sample(t);
-
-        if (t==0) {
-            this->dumpInfoToTerminal();
-        }
-        if (t%(Nt/100)==0) {
-            cout << "Progress: " << t/((double)Nt)*100.0 << " % \r";
-            std::fflush(stdout);
-        }
-        // Update the plot data according to the sampled data from the sampler.
-        /*if (this->plotting && t%skip == 0) {
-            this->mainWindow->updateData(this->sampler->getTime(),
-                                         this->sampler->getEnergies(),
-                                         t);
-        }*/
+        this->printProgress(t);
     }
-    cout << "Progress: 100 %" << endl;
+    this->printProgress(Nt);
     this->plot();
 }
 
 void System::dumpInfoToTerminal() {
-    cout << "########################################################" << endl;
-    cout << "################# Starting integration #################" << endl;
-    cout << "########################################################" << endl;
-    cout << "##" << endl;
-    cout << "##  * Initial condition type: " << this->initialCondition->getName() << endl;
-    cout << "##  * Integrator in use:      " << this->integrator->getName()       << endl;
-    cout << "##  * Potential in use:       " << this->potential->getName()        << endl;
-    cout << "##" << endl;
-    cout << "## Parameters:" << endl;
-    cout << "##  * Number of atoms:        " << this->n  << endl;
-    cout << "##  * Time step:              " << this->dt << endl;
-    cout << "##  * Number of time steps:   " << this->Nt << endl;
+    cout << " ┌────────────────────────────────────────────────────┐ " << endl;
+    cout << " │               Starting integration                 │ " << endl;
+    cout << " └──┬─────────────────────────────────────────────────┘ " << endl;
+    cout << "    │  Initial condition type: " << this->initialCondition->getName() << endl;
+    cout << "    │  Integrator in use:      " << this->integrator->getName()       << endl;
+    cout << "    │  Potential in use:       " << this->potential->getName()        << endl;
+    cout << "    │  Output file name:       " << this->fileName                    << endl;
+    cout << "    ├─────────────────────────────────────────────────┐ " << endl;
+    cout << "    │ Parameters                                      │ " << endl;
+    cout << "    ├─────────────────────────────────────────────────┘ " << endl;
+    cout << "    │  Number of atoms:        " << this->n             << endl;
+    cout << "    │  Time step:              " << this->dt            << endl;
+    cout << "    │  Number of time steps:   " << this->Nt            << endl;
+    cout << "    │  Total time:             " << this->Nt*this->dt   << endl;
+    cout << "    ├─────────────────────────────────────────────────┐ " << endl;
+    cout << "    │ Progress                                        │ " << endl;
+    cout << "    └─────────────────────────────────────────────────┘ " << endl;
+}
 
-
+void System::printProgress(int t) {
+    int nBoxes   = 40;
+    if (t==0) {
+        this->dumpInfoToTerminal();
+    }
+    if (t % (Nt/100) == 0) {
+        double progress = ((double) t) / Nt;
+        cout << "     [";
+        for (int i=0; i < std::floor(nBoxes*progress); i++) {
+            cout << "█";
+        }
+        for (int i=nBoxes*progress; i < nBoxes; i++) {
+            cout << " ";
+        }
+        cout << "]  " << 100*progress << " % \r";
+        fflush(stdout);
+    }
+    if (t == this->Nt) {
+        cout << "     [";
+        for (int i = 0; i < nBoxes; i++) {
+            cout << "█";
+        }
+        cout << "]  100 %" << endl;
+    }
 }
 
 void System::plot() {
@@ -128,8 +144,8 @@ void System::plot() {
 
 
 
-System::FileOutput::FileOutput(const char* fileName) {
-    this->outFile.open("../MD/movie.xyz", std::ios::out);
+System::FileOutput::FileOutput(char* fileName) {
+    this->outFile.open(fileName, std::ios::out);
 }
 
 System::FileOutput::~FileOutput() {

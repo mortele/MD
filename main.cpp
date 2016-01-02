@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
     double  G   = 4*PI*PI*R0*R0*R0/(32*10.0*n);     // Gravitational constant.
     double  eps = 0.01;                             // Smoothing factor.
 
-    System system             (argc, argv);
+    System system             (argc, argv, "../MD/movie.xyz");
     system.setupGUI           ();
     system.setIntegrator      (new EulerCromer(dt));
     system.setPotential       (new Gravitational(G, eps));

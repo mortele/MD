@@ -16,7 +16,7 @@ class Sampler;
 
 class System {
 public:
-    System(int argc, char* argv[]);
+    System(int, char**, char*);
     void setTimeStep(double);
     void setIntegrator(Integrator*);
     void setPotential(Potential*);
@@ -26,6 +26,7 @@ public:
     void integrate(int Nt);
     void integrate(int Nt, bool plotting);
     void dumpInfoToTerminal();
+    void printProgress(int);
     bool getPlotting() { return this->plotting; }
 
     QApplication app;
@@ -35,7 +36,7 @@ private:
     // Internal class for dumping positions to file.
     class FileOutput {
         public:
-            FileOutput(const char* fileName);
+            FileOutput(char*);
             ~FileOutput();
             void saveState(Atom* atoms, int n);
 
@@ -49,6 +50,7 @@ private:
     int               n;
     int               Nt;
     double            dt;
+    char*             fileName;
     bool              plotting;
     Integrator*       integrator;
     Potential*        potential;
