@@ -31,24 +31,25 @@ using std::endl;
  * TODO: Add periodic boundary conditions.
  * TODO: Add Lennard-Jones potential.
  * TODO: Add boundary condition class--periodic, hard box, none, etc.
+ * TODO: Make the plots close when the run terminal closes.
  */
 
 int main(int argc, char* argv[]) {
-    int     n   = 1000;                              // Number of particles.
-    int     Nt  = 2000;                             // Number of time steps.
+    int     n   = 3;                             // Number of particles.
+    int     Nt  = 4000;                             // Number of time steps.
     double  dt  = 0.001;                            // Time step.
     double  R0  = 20;                               // Initial sphere radius.
     double  PI  = acos(-1.0);                       // Pi.
     double  G   = 4*PI*PI*R0*R0*R0/(32*10.0*n);     // Gravitational constant.
     double  eps = 0.01;                             // Smoothing factor.
 
-    System system             (argc, argv, "../MD/movie.xyz");
-    system.setupGUI           ();
-    system.setIntegrator      (new EulerCromer(dt));
-    system.setPotential       (new Gravitational(G, eps));
-    system.setInitialCondition(new RandomSpherical(n, R0));
-    system.integrate          (Nt);
-    //std::system("../MD/autoVMD");
+    System system                       (argc, argv, "../MD/movie.xyz");
+    system.setIntegrator                (new EulerCromer(dt));
+    system.setPotential                 (new Gravitational(G, eps));
+    system.setInitialCondition          (new RandomSpherical(n, R0));
+    system.setPeriodicBoundaryConditions(true);
+    system.setSystemSize                (vec(2*R0));
+    system.integrate                    (Nt, false);
 
     // If the plot is active, return the application handle.
     if (system.getPlotting()) {

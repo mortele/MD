@@ -21,6 +21,13 @@ vec::vec(double* a) {
     this->data[2] = a[2];
 }
 
+vec::vec(double a) {
+    this->data = new double[3];
+    this->data[0] = a;
+    this->data[1] = a;
+    this->data[2] = a;
+}
+
 vec vec::operator+(vec x) {
     vec result = vec(this->data);
     double* resultData = new double[3];
@@ -63,6 +70,14 @@ vec vec::operator*(double a) {
     return result;
 }
 
+void vec::set(vec x) {
+    this->data = x.getData();
+}
+
+void vec::set(double a, int index) {
+    this->data[index] = a;
+}
+
 double vec::operator[](int i) {
     return this->data[i];
 }
@@ -78,6 +93,18 @@ std::ostream& operator<<(std::ostream& os, vec a) {
 
 void vec::setData(double* data) {
     this->data = data;
+}
+
+void vec::setX(double x) {
+    this->data[0] = x;
+}
+
+void vec::setY(double y) {
+    this->data[1] = y;
+}
+
+void vec::setZ(double z) {
+    this->data[2] = z;
 }
 
 

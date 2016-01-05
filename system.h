@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <string>
 #include "QApplication"
@@ -10,6 +11,7 @@
 #include "vec.h"
 #include "atom.h"
 #include "sampler.h"
+#include "realtime.h"
 
 class Sampler;
 
@@ -21,10 +23,14 @@ public:
     void setIntegrator(Integrator*);
     void setPotential(Potential*);
     void setInitialCondition(InitialCondition*);
+    void setPeriodicBoundaryConditions(vec);
+    void setPeriodicBoundaryConditions(bool);
+    void setSystemSize(vec);
     void setupGUI();
     void setupSystem();
     void integrate(int Nt);
     void integrate(int Nt, bool plotting);
+    void applyPeriodicBoundaryConditions();
     void dumpInfoToTerminal();
     void printProgress(int);
     bool getPlotting() { return this->plotting; }
@@ -50,8 +56,13 @@ private:
     int               n;
     int               Nt;
     double            dt;
+    double            oldTime;
+    double            currentTime;
+    double            startTime;
     char*             fileName;
     bool              plotting;
+    bool              periodicBoundaryConditions;
+    vec               systemSize;
     Integrator*       integrator;
     Potential*        potential;
     InitialCondition* initialCondition;

@@ -9,8 +9,9 @@ using std::fstream;
 System::System(int argc, char* argv[], char* fileName) :
     app(argc, argv) {
 
-    this->fileName = fileName;
-    this->sampler  = new Sampler;
+    this->fileName      = fileName;
+    this->sampler       = new Sampler;
+    this->systemSize    = vec(-1,-1,-1); // Used as flag for 'no system size set'
 }
 
 void System::setTimeStep(double dt) {
@@ -29,6 +30,19 @@ void System::setPotential(Potential* potential) {
 
 void System::setInitialCondition(InitialCondition* initialCondition) {
     this->initialCondition = initialCondition;
+}
+
+void System::setPeriodicBoundaryConditions(vec systemSize) {
+    this->periodicBoundaryConditions = true;
+    this->systemSize                 = systemSize;
+}
+
+void System::setPeriodicBoundaryConditions(bool periodicBoundaryConditions) {
+    this->periodicBoundaryConditions = periodicBoundaryConditions;
+}
+
+void System::setSystemSize(vec systemSize) {
+    this->systemSize = systemSize;
 }
 
 void System::setupGUI() {
@@ -54,9 +68,16 @@ void System::integrate(int Nt) {
 void System::integrate(int Nt, bool plotting) {    
     this->setupSystem();
 
+    if (this->systemSize[0] == -1 &&
+        this->systemSize[1] == -1 &&
+        this->systemSize[2] == -1) {
+        cout << endl << "### WARNING ###: No system size set. Using default value (1,1,1)." << endl << endl;
+        this->systemSize = vec(1);
+    }
     // Set up the real time plot if plotting is enabled.
     this->plotting = plotting;
     if (this->plotting) {
+        this->setupGUI();
         //this->mainWindow->setup(Nt);
         this->mainWindow->show();
     }
@@ -65,12 +86,20 @@ void System::integrate(int Nt, bool plotting) {
 
     for (int t=0; t < Nt; t++) {
         this->integrator->advance(this->atoms, this->n);
+
+        if (this->periodicBoundaryConditions) {
+            this->applyPeriodicBoundaryConditions();
+        }
+
         this->fileOutput->saveState(this->atoms, this->n);
         this->sampler->sample(t);
         this->printProgress(t);
     }
     this->printProgress(Nt);
-    this->plot();
+
+    if (this->plotting) {
+        this->plot();
+    }
 }
 
 void System::dumpInfoToTerminal() {
@@ -88,34 +117,34 @@ void System::dumpInfoToTerminal() {
     cout << "    │  Time step:              " << this->dt            << endl;
     cout << "    │  Number of time steps:   " << this->Nt            << endl;
     cout << "    │  Total time:             " << this->Nt*this->dt   << endl;
+    cout << "    │  System size (cube):     " << this->systemSize    << endl;
     cout << "    ├─────────────────────────────────────────────────┐ " << endl;
     cout << "    │ Progress                                        │ " << endl;
     cout << "    └─────────────────────────────────────────────────┘ " << endl;
 }
 
 void System::printProgress(int t) {
-    int nBoxes   = 40;
     if (t==0) {
+        this->startTime = getRealTime();
+        this->oldTime   = this->startTime;
         this->dumpInfoToTerminal();
     }
-    if (t % (Nt/100) == 0) {
-        double progress = ((double) t) / Nt;
-        cout << "     [";
-        for (int i=0; i < std::floor(nBoxes*progress); i++) {
-            cout << "█";
-        }
-        for (int i=nBoxes*progress; i < nBoxes; i++) {
-            cout << " ";
-        }
-        cout << "]  " << 100*progress << " % \r";
+    int k = 200;
+    if (t > 201 && t % (Nt/k) == 0) {
+        this->oldTime       = this->currentTime;
+        this->currentTime   = getRealTime();
+        double progress     = ((double) t) / this->Nt;
+        double elapsedTime  = this->currentTime - this->startTime;
+        cout << "                                                                             \r";
+        printf("\r  Progress: %5.1f %s  Elapsed time: %5.1f s  Estimated tot. time: %5.2f s     \r",
+               progress*100, "%",
+               elapsedTime,
+               elapsedTime+(this->currentTime-this->oldTime)*(1-progress)*k);
         fflush(stdout);
     }
     if (t == this->Nt) {
-        cout << "     [";
-        for (int i = 0; i < nBoxes; i++) {
-            cout << "█";
-        }
-        cout << "]  100 %" << endl;
+        cout << "                                                                             ";
+        cout << endl << "Integration finished. Total elapsed time: " << this->currentTime-this->startTime << endl;
     }
 }
 
@@ -139,6 +168,22 @@ void System::plot() {
 
 
 
+void System::applyPeriodicBoundaryConditions() {
+    for (int i=0; i < this->n; i++) {
+        for (int j=0; j < 3; j++) {
+            if (this->atoms[i].getPosition()[j] > this->systemSize[j]) {
+                vec pos = this->atoms[i].getPosition();
+                pos.set(pos[j] - this->systemSize[j], j);
+                this->atoms[i].setPosition(pos);
+
+            } else if (this->atoms[i].getPosition()[j] < 0) {
+                vec pos = this->atoms[i].getPosition();
+                pos.set(this->systemSize[j]+pos[j]);
+                this->atoms[i].setPosition(pos);
+            }
+        }
+    }
+}
 
 
 
@@ -161,9 +206,9 @@ void System::FileOutput::saveState(Atom* atoms, int n) {
 
         for (int i = 0; i < n; i++) {
             this->outFile << "Ar " << atoms[i].getPosition()[0] << " "
-                                   << atoms[i].getPosition()[1] << " "
-                                   << atoms[i].getPosition()[2] << " "
-                                   << endl;
+                          << atoms[i].getPosition()[1] << " "
+                          << atoms[i].getPosition()[2] << " "
+                          << endl;
         }
     }
 }

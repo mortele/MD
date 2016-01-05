@@ -30,9 +30,9 @@ void RandomSpherical::setupInitialCondition() {
         theta = acos(1-2*v);
         phi   = 2*acos(-1.0)*w;
 
-        x = r*sin(theta)*cos(phi);
-        y = r*sin(theta)*sin(phi);
-        z = r*cos(theta);
+        x = r*sin(theta)*cos(phi)+this->R0;
+        y = r*sin(theta)*sin(phi)+this->R0;
+        z = r*cos(theta)         +this->R0;
 
         this->atoms[i].setMass(mass);
         this->atoms[i].setPosition(vec(x,y,z));
