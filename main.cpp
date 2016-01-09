@@ -14,9 +14,12 @@
 #include "Potentials/potential.h"
 #include "Potentials/lennardjones.h"
 #include "Potentials/gravitational.h"
+#include "Potentials/nopotential.h"
 #include "InitialConditions/initialcondition.h"
 #include "InitialConditions/twobody.h"
 #include "InitialConditions/randomspherical.h"
+#include "InitialConditions/fcc.h"
+#include "examples.h"
 
 using std::cout;
 using std::endl;
@@ -26,37 +29,35 @@ using std::endl;
  * FIXME: Clean up MainWindow class and the integrate method in System.
  *
  * TODO: Velocity Verlet integrator.
- * TODO: Add FCC lattice initial condition.
- * TODO: Add option to dump positions to .xyz file for visualization in VMD.
- * TODO: Add periodic boundary conditions.
- * TODO: Add Lennard-Jones potential.
- * TODO: Add boundary condition class--periodic, hard box, none, etc.
  * TODO: Make the plots close when the run terminal closes.
  */
 
 int main(int argc, char* argv[]) {
-    int     n   = 3;                             // Number of particles.
-    int     Nt  = 4000;                             // Number of time steps.
-    double  dt  = 0.001;                            // Time step.
-    double  R0  = 20;                               // Initial sphere radius.
-    double  PI  = acos(-1.0);                       // Pi.
-    double  G   = 4*PI*PI*R0*R0*R0/(32*10.0*n);     // Gravitational constant.
-    double  eps = 0.01;                             // Smoothing factor.
 
-    System system                       (argc, argv, "../MD/movie.xyz");
-    system.setIntegrator                (new EulerCromer(dt));
-    system.setPotential                 (new Gravitational(G, eps));
-    system.setInitialCondition          (new RandomSpherical(n, R0));
-    system.setPeriodicBoundaryConditions(true);
-    system.setSystemSize                (vec(2*R0));
-    system.integrate                    (Nt, false);
+    System* system;
+    //system = Examples::coldCollapseCluster(argc, argv);
+    //system = Examples::uniformBoxNoPotential(argc, argv);
+    system = Examples::staticFCCLattice(argc, argv);
+    //system = Examples::lennardJonesFCC(argc, argv);
+
+    vec x = vec(0.1,0.9,0.0);
+    vec y = vec(0.9,0.1,0.0);
+    vec systemSize = vec(1,1,1);
+    cout << "x:   " << x << endl;
+    cout << "y:   " << y << endl;
+    cout << "y-x: " << vec::computeLength(y,x,systemSize) << endl;
+
 
     // If the plot is active, return the application handle.
-    if (system.getPlotting()) {
-        return system.app.exec();
+    if (system->getPlotting()) {
+        return system->app.exec();
     } else {
         return 0;
     }
 }
+
+
+
+
 
 

@@ -20,7 +20,12 @@ SOURCES += main.cpp \
     Integrators/velocityverlet.cpp \
     InitialConditions/randomspherical.cpp \
     random.cpp \
-    realtime.cpp
+    realtime.cpp \
+    Potentials/nopotential.cpp \
+    InitialConditions/uniform.cpp \
+    examples.cpp \
+    InitialConditions/staticfcc.cpp \
+    InitialConditions/fcc.cpp
 
 HEADERS += \
     atom.h \
@@ -39,7 +44,12 @@ HEADERS += \
     Integrators/velocityverlet.h \
     InitialConditions/randomspherical.h \
     random.h \
-    realtime.h
+    realtime.h \
+    Potentials/nopotential.h \
+    InitialConditions/uniform.h \
+    examples.h \
+    InitialConditions/staticfcc.h \
+    InitialConditions/fcc.h
 
 FORMS += \
     mainwindow.ui

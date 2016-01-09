@@ -2,6 +2,7 @@
 
 
 RandomSpherical::RandomSpherical(int n, double R0) {
+    InitialCondition::setupDone = false;
     this->n  = n;
     this->R0 = R0;
 }

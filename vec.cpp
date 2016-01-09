@@ -1,5 +1,8 @@
 #include "vec.h"
 
+using std::cout;
+using std::endl;
+
 vec::vec() {
     this->data = new double[3];
     this->data[0] = 0;
@@ -13,6 +16,7 @@ vec::vec(double a, double b, double c) {
     this->data[1] = b;
     this->data[2] = c;
 }
+
 
 vec::vec(double* a) {
     this->data = new double[3];
@@ -71,7 +75,12 @@ vec vec::operator*(double a) {
 }
 
 void vec::set(vec x) {
-    this->data = x.getData();
+    double* xData = x.getData();
+    this->data = new double[3];
+
+    for (int i=0; i<3; i++) {
+        this->data[i] = xData[i];
+    }
 }
 
 void vec::set(double a, int index) {
@@ -107,6 +116,42 @@ void vec::setZ(double z) {
     this->data[2] = z;
 }
 
+vec vec::computeLength(vec x, vec y, vec systemSize) {
+    double* xData = x.getData();
+    double* yData = y.getData();
+    double* systemSizeData = systemSize.getData();
+    vec     result = vec();
+
+    for (int i=0; i<3; i++) {
+        double dx = xData[i] - yData[i];
+        if (dx > systemSizeData[i]/2.0) {
+            dx = systemSizeData[i] - dx;
+        } else if (dx < -systemSizeData[i]/2.0) {
+            dx = systemSizeData[i] + dx;
+        }
+        result.set(dx, i);
+    }
+    return result;
+}
+
+
+double vec::computeLengthSquared(vec a, vec systemSize) {
+    double* x = this->data;
+    double* y = a.getData();
+
+    double lengthSquared = 0;
+    for (int i = 0; i < 3; i++) {
+        double diff = x[i]-y[i];
+        if (diff > systemSize[i]/2.0) {
+            diff = diff - systemSize[i]/2.0;
+        } /*else if (diff < -systemSize[i]/2.0) {
+            diff = diff + systemSize[i]/2.0;
+        }*/
+        lengthSquared += diff*diff;
+    }
+    return lengthSquared;
+}
+
 
 double vec::computeLengthSquared(vec a) {
     double* x = this->data;
@@ -118,6 +163,8 @@ double vec::computeLengthSquared(vec a) {
     }
     return lengthSquared;
 }
+
+
 
 double vec::computeLengthSquared() {
     return this->computeLengthSquared(vec());

@@ -1,10 +1,11 @@
 #include "lennardjones.h"
 
-LennardJones::LennardJones(double epsilon, double sigma) {
+LennardJones::LennardJones(double epsilon, double sigma, vec systemSize) {
     this->epsilon = epsilon;
     this->sigma   = sigma;
     this->sigma6  = sigma*sigma*sigma*sigma*sigma*sigma;
     this->sigma12 = sigma6*sigma6;
+    this->systemSize = systemSize;
 }
 
 void LennardJones::computeForces(Atom* atoms, int n) {
@@ -15,7 +16,7 @@ void LennardJones::computeForces(Atom* atoms, int n) {
         for (int j=0; j < n; j++) {
             if (i != j) {
                 double r2 = atoms[i].getPosition().
-                           computeLengthSquared(atoms[j].getPosition());
+                           computeLengthSquared(atoms[j].getPosition(), this->systemSize);
                 r2  = 1.0 / r2;
                 double r8  = r2*r2*r2*r2;
                 double r14 = r8*r2*r2*r2;
@@ -27,8 +28,8 @@ void LennardJones::computeForces(Atom* atoms, int n) {
                 double dy = posi[1]-posj[1];
                 double dz = posi[2]-posj[2];
 
-                double f = 4*this->epsilon * (this->sigma6 * r8 -
-                                              this->sigma12 * r14);
+                double f = 4 * this->epsilon * (this->sigma6  * r8 -
+                                                this->sigma12 * r14);
 
                 vec dforce = vec(f*dx, f*dy, f*dz);
                 atoms[i].addForce(dforce);

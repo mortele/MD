@@ -7,6 +7,21 @@ Atom::Atom() {
     this->mass     = 1.0;
 }
 
+Atom::Atom(std::string name, double mass) {
+    this->position = vec();
+    this->velocity = vec();
+    this->force    = vec();
+    this->mass     = mass;
+    this->name     = name;
+}
+
+Atom::Atom(double mass) {
+    this->position = vec();
+    this->velocity = vec();
+    this->force    = vec();
+    this->mass     = mass;
+}
+
 void Atom::setPosition(vec position) {
     this->position = position;
 }
@@ -26,6 +41,10 @@ void Atom::addForce(vec dforce) {
 
 void Atom::setMass(double mass) {
     this->mass = mass;
+}
+
+void Atom::setName(std::string name) {
+    this->name = name;
 }
 
 

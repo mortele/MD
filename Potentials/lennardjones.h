@@ -2,10 +2,11 @@
 #include <cmath>
 #include "potential.h"
 #include "../atom.h"
+#include "../vec.h"
 
 class LennardJones : public Potential {
 public:
-    LennardJones(double epsilon, double sigma);
+    LennardJones(double epsilon, double sigma, vec systemSize);
 
     void   computeForces(Atom* atoms, int n);
     double computePotential(Atom* atoms, int n);
@@ -16,5 +17,6 @@ private:
     double sigma;
     double sigma6;
     double sigma12;
+    vec    systemSize;
 };
 

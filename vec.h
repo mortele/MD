@@ -23,8 +23,10 @@ public:
     void setX(double x);
     void setY(double y);
     void setZ(double z);
+    double computeLengthSquared(vec a, vec systemSize);
     double computeLengthSquared(vec a);
     double computeLengthSquared();
+    static vec computeLength(vec x, vec y, vec systemSize);
 
 private:
     double* data;

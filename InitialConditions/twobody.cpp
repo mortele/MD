@@ -6,6 +6,7 @@ TwoBody::TwoBody() {
 }
 
 TwoBody::TwoBody(double e) {
+    InitialCondition::setupDone = false;
     this->e = e;
 }
 

@@ -13,9 +13,10 @@ menu graphics on
 # Start the animation.
 animate forward
 
+# Set the representation of all molecules currently drawn.
 mol representation {points 10.00000}
 
-  foreach mid [molinfo list] {
-    mol delrep 0 $mid
-    mol addrep $mid
-  }
+foreach mid [molinfo list] {
+  mol delrep 0 $mid
+  mol addrep $mid
+}

@@ -6,7 +6,7 @@ using std::endl;
 using std::ofstream;
 using std::fstream;
 
-System::System(int argc, char* argv[], char* fileName) :
+System::System(int argc, char** argv, char* fileName) :
     app(argc, argv) {
 
     this->fileName      = fileName;
@@ -143,8 +143,12 @@ void System::printProgress(int t) {
         fflush(stdout);
     }
     if (t == this->Nt) {
+        double elapsedTime = this->currentTime - this->startTime;
+        if (elapsedTime < 0) {
+            elapsedTime = 0;
+        }
         cout << "                                                                             ";
-        cout << endl << "Integration finished. Total elapsed time: " << this->currentTime-this->startTime << endl;
+        cout << endl << "Integration finished. Total elapsed time: " << elapsedTime << endl;
     }
 }
 
@@ -170,17 +174,24 @@ void System::plot() {
 
 void System::applyPeriodicBoundaryConditions() {
     for (int i=0; i < this->n; i++) {
-        for (int j=0; j < 3; j++) {
-            if (this->atoms[i].getPosition()[j] > this->systemSize[j]) {
-                vec pos = this->atoms[i].getPosition();
-                pos.set(pos[j] - this->systemSize[j], j);
-                this->atoms[i].setPosition(pos);
+        vec pos = vec();
+        vec posBefore = vec();
+        posBefore.set(this->atoms[i].getPosition());
+        pos.set(this->atoms[i].getPosition());
 
-            } else if (this->atoms[i].getPosition()[j] < 0) {
-                vec pos = this->atoms[i].getPosition();
-                pos.set(this->systemSize[j]+pos[j]);
-                this->atoms[i].setPosition(pos);
+        bool changed = false;
+
+        for (int j=0; j < 3; j++) {
+            if (pos[j] > this->systemSize[j]) {
+                changed = true;
+                pos.set(pos[j] - this->systemSize[j], j);
+            } else if (pos[j] < 0) {
+                changed = true;
+                pos.set(this->systemSize[j]+pos[j], j);
             }
+        }
+        if (changed) {
+            this->atoms[i].setPosition(pos);
         }
     }
 }
@@ -205,10 +216,11 @@ void System::FileOutput::saveState(Atom* atoms, int n) {
         this->outFile << "Comment line" << endl;
 
         for (int i = 0; i < n; i++) {
-            this->outFile << "Ar " << atoms[i].getPosition()[0] << " "
-                          << atoms[i].getPosition()[1] << " "
-                          << atoms[i].getPosition()[2] << " "
-                          << endl;
+            this->outFile   << atoms[i].getName()        << " "
+                            << atoms[i].getPosition()[0] << " "
+                            << atoms[i].getPosition()[1] << " "
+                            << atoms[i].getPosition()[2] << " "
+                            << endl;
         }
     }
 }
