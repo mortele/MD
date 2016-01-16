@@ -12,6 +12,7 @@
 #include "GUI/mainwindow.h"
 #include "Integrators/integrator.h"
 #include "Integrators/eulercromer.h"
+#include "Integrators/velocityverlet.h"
 #include "Potentials/potential.h"
 #include "Potentials/lennardjones.h"
 #include "Potentials/gravitational.h"
@@ -22,7 +23,8 @@
 #include "InitialConditions/uniform.h"
 #include "InitialConditions/staticfcc.h"
 #include "InitialConditions/fcc.h"
-
+#include "Thermostats/thermostat.h"
+#include "Thermostats/berendsenthermostat.h"
 
 
 System* Examples::coldCollapseCluster(int argc, char** argv) {
@@ -39,6 +41,7 @@ System* Examples::coldCollapseCluster(int argc, char** argv) {
     system->setInitialCondition          (new RandomSpherical(n, R0));
     system->setPeriodicBoundaryConditions(false);
     system->setSystemSize                (vec(2*R0));
+    system->integrate(2000,false);
     return system;
 }
 
@@ -54,6 +57,7 @@ System* Examples::uniformBoxNoPotential(int argc, char** argv) {
     system->setInitialCondition          (new Uniform(n, boxSize, 5));
     system->setPeriodicBoundaryConditions(true);
     system->setSystemSize                (boxSize);
+    system->integrate(2000,false);
     return system;
 }
 
@@ -68,26 +72,48 @@ System* Examples::staticFCCLattice(int argc, char** argv) {
     system->setIntegrator                (new EulerCromer(dt));
     system->setPotential                 (new NoPotential);
     system->setInitialCondition          (new FCC(n, b, 0));
-    system->setPeriodicBoundaryConditions(false);
+    system->setPeriodicBoundaryConditions(true);
     system->setSystemSize                (boxSize);
+    system->integrate(1,false);
     return system;
 }
 
 System* Examples::lennardJonesFCC(int argc, char** argv) {
-    int     n = 2;                          // Number of unit cells in each dimension.
-    double  T = 0.001;                      // Temperature, in units of 119.8 K.
+    int     n = 4;                          // Number of unit cells in each dimension.
+    double  T = 0.2;                        // Temperature, in units of 119.8 K.
     double  b = 5.26;                       // Lattice constant, in units of 1.0 Å.
-    double  dt          = 0.001;            // Time step.
+    double  dt          = 0.01;             // Time step.
     double  sideLength  = n*b;              // Size of box sides.
     vec     boxSize     = vec(sideLength);  // Vector of box size.
 
     System* system = new System          (argc, argv, "../MD/movie.xyz");
-    system->setIntegrator                (new EulerCromer(dt));
+    system->setIntegrator                (new VelocityVerlet(dt, system));
     system->setPotential                 (new LennardJones(1.0, 3.405, boxSize));
     system->setInitialCondition          (new FCC(n, b, T));
     system->setPeriodicBoundaryConditions(true);
     system->setSystemSize                (boxSize);
-    system->integrate(2, true);
+    system->integrate(1000, true);
     return system;
 }
 
+System*Examples::lennardJonesBerendsen(int argc, char** argv) {
+    int     n = 3;                          // Number of unit cells in each dimension.
+    double  T = 3.0;                        // Temperature, in units of 119.8 K.
+    double  TTarget = 0.5;                  // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
+    double  tau = 1.0;                      // Relaxation time used by the thermostat, in units of 119.8 K.
+    double  b = 5.26;                       // Lattice constant, in units of 1.0 Å.
+    double  dt          = 0.01;             // Time step.
+    double  sideLength  = n*b;              // Size of box sides.
+    vec     boxSize     = vec(sideLength);  // Vector of box size.
+
+    System* system = new System          (argc, argv, "../MD/movie.xyz");
+    system->setIntegrator                (new VelocityVerlet(dt, system));
+    system->setPotential                 (new LennardJones(1.0, 3.405, boxSize));
+    system->setInitialCondition          (new FCC(n, b, T));
+    system->setPeriodicBoundaryConditions(true);
+    system->setThermostat                (new BerendsenThermostat(TTarget, tau, dt));
+    system->setThermostatActive          (true);
+    system->setSystemSize                (boxSize);
+    system->integrate(1000, true);
+    return system;
+}

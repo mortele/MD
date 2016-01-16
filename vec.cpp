@@ -74,6 +74,11 @@ vec vec::operator*(double a) {
     return result;
 }
 
+vec vec::operator-(vec a) {
+    double* aData = a.getData();
+    return vec(-aData[0], -aData[1], -aData[2]);
+}
+
 void vec::set(vec x) {
     double* xData = x.getData();
     this->data = new double[3];
@@ -125,7 +130,7 @@ vec vec::computeLength(vec x, vec y, vec systemSize) {
     for (int i=0; i<3; i++) {
         double dx = xData[i] - yData[i];
         if (dx > systemSizeData[i]/2.0) {
-            dx = systemSizeData[i] - dx;
+            dx = - systemSizeData[i] + dx;
         } else if (dx < -systemSizeData[i]/2.0) {
             dx = systemSizeData[i] + dx;
         }
@@ -167,7 +172,10 @@ double vec::computeLengthSquared(vec a) {
 
 
 double vec::computeLengthSquared() {
-    return this->computeLengthSquared(vec());
+    return this->data[0]*this->data[0] +
+           this->data[1]*this->data[1] +
+           this->data[2]*this->data[2];
+    //return this->computeLengthSquared(vec());
 }
 
 

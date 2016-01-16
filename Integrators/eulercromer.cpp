@@ -1,4 +1,5 @@
 #include "eulercromer.h"
+#include "../Potentials/potential.h"
 
 using std::cout;
 using std::endl;

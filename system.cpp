@@ -9,9 +9,10 @@ using std::fstream;
 System::System(int argc, char** argv, char* fileName) :
     app(argc, argv) {
 
-    this->fileName      = fileName;
-    this->sampler       = new Sampler;
-    this->systemSize    = vec(-1,-1,-1); // Used as flag for 'no system size set'
+    this->fileName          = fileName;
+    this->sampler           = new Sampler;
+    this->systemSize        = vec(-1,-1,-1); // Used as flag for 'no system size set'
+    this->thermostatActive  = false;
 }
 
 void System::setTimeStep(double dt) {
@@ -39,6 +40,15 @@ void System::setPeriodicBoundaryConditions(vec systemSize) {
 
 void System::setPeriodicBoundaryConditions(bool periodicBoundaryConditions) {
     this->periodicBoundaryConditions = periodicBoundaryConditions;
+}
+
+void System::setThermostat(Thermostat* thermostat) {
+    this->thermostat = thermostat;
+    this->thermostatActive = true;
+}
+
+void System::setThermostatActive(bool thermostatActive) {
+    this->thermostatActive = thermostatActive;
 }
 
 void System::setSystemSize(vec systemSize) {
@@ -90,6 +100,10 @@ void System::integrate(int Nt, bool plotting) {
         if (this->periodicBoundaryConditions) {
             this->applyPeriodicBoundaryConditions();
         }
+        if (this->thermostatActive) {
+            double instantaneousTemperature = this->sampler->getInstantanousTemperature()[t];
+            this->thermostat->adjustVelocities(this->atoms, this->n, instantaneousTemperature);
+        }
 
         this->fileOutput->saveState(this->atoms, this->n);
         this->sampler->sample(t);
@@ -127,20 +141,22 @@ void System::printProgress(int t) {
     if (t==0) {
         this->startTime = getRealTime();
         this->oldTime   = this->startTime;
+        this->lastTimeStepTime = 0;
         this->dumpInfoToTerminal();
     }
     int k = 200;
-    if (t > 201 && t % (Nt/k) == 0) {
+    if (t % (Nt/k) == 0) {
         this->oldTime       = this->currentTime;
         this->currentTime   = getRealTime();
         double progress     = ((double) t) / this->Nt;
         double elapsedTime  = this->currentTime - this->startTime;
         cout << "                                                                             \r";
-        printf("\r  Progress: %5.1f %s  Elapsed time: %5.1f s  Estimated tot. time: %5.2f s     \r",
+        printf("\r      %5.1f %s  Elapsed time: %5.1f s  Estimated tot. time: %5.1f s \r",
                progress*100, "%",
                elapsedTime,
-               elapsedTime+(this->currentTime-this->oldTime)*(1-progress)*k);
+               elapsedTime+(this->currentTime-this->oldTime+this->lastTimeStepTime)*(1-progress)*k/2.0);
         fflush(stdout);
+        this->lastTimeStepTime = this->currentTime-this->oldTime;
     }
     if (t == this->Nt) {
         double elapsedTime = this->currentTime - this->startTime;
@@ -153,20 +169,7 @@ void System::printProgress(int t) {
 }
 
 void System::plot() {
-    //double*** positions = this->sampler->getPositions();
-    double*   xPosition = new double[this->Nt];
-    double*   yPosition = new double[this->Nt];
-
-    /*for (int i=0; i < this->Nt; i++) {
-        xPosition[i] = positions[i][1][0];
-        yPosition[i] = positions[i][1][1];
-    }*/
-
-    this->mainWindow->plot(this->Nt,
-                           xPosition,
-                           yPosition,
-                           this->sampler->getTime(),
-                           this->sampler->getEnergies());
+    this->mainWindow->plot(this->n, this->Nt, this->sampler);
     this->mainWindow->show();
 }
 

@@ -12,6 +12,7 @@ public:
     vec operator+(vec x);
     vec operator+(double a);
     vec operator*(double a);
+    vec operator-(vec a);
     double operator[](int i);
     friend vec operator+(double a, vec x);
     friend vec operator*(double a, vec x);

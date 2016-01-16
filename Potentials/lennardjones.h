@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <iostream>
 #include "potential.h"
 #include "../atom.h"
 #include "../vec.h"
@@ -17,6 +18,7 @@ private:
     double sigma;
     double sigma6;
     double sigma12;
+    double potentialEnergy;
     vec    systemSize;
 };
 

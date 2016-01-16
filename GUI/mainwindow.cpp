@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "../sampler.h"
 
 using std::cout;
 using std::endl;
@@ -14,26 +15,35 @@ MainWindow::MainWindow(QWidget *parent) :
     setGeometry(100,100,1.5*k,k);
 }
 
-void MainWindow::plot(int n,
-                      double* xPosition,
-                      double* yPosition,
-                      double* time,
-                      double* energy) {
+void MainWindow::plot(int n, int Nt, Sampler* sampler) {
 
-    QVector<double> x(n);
-    QVector<double> y(n);
-    QVector<double> t(n);
-    QVector<double> e(n);
+    this->sampler = sampler;
 
-    double eMin = 0;
-    double eMax = 0;
+    QVector<double> t(Nt);
+    QVector<double> e(Nt);
+    QVector<double> T(Nt);
 
-    for (int i=0; i<n; i++) {
+    double* time   = sampler->getTime();
+    double* energy = sampler->getEnergies();
+    double* instantaneousTemperature = sampler->getInstantanousTemperature();
+
+    double eMin = 1e300;
+    double eMax = -1e300;
+    double TMin = 1e300;
+    double TMax = -1e300;
+
+    double nInverse = 1.0/n;
+    for (int i=0; i<Nt; i++) {
         t[i] = time[i];
-        e[i] = energy[i];
-        x[i] = xPosition[i];
-        y[i] = yPosition[i];
+        e[i] = energy[i]*nInverse;
+        T[i] = instantaneousTemperature[i];
 
+        if (T[i] > TMax) {
+            TMax = T[i];
+        }
+        if (T[i] < TMin) {
+            TMin = T[i];
+        }
         if (e[i] > eMax) {
             eMax = e[i];
         }
@@ -41,21 +51,36 @@ void MainWindow::plot(int n,
             eMin = e[i];
         }
     }
+    double de = eMax-eMin;
+    double dT = TMax-TMin;
+
+    //ui->customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+    //ui->customPlot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignBottom|Qt::AlignRight);
+
 
     // Energy plot.
     ui->customPlot->addGraph();
     ui->customPlot->graph(0)->setData(t, e);
     ui->customPlot->xAxis->setLabel("time");
-    ui->customPlot->yAxis->setLabel("total energy");
-    double k = 1.5;
+    ui->customPlot->yAxis->setLabel("energy");
     ui->customPlot->xAxis->setRange(0, t[n-1]);
-    ui->customPlot->yAxis->setRange(eMin, eMax);
-    //ui->customPlot->graph(0)->setScatterStyle(QCPScatterStyle::ssCircle);
-    //ui->customPlot->graph(0)->setLineStyle();
-
+    ui->customPlot->yAxis->setRange(eMin-0.1*de, eMax+0.1*de);
     ui->customPlot->axisRect()->setupFullAxesBox();
     ui->customPlot->yAxis->grid()->setSubGridVisible(true);
     ui->customPlot->xAxis->grid()->setSubGridVisible(true);
+
+    // Instantaneous temperature plot.
+    ui->customPlot->addGraph(ui->customPlot->xAxis, ui->customPlot->yAxis2);
+    ui->customPlot->yAxis2->setLabel("inst. tempertaure");
+    ui->customPlot->yAxis2->setRange(TMin-0.1*dT, TMax+0.1*dT);
+    ui->customPlot->yAxis2->setAutoTicks(true);
+    ui->customPlot->yAxis2->setAutoTickLabels(true);
+    ui->customPlot->graph(1)->setData(t,T);
+    ui->customPlot->graph(1)->setPen(QPen(QColor(255, 0, 0)));
+
+    ui->customPlot->graph(0)->setName("energy per atom");
+    ui->customPlot->graph(1)->setName("Inst. temperature");
+    ui->customPlot->legend->setVisible(true);
 
     ui->customPlot->replot();
 }

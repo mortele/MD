@@ -19,6 +19,8 @@
 #include "InitialConditions/twobody.h"
 #include "InitialConditions/randomspherical.h"
 #include "InitialConditions/fcc.h"
+#include "Thermostats/thermostat.h"
+#include "Thermostats/berendsenthermostat.h"
 #include "examples.h"
 
 using std::cout;
@@ -37,16 +39,9 @@ int main(int argc, char* argv[]) {
     System* system;
     //system = Examples::coldCollapseCluster(argc, argv);
     //system = Examples::uniformBoxNoPotential(argc, argv);
-    system = Examples::staticFCCLattice(argc, argv);
+    //system = Examples::staticFCCLattice(argc, argv);
     //system = Examples::lennardJonesFCC(argc, argv);
-
-    vec x = vec(0.1,0.9,0.0);
-    vec y = vec(0.9,0.1,0.0);
-    vec systemSize = vec(1,1,1);
-    cout << "x:   " << x << endl;
-    cout << "y:   " << y << endl;
-    cout << "y-x: " << vec::computeLength(y,x,systemSize) << endl;
-
+    system = Examples::lennardJonesBerendsen(argc, argv);
 
     // If the plot is active, return the application handle.
     if (system->getPlotting()) {

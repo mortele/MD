@@ -12,5 +12,6 @@ public:
     static System* uniformBoxNoPotential(int, char**);
     static System* staticFCCLattice(int, char**);
     static System* lennardJonesFCC(int, char**);
+    static System* lennardJonesBerendsen(int, char**);
 };
 

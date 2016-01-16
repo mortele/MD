@@ -25,7 +25,9 @@ SOURCES += main.cpp \
     InitialConditions/uniform.cpp \
     examples.cpp \
     InitialConditions/staticfcc.cpp \
-    InitialConditions/fcc.cpp
+    InitialConditions/fcc.cpp \
+    Thermostats/thermostat.cpp \
+    Thermostats/berendsenthermostat.cpp
 
 HEADERS += \
     atom.h \
@@ -49,7 +51,9 @@ HEADERS += \
     InitialConditions/uniform.h \
     examples.h \
     InitialConditions/staticfcc.h \
-    InitialConditions/fcc.h
+    InitialConditions/fcc.h \
+    Thermostats/thermostat.h \
+    Thermostats/berendsenthermostat.h
 
 FORMS += \
     mainwindow.ui

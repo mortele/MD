@@ -1,5 +1,8 @@
 #include "lennardjones.h"
 
+using std::cout;
+using std::endl;
+
 LennardJones::LennardJones(double epsilon, double sigma, vec systemSize) {
     this->epsilon = epsilon;
     this->sigma   = sigma;
@@ -11,35 +14,37 @@ LennardJones::LennardJones(double epsilon, double sigma, vec systemSize) {
 void LennardJones::computeForces(Atom* atoms, int n) {
 
     Potential::setForcesToZero(atoms, n);
+    this->potentialEnergy = 0;
 
     for (int i=0; i < n; i++) {
-        for (int j=0; j < n; j++) {
-            if (i != j) {
-                double r2 = atoms[i].getPosition().
-                           computeLengthSquared(atoms[j].getPosition(), this->systemSize);
-                r2  = 1.0 / r2;
-                double r8  = r2*r2*r2*r2;
-                double r14 = r8*r2*r2*r2;
+        for (int j=i+1; j < n; j++) {
+            vec dr = vec::computeLength(atoms[j].getPosition(),
+                                        atoms[i].getPosition(),
+                                        this->systemSize);
 
-                vec posi = atoms[i].getPosition();
-                vec posj = atoms[j].getPosition();
+            double r2 = dr.computeLengthSquared();
 
-                double dx = posi[0]-posj[0];
-                double dy = posi[1]-posj[1];
-                double dz = posi[2]-posj[2];
+            r2  = 1.0 / r2;
+            double r6  = r2*r2*r2;
+            double r12 = r6*r6;
+            double r8  = r6*r2; //r2*r2*r2*r2;
+            double r14 = r8*r6; //r8*r2*r2*r2;
 
-                double f = 4 * this->epsilon * (this->sigma6  * r8 -
-                                                this->sigma12 * r14);
+            this->potentialEnergy += 4*this->epsilon * (this->sigma12*r12-this->sigma6*r6);
+            double f = 24 * this->epsilon * (  this->sigma6  * r8 -
+                                             2*this->sigma12 * r14);
 
-                vec dforce = vec(f*dx, f*dy, f*dz);
-                atoms[i].addForce(dforce);
-            }
+            vec dforce      = vec(f*dr[0], f*dr[1], f*dr[2]);
+            vec dforceMinus = vec(-f*dr[0], -f*dr[1], -f*dr[2]);
+            atoms[i].addForce(dforce);
+            atoms[j].addForce(dforceMinus);
+
         }
     }
 }
 
 double LennardJones::computePotential(Atom* atoms, int n) {
-    return 0;
+    return this->potentialEnergy;
 }
 
 

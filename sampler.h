@@ -19,16 +19,17 @@ public:
     //double*** getPositions() { return this->positions; }
     double*   getEnergies()  { return this->energies; }
     double*   getTime()      { return this->time; }
+    double*   getInstantanousTemperature() { return this->instantanousTemperature; }
 
 private:
     int        n;
     int        Nt;
     double     dt;
-    //double***  positions;
     double*    energies;
     double*    potentialEnergies;
     double*    kineticEnergies;
     double*    time;
+    double*    instantanousTemperature;
     Atom*      atoms;
     Potential* potential;
 };
