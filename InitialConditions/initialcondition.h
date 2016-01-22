@@ -11,8 +11,8 @@ public:
     virtual std::string getName() = 0;
 
 protected:
-    int   n;
-    Atom* atoms;
-    bool  setupDone;
+    int   n = 0;
+    Atom* atoms = nullptr;
+    bool  setupDone = false;
 };
 

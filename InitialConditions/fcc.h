@@ -1,5 +1,6 @@
 #pragma once
 #include "initialcondition.h"
+#include <iostream>
 
 class FCC : public InitialCondition {
 public:

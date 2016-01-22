@@ -22,7 +22,6 @@ void BerendsenThermostat::adjustVelocities(Atom* atoms,
     for (int i=0; i < n; i++) {
 
         double gamma = std::sqrt(1+this->dtOverTau*(this->targetTemperature/instantaneousTemperature-1));
-        cout << instantaneousTemperature << endl;
         atoms[i].setVelocity(gamma*atoms[i].getVelocity());
     }
 }

@@ -1,5 +1,8 @@
 #include "sampler.h"
 
+using std::cout;
+using std::endl;
+
 Sampler::Sampler() {
 
 }
@@ -13,8 +16,7 @@ void Sampler::sample(int t) {
     this->time[t]              = t*this->dt;
     this->kineticEnergies[t]   = this->sampleKineticEnergy();
     this->potentialEnergies[t] = this->samplePotentialEnergy();
-    this->energies[t] = this->kineticEnergies[t] +
-                        this->potentialEnergies[t];
+    this->energies[t] = this->kineticEnergies[t] + this->potentialEnergies[t];
     this->instantanousTemperature[t] = (2.0/3.0)*this->kineticEnergies[t] / this->n;
 }
 
@@ -39,6 +41,7 @@ double Sampler::sampleKineticEnergy() {
     for (int i=0; i < this->n; i++) {
         kineticEnergy += 0.5 * atoms[i].getMass() *
                          atoms[i].getVelocity().computeLengthSquared();
+        //cout << i << ": " << atoms[i].getVelocity() << endl;
     }
     return kineticEnergy;
 }

@@ -1,3 +1,4 @@
+#include "examples.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -21,7 +22,7 @@
 #include "InitialConditions/fcc.h"
 #include "Thermostats/thermostat.h"
 #include "Thermostats/berendsenthermostat.h"
-#include "examples.h"
+
 
 using std::cout;
 using std::endl;
@@ -45,7 +46,7 @@ int main(int argc, char* argv[]) {
 
     // If the plot is active, return the application handle.
     if (system->getPlotting()) {
-        return system->app.exec();
+        return system->m_app.exec();
     } else {
         return 0;
     }

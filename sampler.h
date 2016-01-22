@@ -22,15 +22,15 @@ public:
     double*   getInstantanousTemperature() { return this->instantanousTemperature; }
 
 private:
-    int        n;
-    int        Nt;
-    double     dt;
-    double*    energies;
-    double*    potentialEnergies;
-    double*    kineticEnergies;
-    double*    time;
-    double*    instantanousTemperature;
-    Atom*      atoms;
-    Potential* potential;
+    int        n = 0;
+    int        Nt = 0;
+    double     dt = 0;
+    double*    energies = nullptr;
+    double*    potentialEnergies = nullptr;
+    double*    kineticEnergies = nullptr;
+    double*    time = nullptr;
+    double*    instantanousTemperature = nullptr;
+    Atom*      atoms = nullptr;
+    Potential* potential = nullptr;
 };
 

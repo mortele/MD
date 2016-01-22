@@ -37,10 +37,10 @@ public:
     void applyPeriodicBoundaryConditions();
     void dumpInfoToTerminal();
     void printProgress(int);
-    bool getPlotting() { return this->plotting; }
-    bool getPeriodicBoundaryConditions() { return this->periodicBoundaryConditions; }
+    bool getPlotting() { return m_plotting; }
+    bool getPeriodicBoundaryConditions() { return m_periodicBoundaryConditions; }
 
-    QApplication app;
+    QApplication m_app;
 
 private:
 
@@ -52,31 +52,32 @@ private:
             void saveState(Atom* atoms, int n);
 
         private:
-            std::fstream outFile;
-    }; // end FileOutput
+            std::fstream m_outFile;
+    };
 
     void plot();
 
-    int               skip;
-    int               n;
-    int               Nt;
-    double            dt;
-    double            oldTime;
-    double            currentTime;
-    double            startTime;
-    double            lastTimeStepTime;
-    char*             fileName;
-    bool              plotting;
-    bool              periodicBoundaryConditions;
-    bool              thermostatActive;
-    vec               systemSize;
-    Integrator*       integrator;
-    Potential*        potential;
-    InitialCondition* initialCondition;
-    Atom*             atoms;
-    MainWindow*       mainWindow;
-    Sampler*          sampler;
-    FileOutput*       fileOutput;
-    Thermostat*       thermostat;
+    int               m_skip                          = 0;
+    int               m_n                             = 0;
+    int               m_Nt                            = 0;
+    double            m_dt                            = 0;
+    double            m_oldTime                       = 0;
+    double            m_currentTime                   = 0;
+    double            m_startTime                     = 0;
+    double            m_lastTimeStepTime              = 0;
+    char*             m_fileName                      = nullptr;
+    bool              m_plotting                      = false;
+    bool              m_periodicBoundaryConditions    = false;
+    bool              m_thermostatActive              = false;
+    bool              m_integrating                   = false;
+    vec               m_systemSize                    = vec();
+    Integrator*       m_integrator                    = nullptr;
+    Potential*        m_potential                     = nullptr;
+    InitialCondition* m_initialCondition              = nullptr;
+    Atom*             m_atoms                         = nullptr;
+    MainWindow*       m_mainWindow                    = nullptr;
+    Sampler*          m_sampler                       = nullptr;
+    FileOutput*       m_fileOutput                    = nullptr;
+    Thermostat*       m_thermostat                    = nullptr;
 };
 

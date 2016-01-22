@@ -3,6 +3,9 @@
 #include "../atom.h"
 #include "../random.h"
 
+using std::cout;
+using std::endl;
+
 FCC::FCC(int    numberOfUnitCells,
          double latticeConstant,
          double temperature         ) {
@@ -47,7 +50,5 @@ void FCC::setupInitialCondition() {
                                  Random::nextGaussian(0, std::sqrt(this->temperature / m)),
                                  Random::nextGaussian(0, std::sqrt(this->temperature / m))));
     }
-
     InitialCondition::setupDone = true;
-
 }

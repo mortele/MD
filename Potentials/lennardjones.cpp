@@ -29,7 +29,6 @@ void LennardJones::computeForces(Atom* atoms, int n) {
             double r12 = r6*r6;
             double r8  = r6*r2; //r2*r2*r2*r2;
             double r14 = r8*r6; //r8*r2*r2*r2;
-
             this->potentialEnergy += 4*this->epsilon * (this->sigma12*r12-this->sigma6*r6);
             double f = 24 * this->epsilon * (  this->sigma6  * r8 -
                                              2*this->sigma12 * r14);

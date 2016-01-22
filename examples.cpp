@@ -97,23 +97,35 @@ System* Examples::lennardJonesFCC(int argc, char** argv) {
 }
 
 System*Examples::lennardJonesBerendsen(int argc, char** argv) {
-    int     n = 3;                          // Number of unit cells in each dimension.
-    double  T = 3.0;                        // Temperature, in units of 119.8 K.
-    double  TTarget = 0.5;                  // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
-    double  tau = 1.0;                      // Relaxation time used by the thermostat, in units of 119.8 K.
-    double  b = 5.26;                       // Lattice constant, in units of 1.0 Å.
+    int     nUnitCells = 5;                 // Number of unit cells in each dimension.
+    int     n = 4*std::pow(nUnitCells,3);   // Number of atoms.
+    double  T           = 9.0;              // Temperature, in units of 119.8 K.
+    double  TTarget     = 0.5;              // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
+    double  tau         = 10.0;             // Relaxation time used by the thermostat, in units of 119.8 K.
+    double  b           = 5.26;             // Lattice constant, in units of 1.0 Å.
     double  dt          = 0.01;             // Time step.
-    double  sideLength  = n*b;              // Size of box sides.
+    double  sideLength  = nUnitCells*b;     // Size of box sides.
     vec     boxSize     = vec(sideLength);  // Vector of box size.
 
     System* system = new System          (argc, argv, "../MD/movie.xyz");
     system->setIntegrator                (new VelocityVerlet(dt, system));
     system->setPotential                 (new LennardJones(1.0, 3.405, boxSize));
-    system->setInitialCondition          (new FCC(n, b, T));
+    system->setInitialCondition          (new FCC(nUnitCells, b, T));
     system->setPeriodicBoundaryConditions(true);
     system->setThermostat                (new BerendsenThermostat(TTarget, tau, dt));
-    system->setThermostatActive          (true);
     system->setSystemSize                (boxSize);
-    system->integrate(1000, true);
+
+    // Thermalize.
+    system->setThermostatActive(false);
+    system->integrate(1000, false);
+
+    // Apply thermostat and integrate further.
+    system->setThermostatActive(true);
+    system->integrate(10000, false);
+
+    // Allow thermalization in the new state.
+    system->setThermostatActive(false);
+    system->integrate(2000, false);
+
     return system;
 }

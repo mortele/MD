@@ -7,112 +7,114 @@ using std::ofstream;
 using std::fstream;
 
 System::System(int argc, char** argv, char* fileName) :
-    app(argc, argv) {
+    m_app(argc, argv) {
 
-    this->fileName          = fileName;
-    this->sampler           = new Sampler;
-    this->systemSize        = vec(-1,-1,-1); // Used as flag for 'no system size set'
-    this->thermostatActive  = false;
+    m_fileName          = fileName;
+    m_sampler           = new Sampler;
+    m_systemSize        = vec(-1,-1,-1); // Used as flag for 'no system size set'
+    m_thermostatActive  = false;
 }
 
 void System::setTimeStep(double dt) {
-    this->dt = dt;
+    m_dt = dt;
 }
 
 void System::setIntegrator(Integrator* integrator) {
-    this->integrator = integrator;
-    this->dt = integrator->getTimeStep();
+    m_integrator = integrator;
+    m_dt = integrator->getTimeStep();
 }
 
 void System::setPotential(Potential* potential) {
-    this->potential = potential;
-    this->sampler->setPotential(potential);
+    m_potential = potential;
+    m_sampler->setPotential(potential);
 }
 
 void System::setInitialCondition(InitialCondition* initialCondition) {
-    this->initialCondition = initialCondition;
+    m_initialCondition = initialCondition;
 }
 
 void System::setPeriodicBoundaryConditions(vec systemSize) {
-    this->periodicBoundaryConditions = true;
-    this->systemSize                 = systemSize;
+    m_periodicBoundaryConditions = true;
+    m_systemSize                 = systemSize;
 }
 
 void System::setPeriodicBoundaryConditions(bool periodicBoundaryConditions) {
-    this->periodicBoundaryConditions = periodicBoundaryConditions;
+    m_periodicBoundaryConditions = periodicBoundaryConditions;
 }
 
 void System::setThermostat(Thermostat* thermostat) {
-    this->thermostat = thermostat;
-    this->thermostatActive = true;
+    m_thermostat = thermostat;
+    m_thermostatActive = true;
 }
 
 void System::setThermostatActive(bool thermostatActive) {
-    this->thermostatActive = thermostatActive;
+    m_thermostatActive = thermostatActive;
 }
 
 void System::setSystemSize(vec systemSize) {
-    this->systemSize = systemSize;
+    m_systemSize = systemSize;
 }
 
 void System::setupGUI() {
-    this->skip = 25;
-    this->mainWindow = new MainWindow;
-
+    m_skip = 25;
+    m_mainWindow = new MainWindow;
 }
 
 void System::setupSystem() {
-    this->initialCondition->setupInitialCondition();
-    this->atoms = this->initialCondition->getAtoms();
-    this->n = initialCondition->getN();
-    this->sampler->setupSampler(this->atoms, this->n);
-    this->integrator->setPotential(this->potential);
-    this->fileOutput = new FileOutput(this->fileName);
+    m_initialCondition->setupInitialCondition();
+    m_atoms = m_initialCondition->getAtoms();
+    m_n     = m_initialCondition->getN();
+    m_sampler->setupSampler(m_atoms, m_n);
+    m_integrator->setPotential(m_potential);
+    m_fileOutput = new FileOutput(m_fileName);
 }
 
 void System::integrate(int Nt) {
-    this->integrate(Nt, true);
+    integrate(Nt, true);
 }
 
 
 void System::integrate(int Nt, bool plotting) {    
-    this->setupSystem();
+    if (m_integrating == false) {
+        setupSystem();
+        m_integrating = true;
+    }
 
-    if (this->systemSize[0] == -1 &&
-        this->systemSize[1] == -1 &&
-        this->systemSize[2] == -1) {
+    if (m_systemSize[0] == -1 &&
+        m_systemSize[1] == -1 &&
+        m_systemSize[2] == -1) {
         cout << endl << "### WARNING ###: No system size set. Using default value (1,1,1)." << endl << endl;
-        this->systemSize = vec(1);
+        m_systemSize = vec(1);
     }
-    // Set up the real time plot if plotting is enabled.
-    this->plotting = plotting;
-    if (this->plotting) {
-        this->setupGUI();
-        //this->mainWindow->setup(Nt);
-        this->mainWindow->show();
+    m_plotting = plotting;
+    if (m_plotting) {
+        setupGUI();
+        m_mainWindow->show();
     }
-    this->Nt       = Nt;
-    this->sampler->setNtDt(Nt,this->dt);
+    m_Nt       = Nt;
+    m_sampler->setNtDt(Nt,m_dt);
 
     for (int t=0; t < Nt; t++) {
-        this->integrator->advance(this->atoms, this->n);
+        m_fileOutput->saveState(m_atoms, m_n);
+        m_sampler->sample(t);
 
-        if (this->periodicBoundaryConditions) {
-            this->applyPeriodicBoundaryConditions();
+        m_integrator->advance(m_atoms, m_n);
+
+        if (m_periodicBoundaryConditions) {
+            applyPeriodicBoundaryConditions();
         }
-        if (this->thermostatActive) {
-            double instantaneousTemperature = this->sampler->getInstantanousTemperature()[t];
-            this->thermostat->adjustVelocities(this->atoms, this->n, instantaneousTemperature);
+        if (m_thermostatActive) {
+            double instantaneousTemperature = m_sampler->getInstantanousTemperature()[t];
+            m_thermostat->adjustVelocities(m_atoms, m_n, instantaneousTemperature);
         }
 
-        this->fileOutput->saveState(this->atoms, this->n);
-        this->sampler->sample(t);
-        this->printProgress(t);
+
+        printProgress(t);
     }
-    this->printProgress(Nt);
+    printProgress(Nt);
 
-    if (this->plotting) {
-        this->plot();
+    if (m_plotting) {
+        plot();
     }
 }
 
@@ -120,18 +122,18 @@ void System::dumpInfoToTerminal() {
     cout << " ┌──────────────────────────────────────────────────────┐ " << endl;
     cout << " │                Starting integration                  │ " << endl;
     cout << " └──┬───────────────────────────────────────────────────┘ " << endl;
-    cout << "    │  Initial condition type: " << this->initialCondition->getName() << endl;
-    cout << "    │  Integrator in use:      " << this->integrator->getName()       << endl;
-    cout << "    │  Potential in use:       " << this->potential->getName()        << endl;
-    cout << "    │  Output file name:       " << this->fileName                    << endl;
+    cout << "    │  Initial condition type: " << m_initialCondition->getName() << endl;
+    cout << "    │  Integrator in use:      " << m_integrator->getName()       << endl;
+    cout << "    │  Potential in use:       " << m_potential->getName()        << endl;
+    cout << "    │  Output file name:       " << m_fileName                    << endl;
     cout << "    ├─────────────────────────────────────────────────┐ " << endl;
     cout << "    │ Parameters                                      │ " << endl;
     cout << "    ├─────────────────────────────────────────────────┘ " << endl;
-    cout << "    │  Number of atoms:        " << this->n             << endl;
-    cout << "    │  Time step:              " << this->dt            << endl;
-    cout << "    │  Number of time steps:   " << this->Nt            << endl;
-    cout << "    │  Total time:             " << this->Nt*this->dt   << endl;
-    cout << "    │  System size (cube):     " << this->systemSize    << endl;
+    cout << "    │  Number of atoms:        " << m_n             << endl;
+    cout << "    │  Time step:              " << m_dt            << endl;
+    cout << "    │  Number of time steps:   " << m_Nt            << endl;
+    cout << "    │  Total time:             " << m_Nt*m_dt       << endl;
+    cout << "    │  System size (cube):     " << m_systemSize    << endl;
     cout << "    ├─────────────────────────────────────────────────┐ " << endl;
     cout << "    │ Progress                                        │ " << endl;
     cout << "    └─────────────────────────────────────────────────┘ " << endl;
@@ -139,27 +141,30 @@ void System::dumpInfoToTerminal() {
 
 void System::printProgress(int t) {
     if (t==0) {
-        this->startTime = getRealTime();
-        this->oldTime   = this->startTime;
-        this->lastTimeStepTime = 0;
-        this->dumpInfoToTerminal();
+        m_startTime = getRealTime();
+        m_currentTime = m_startTime;
+        m_oldTime   = m_startTime;
+        m_lastTimeStepTime = 0;
+        dumpInfoToTerminal();
     }
-    int k = 200;
-    if (t % (Nt/k) == 0) {
-        this->oldTime       = this->currentTime;
-        this->currentTime   = getRealTime();
-        double progress     = ((double) t) / this->Nt;
-        double elapsedTime  = this->currentTime - this->startTime;
+    double k = 200;
+    if (t % ((int) std::round(m_Nt/k)) == 0) {
+        m_oldTime       = m_currentTime;
+        m_currentTime   = getRealTime();
+        double progress     = ((double) t) / m_Nt;
+        double elapsedTime  = m_currentTime - m_startTime;
         cout << "                                                                             \r";
-        printf("\r      %5.1f %s  Elapsed time: %5.1f s  Estimated tot. time: %5.1f s \r",
+        printf("\r      %5.1f %s : %5.1f s (%5.1f s) - E = %5.1f  T = %5.1f \r",
                progress*100, "%",
                elapsedTime,
-               elapsedTime+(this->currentTime-this->oldTime+this->lastTimeStepTime)*(1-progress)*k/2.0);
+               elapsedTime+(m_currentTime-m_oldTime+m_lastTimeStepTime)*(1-progress)*k/2.0,
+               m_sampler->getEnergies()[t],
+               m_sampler->getInstantanousTemperature()[t]);
         fflush(stdout);
-        this->lastTimeStepTime = this->currentTime-this->oldTime;
+        m_lastTimeStepTime = m_currentTime-m_oldTime;
     }
-    if (t == this->Nt) {
-        double elapsedTime = this->currentTime - this->startTime;
+    if (t == m_Nt) {
+        double elapsedTime = m_currentTime - m_startTime;
         if (elapsedTime < 0) {
             elapsedTime = 0;
         }
@@ -169,32 +174,32 @@ void System::printProgress(int t) {
 }
 
 void System::plot() {
-    this->mainWindow->plot(this->n, this->Nt, this->sampler);
-    this->mainWindow->show();
+    m_mainWindow->plot(m_n, m_Nt, m_sampler);
+    m_mainWindow->show();
 }
 
 
 
 void System::applyPeriodicBoundaryConditions() {
-    for (int i=0; i < this->n; i++) {
+    for (int i=0; i < m_n; i++) {
         vec pos = vec();
         vec posBefore = vec();
-        posBefore.set(this->atoms[i].getPosition());
-        pos.set(this->atoms[i].getPosition());
+        posBefore.set(m_atoms[i].getPosition());
+        pos.set(m_atoms[i].getPosition());
 
         bool changed = false;
 
         for (int j=0; j < 3; j++) {
-            if (pos[j] > this->systemSize[j]) {
+            if (pos[j] > m_systemSize[j]) {
                 changed = true;
-                pos.set(pos[j] - this->systemSize[j], j);
+                pos.set(pos[j] - m_systemSize[j], j);
             } else if (pos[j] < 0) {
                 changed = true;
-                pos.set(this->systemSize[j]+pos[j], j);
+                pos.set(m_systemSize[j]+pos[j], j);
             }
         }
         if (changed) {
-            this->atoms[i].setPosition(pos);
+            m_atoms[i].setPosition(pos);
         }
     }
 }
@@ -204,22 +209,22 @@ void System::applyPeriodicBoundaryConditions() {
 
 
 System::FileOutput::FileOutput(char* fileName) {
-    this->outFile.open(fileName, std::ios::out);
+    m_outFile.open(fileName, std::ios::out);
 }
 
 System::FileOutput::~FileOutput() {
-    if (this->outFile.is_open()) {
-        this->outFile.close();
+    if (m_outFile.is_open()) {
+        m_outFile.close();
     }
 }
 
 void System::FileOutput::saveState(Atom* atoms, int n) {
-    if (true) {//(this->outFile.is_open()) {
-        this->outFile << n << endl;
-        this->outFile << "Comment line" << endl;
+    if (true) {//(m_outFile.is_open()) {
+        m_outFile << n << endl;
+        m_outFile << "Comment line" << endl;
 
         for (int i = 0; i < n; i++) {
-            this->outFile   << atoms[i].getName()        << " "
+            m_outFile       << atoms[i].getName()        << " "
                             << atoms[i].getPosition()[0] << " "
                             << atoms[i].getPosition()[1] << " "
                             << atoms[i].getPosition()[2] << " "
