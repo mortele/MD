@@ -113,21 +113,21 @@ System*Examples::lennardJonesBerendsen(int argc, char** argv) {
     system->setIntegrator                (new VelocityVerlet(dt, system));
     system->setPotential                 (new LennardJones(1.0, 3.405, boxSize));
     system->setInitialCondition          (new FCC(nUnitCells, b, T));
-    system->setPeriodicBoundaryConditions(false);
+    system->setPeriodicBoundaryConditions(true);
     system->setThermostat                (new BerendsenThermostat(TTarget, tau, dt));
     system->setSystemSize                (boxSize);
 
     // Thermalize.
-    system->setThermostatActive(false);
-    system->integrate(100, false);
+    //system->setThermostatActive(false);
+    //system->integrate(100, false);
 
     // Apply thermostat and integrate further.
-    system->setThermostatActive(true);
-    system->integrate(1000, false);
+    //system->setThermostatActive(false);
+    //system->integrate(100, false);
 
     // Allow thermalization in the new state.
     system->setThermostatActive(false);
-    system->integrate(1000, false);
+    system->integrate(200, false);
 
     return system;
 }

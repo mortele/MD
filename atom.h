@@ -9,6 +9,7 @@ public:
     Atom(std::string name, double mass);
 
     void setPosition(std::vector<double>  position);
+    void setPosition(double x, int index);
     void setVelocity(std::vector<double>  velocity);
     void setForce   (std::vector<double>  force);
     void addForce   (std::vector<double>  dforce);

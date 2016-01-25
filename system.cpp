@@ -107,8 +107,6 @@ void System::integrate(int Nt, bool plotting) {
             double instantaneousTemperature = m_sampler->getInstantanousTemperature()[t];
             m_thermostat->adjustVelocities(m_atoms, m_n, instantaneousTemperature);
         }
-
-
         printProgress(t);
     }
     printProgress(Nt);
@@ -149,16 +147,20 @@ void System::printProgress(int t) {
         m_oldTime   = m_startTime;
         m_lastTimeStepTime = 0;
         dumpInfoToTerminal();
+        if (m_Nt < 100) {
+            m_skip = 1;
+        } else {
+            m_skip = 5;
+        }
     }
-    double k = 200;
-    if ((t % ((int) std::round(m_Nt/k)) == 0) || m_Nt <= k) {
+    if (t % m_skip == 0) {
         m_oldTime       = m_currentTime;
         m_currentTime   = getRealTime();
         double progress     = ((double) t) / m_Nt;
         double elapsedTime  = m_currentTime - m_startTime;
         double estimatedTime = elapsedTime+
                                (m_currentTime-m_oldTime+m_lastTimeStepTime)*
-                               (1-progress)*k/2.0;
+                               (1-progress)*m_skip/2.0;
         double minutes = 0;
         if (estimatedTime > 200) {
             minutes = std::round(estimatedTime/60.0);
@@ -207,15 +209,18 @@ void System::applyPeriodicBoundaryConditions() {
 
             if (position.at(k) > m_systemSize.at(k)) {
                 changed = true;
-                position.at(k) = position.at(k) - m_systemSize.at(k);
+                //m_atoms[i].getPosition().at(k) = position.at(k) - m_systemSize.at(k);
+                m_atoms[i].setPosition(position.at(k) - m_systemSize.at(k), k);
             } else if (position.at(k) < 0) {
                 changed = true;
-                position.at(k) = position.at(k) + m_systemSize.at(k);
+                //m_atoms[i].getPosition().at(k) = position.at(k) + m_systemSize.at(k);
+                m_atoms[i].setPosition(position.at(k) + m_systemSize.at(k), k);
+                cout << i << " hei" << endl;
             }
 
-            if (changed) {
+            /*if (changed) {
                 m_atoms[i].setPosition(position);
-            }
+            }*/
         }
     }
 

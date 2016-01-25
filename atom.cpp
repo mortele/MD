@@ -19,6 +19,10 @@ void Atom::setPosition(std::vector<double>  position) {
     }
 }
 
+void Atom::setPosition(double x, int index) {
+    this->position.at(index) = x;
+}
+
 void Atom::setVelocity(std::vector<double>  velocity) {
     //this->velocity = velocity;
     for (int k=0; k<3; k++) {
