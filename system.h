@@ -35,6 +35,7 @@ public:
     void applyPeriodicBoundaryConditions();
     void dumpInfoToTerminal();
     void printProgress(int);
+    int  getN()                             { return m_n; }
     bool getPlotting()                      { return m_plotting; }
     bool getPeriodicBoundaryConditions()    { return m_periodicBoundaryConditions; }
     std::vector<Atom*>  getAtoms()          { return m_atoms; }

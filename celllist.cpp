@@ -14,6 +14,16 @@ void CellList::initializeCellLists() {
                    m_numberOfCellsInEachDirection);
 }
 
+void CellList::computeCellLists(std::vector<Atom*> atoms, int n) {
+    for (int k=0; k<m_cells.size(); k++) {
+        m_cells.at(k).clear();
+    }
+    for (int i=0; i<m_system->getN(); i++) {
+        int index = this->computeCellNumber(atoms.at(i)->getPosition());
+        m_cells.at(index).push_back(atoms.at(i));
+    }
+}
+
 int CellList::computeCellNumber(int x, int y, int z) {
     return  x*m_numberOfCellsInEachDirection*m_numberOfCellsInEachDirection +
             y*m_numberOfCellsInEachDirection +
@@ -24,9 +34,5 @@ int CellList::computeCellNumber(std::vector<double> position) {
     return computeCellNumber(position.at(0) / m_systemSize.at(0) * m_numberOfCellsInEachDirection,
                              position.at(1) / m_systemSize.at(1) * m_numberOfCellsInEachDirection,
                              position.at(2) / m_systemSize.at(2) * m_numberOfCellsInEachDirection);
-
-    return ( (cx+m_numberOfCellsX) % m_numberOfCellsX)*m_numberOfCellsY*m_numberOfCellsZ +
-            ( (cy+m_numberOfCellsY) % m_numberOfCellsY)*m_numberOfCellsZ +
-            ( (cz+m_numberOfCellsZ) % m_numberOfCellsZ);
 }
 

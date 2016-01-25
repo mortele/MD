@@ -5,6 +5,7 @@ class CellList {
 public:
     CellList(class System* system, double rCut);
     void initializeCellLists();
+    void computeCellLists(std::vector<class Atom*> atoms, int n);
     int computeCellNumber(int x, int y, int z);
     int computeCellNumber(std::vector<double> position);
     int getNumberOfCellsInEachDirection() { return m_numberOfCellsInEachDirection; }
