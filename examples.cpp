@@ -97,9 +97,9 @@ System* Examples::lennardJonesFCC(int argc, char** argv) {
 }*/
 
 System*Examples::lennardJonesBerendsen(int argc, char** argv) {
-    int     nUnitCells = 2;                 // Number of unit cells in each dimension.
+    int     nUnitCells = 4;                 // Number of unit cells in each dimension.
     int     n = 4*std::pow(nUnitCells,3);   // Number of atoms.
-    double  T           = 9.0;              // Temperature, in units of 119.8 K.
+    double  T           = 1.0;              // Temperature, in units of 119.8 K.
     double  TTarget     = 0.5;              // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
     double  tau         = 10.0;             // Relaxation time used by the thermostat, in units of 119.8 K.
     double  b           = 5.26;             // Lattice constant, in units of 1.0 Å.
@@ -113,21 +113,21 @@ System*Examples::lennardJonesBerendsen(int argc, char** argv) {
     system->setIntegrator                (new VelocityVerlet(dt, system));
     system->setPotential                 (new LennardJones(1.0, 3.405, boxSize));
     system->setInitialCondition          (new FCC(nUnitCells, b, T));
-    system->setPeriodicBoundaryConditions(true);
+    system->setPeriodicBoundaryConditions(false);
     system->setThermostat                (new BerendsenThermostat(TTarget, tau, dt));
     system->setSystemSize                (boxSize);
 
     // Thermalize.
     system->setThermostatActive(false);
-    system->integrate(300, false);
+    system->integrate(10000, false);
 
     // Apply thermostat and integrate further.
     system->setThermostatActive(true);
-    system->integrate(300, false);
+    system->integrate(1000, false);
 
     // Allow thermalization in the new state.
     system->setThermostatActive(false);
-    system->integrate(300, false);
+    system->integrate(1000, false);
 
     return system;
 }

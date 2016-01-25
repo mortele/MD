@@ -156,11 +156,24 @@ void System::printProgress(int t) {
         m_currentTime   = getRealTime();
         double progress     = ((double) t) / m_Nt;
         double elapsedTime  = m_currentTime - m_startTime;
+        double estimatedTime = elapsedTime+
+                               (m_currentTime-m_oldTime+m_lastTimeStepTime)*
+                               (1-progress)*k/2.0;
+        double minutes = 0;
+        if (estimatedTime > 200) {
+            minutes = std::round(estimatedTime/60.0);
+        }
         cout << "                                                                             \r";
-        printf("\r      %5.1f %s : %5.1f s (%5.1f s) - E = %5.1f  T = %5.1f \r",
+        printf("\r %5.1f %s : %5.1f s ",
                progress*100, "%",
-               elapsedTime,
-               elapsedTime+(m_currentTime-m_oldTime+m_lastTimeStepTime)*(1-progress)*k/2.0,
+               elapsedTime);
+
+        if (estimatedTime > 200) {
+            printf("(~%.0f min) ", minutes);
+        } else {
+            printf("(%5.1f s) ", estimatedTime);
+        }
+        printf("E = %5.1f  T = %5.1f \r",
                m_sampler->getEnergies()[t],
                m_sampler->getInstantanousTemperature()[t]);
         fflush(stdout);
