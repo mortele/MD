@@ -45,7 +45,8 @@ void FCC::setupInitialCondition() {
     }
 
     for (int i=0; i<this->n; i++) {
-        double m = atoms[i].getMass();
+        double m = 39.948;          // Mass of Argon in atomic units.
+        atoms[i].setMass(m);
         atoms[i].setVelocity(vec(Random::nextGaussian(0, std::sqrt(this->temperature / m)),
                                  Random::nextGaussian(0, std::sqrt(this->temperature / m)),
                                  Random::nextGaussian(0, std::sqrt(this->temperature / m))));

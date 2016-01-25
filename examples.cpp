@@ -97,7 +97,7 @@ System* Examples::lennardJonesFCC(int argc, char** argv) {
 }
 
 System*Examples::lennardJonesBerendsen(int argc, char** argv) {
-    int     nUnitCells = 5;                 // Number of unit cells in each dimension.
+    int     nUnitCells = 2;                 // Number of unit cells in each dimension.
     int     n = 4*std::pow(nUnitCells,3);   // Number of atoms.
     double  T           = 9.0;              // Temperature, in units of 119.8 K.
     double  TTarget     = 0.5;              // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
@@ -117,15 +117,15 @@ System*Examples::lennardJonesBerendsen(int argc, char** argv) {
 
     // Thermalize.
     system->setThermostatActive(false);
-    system->integrate(1000, false);
+    system->integrate(300, false);
 
     // Apply thermostat and integrate further.
     system->setThermostatActive(true);
-    system->integrate(10000, false);
+    system->integrate(300, false);
 
     // Allow thermalization in the new state.
     system->setThermostatActive(false);
-    system->integrate(2000, false);
+    system->integrate(300, false);
 
     return system;
 }

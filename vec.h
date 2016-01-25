@@ -30,7 +30,7 @@ public:
     static vec computeLength(vec x, vec y, vec systemSize);
 
 private:
-    double* data;
+    double* data = nullptr;
 
     double* getData();
 
