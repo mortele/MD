@@ -38,9 +38,6 @@ void RandomSpherical::setupInitialCondition() {
         this->atoms[i].setMass(mass);
         this->atoms[i].setPosition(std::vector<double>{x,y,z});
         this->atoms[i].setVelocity(std::vector<double>{0,0,0});
-
-        /*this->atoms[i].setPosition(vec(x,y,z));
-        this->atoms[i].setVelocity(vec());*/
     }
 
     InitialCondition::setupDone = true;

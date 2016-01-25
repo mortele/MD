@@ -6,7 +6,7 @@ class NoPotential : public Potential {
 public:
     NoPotential() {}
     void    computeForces(Atom* atoms, int n) {}
-    double  computePotential(Atom* atoms, int n) {}
+    double  computePotential(Atom* atoms, int n) { return 0; }
     std::string getName() { return "None"; }
 };
 

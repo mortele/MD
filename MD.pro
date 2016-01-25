@@ -24,7 +24,6 @@ SOURCES += main.cpp \
     Potentials/nopotential.cpp \
     InitialConditions/uniform.cpp \
     examples.cpp \
-    InitialConditions/staticfcc.cpp \
     InitialConditions/fcc.cpp \
     Thermostats/thermostat.cpp \
     Thermostats/berendsenthermostat.cpp
@@ -50,7 +49,6 @@ HEADERS += \
     Potentials/nopotential.h \
     InitialConditions/uniform.h \
     examples.h \
-    InitialConditions/staticfcc.h \
     InitialConditions/fcc.h \
     Thermostats/thermostat.h \
     Thermostats/berendsenthermostat.h

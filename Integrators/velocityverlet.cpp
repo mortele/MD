@@ -1,7 +1,11 @@
 #include "velocityverlet.h"
 #include <vector>
+#include <iostream>
 #include "../Potentials/potential.h"
 #include "../system.h"
+
+using std::cout;
+using std::endl;
 
 VelocityVerlet::VelocityVerlet(double dt, System* system) : Integrator(dt) {
     this->firstStep = true;
@@ -20,19 +24,15 @@ void VelocityVerlet::advance(Atom* atoms, int n) {
     std::vector<double> force    {0,0,0};
 
     for (int i=0; i < n; i++) {
+
         velocity = atoms[i].getVelocity();
         position = atoms[i].getPosition();
-        force = atoms[i].getForce();
+        force    = atoms[i].getForce();
 
         for (int k=0; k<3; k++) {
-            velocity.at(k) += this->dtHalf/atoms[i].getMass() * force.at(k) * velocity.at(k);
-            position.at(k) += this->dt * velocity.at(k);
+            atoms[i].setVelocity(velocity.at(k) + this->dtHalf/atoms[i].getMass() * force.at(k) * velocity.at(k), k);
+            atoms[i].setPosition(position.at(k) + this->dt * velocity.at(k), k);
         }
-        atoms[i].setVelocity(velocity);
-        atoms[i].setPosition(position);
-
-        /*atoms[i].setVelocity(atoms[i].getVelocity() + (this->dtHalf/atoms[i].getMass()) * atoms[i].getForce());
-        atoms[i].setPosition(atoms[i].getPosition() + this->dt                          * atoms[i].getVelocity());*/
     }
     if (this->periodicBoundaryConditions) {
         this->system->applyPeriodicBoundaryConditions();
@@ -40,14 +40,11 @@ void VelocityVerlet::advance(Atom* atoms, int n) {
     this->potential->computeForces(atoms, n);
     for (int i=0; i < n; i++) {
         velocity = atoms[i].getVelocity();
-        force = atoms[i].getForce();
+        force    = atoms[i].getForce();
 
         for (int k=0; k<3; k++) {
-            velocity.at(k) += this->dtHalf/atoms[i].getMass() * force.at(k);
+            atoms[i].setVelocity(velocity.at(k) + this->dtHalf/atoms[i].getMass() * force.at(k), k);
         }
-        atoms[i].setVelocity(velocity);
-
-        //atoms[i].setVelocity(atoms[i].getVelocity() + (this->dtHalf/atoms[i].getMass()) * atoms[i].getForce());
     }
 }
 

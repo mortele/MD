@@ -22,14 +22,9 @@ void EulerCromer::advance(Atom* atoms, int n) {
         force    = atoms[i].getForce();
 
         for (int k=0; k<3; k++) {
-            velocity.at(k) += this->dt/mass * force.at(k);
-            position.at(k) += this->dt      * velocity.at(k);
+            atoms[i].setVelocity(velocity.at(k) + this->dt/mass * force.at(k),    k);
+            atoms[i].setPosition(position.at(k) + this->dt      * velocity.at(k), k);
         }
-        atoms[i].setVelocity(velocity);
-        atoms[i].setPosition(position);
-
-        /*atoms[i].setVelocity(atoms[i].getVelocity()+(dt/mass)*atoms[i].getForce());
-        atoms[i].setPosition(atoms[i].getPosition()+dt*atoms[i].getVelocity());*/
     }
 }
 

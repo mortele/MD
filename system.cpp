@@ -209,42 +209,13 @@ void System::applyPeriodicBoundaryConditions() {
 
             if (position.at(k) > m_systemSize.at(k)) {
                 changed = true;
-                //m_atoms[i].getPosition().at(k) = position.at(k) - m_systemSize.at(k);
                 m_atoms[i].setPosition(position.at(k) - m_systemSize.at(k), k);
             } else if (position.at(k) < 0) {
                 changed = true;
-                //m_atoms[i].getPosition().at(k) = position.at(k) + m_systemSize.at(k);
                 m_atoms[i].setPosition(position.at(k) + m_systemSize.at(k), k);
-                cout << i << " hei" << endl;
             }
-
-            /*if (changed) {
-                m_atoms[i].setPosition(position);
-            }*/
         }
     }
-
-
-        /*vec pos = vec();
-        vec posBefore = vec();
-        posBefore.set(m_atoms[i].getPosition());
-        pos.set(m_atoms[i].getPosition());
-
-        bool changed = false;
-
-        for (int j=0; j < 3; j++) {
-            if (pos[j] > m_systemSize[j]) {
-                changed = true;
-                pos.set(pos[j] - m_systemSize[j], j);
-            } else if (pos[j] < 0) {
-                changed = true;
-                pos.set(m_systemSize[j]+pos[j], j);
-            }
-        }
-        if (changed) {
-            m_atoms[i].setPosition(pos);
-        }
-    }*/
 }
 
 

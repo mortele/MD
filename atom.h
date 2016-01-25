@@ -11,8 +11,11 @@ public:
     void setPosition(std::vector<double>  position);
     void setPosition(double x, int index);
     void setVelocity(std::vector<double>  velocity);
+    void setVelocity(double v, int index);
     void setForce   (std::vector<double>  force);
+    void setForce   (double f, int index);
     void addForce   (std::vector<double>  dforce);
+    void addForce   (double f, int index);
     void setMass    (double mass);
     void setName    (std::string name);
 
