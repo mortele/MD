@@ -151,7 +151,7 @@ void System::printProgress(int t) {
         dumpInfoToTerminal();
     }
     double k = 200;
-    if (t % ((int) std::round(m_Nt/k)) == 0) {
+    if ((t % ((int) std::round(m_Nt/k)) == 0) || m_Nt <= k) {
         m_oldTime       = m_currentTime;
         m_currentTime   = getRealTime();
         double progress     = ((double) t) / m_Nt;

@@ -119,7 +119,7 @@ System*Examples::lennardJonesBerendsen(int argc, char** argv) {
 
     // Thermalize.
     system->setThermostatActive(false);
-    system->integrate(10000, false);
+    system->integrate(100, false);
 
     // Apply thermostat and integrate further.
     system->setThermostatActive(true);
