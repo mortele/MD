@@ -39,9 +39,9 @@ void Sampler::setNtDt(int Nt, double dt) {
 double Sampler::sampleKineticEnergy() {
     double kineticEnergy = 0;
     for (int i=0; i < this->n; i++) {
-        kineticEnergy += 0.5 * atoms[i].getMass() *
-                         atoms[i].getVelocity().computeLengthSquared();
-        //cout << i << ": " << atoms[i].getVelocity() << endl;
+        std::vector<double> v = atoms[i].getVelocity();
+        double v2 = v.at(0)*v.at(0) + v.at(1)*v.at(1) + v.at(2)*v.at(2);
+        kineticEnergy += 0.5 * atoms[i].getMass() * v2;
     }
     return kineticEnergy;
 }

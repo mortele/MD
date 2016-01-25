@@ -12,7 +12,8 @@ public:
     std::string getName() { return "Gravitational"; }
 
 private:
-    double G;
-    double eps;
+    double G = 0;
+    double eps = 0;
+    double potentialEnergy = 0;
 };
 

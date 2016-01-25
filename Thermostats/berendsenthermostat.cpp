@@ -1,5 +1,6 @@
 #include "berendsenthermostat.h"
 #include <cmath>
+#include <vector>
 #include <iostream>
 #include "../atom.h"
 #include "../vec.h"
@@ -19,9 +20,15 @@ BerendsenThermostat::BerendsenThermostat(double targetTemperature,
 void BerendsenThermostat::adjustVelocities(Atom* atoms,
                                            int n,
                                            double instantaneousTemperature) {
+    std::vector<double> velocity;
+
     for (int i=0; i < n; i++) {
 
         double gamma = std::sqrt(1+this->dtOverTau*(this->targetTemperature/instantaneousTemperature-1));
-        atoms[i].setVelocity(gamma*atoms[i].getVelocity());
+        velocity = atoms[i].getVelocity();
+        for (int k=0; k<3; k++) {
+            velocity.at(k) *= gamma;
+        }
+        atoms[i].setVelocity(velocity);
     }
 }

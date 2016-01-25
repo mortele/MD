@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <fstream>
 #include <string>
+#include <vector>
 #include "QApplication"
 #include "Integrators/integrator.h"
 #include "Potentials/potential.h"
@@ -25,11 +26,11 @@ public:
     void setIntegrator(Integrator*);
     void setPotential(Potential*);
     void setInitialCondition(InitialCondition*);
-    void setPeriodicBoundaryConditions(vec);
+    void setPeriodicBoundaryConditions(std::vector<double>);
     void setPeriodicBoundaryConditions(bool);
     void setThermostat(Thermostat*);
     void setThermostatActive(bool);
-    void setSystemSize(vec);
+    void setSystemSize(std::vector<double>);
     void setupGUI();
     void setupSystem();
     void integrate(int Nt);
@@ -57,27 +58,27 @@ private:
 
     void plot();
 
-    int               m_skip                          = 0;
-    int               m_n                             = 0;
-    int               m_Nt                            = 0;
-    double            m_dt                            = 0;
-    double            m_oldTime                       = 0;
-    double            m_currentTime                   = 0;
-    double            m_startTime                     = 0;
-    double            m_lastTimeStepTime              = 0;
-    char*             m_fileName                      = nullptr;
-    bool              m_plotting                      = false;
-    bool              m_periodicBoundaryConditions    = false;
-    bool              m_thermostatActive              = false;
-    bool              m_integrating                   = false;
-    vec               m_systemSize                    = vec();
-    Integrator*       m_integrator                    = nullptr;
-    Potential*        m_potential                     = nullptr;
-    InitialCondition* m_initialCondition              = nullptr;
-    Atom*             m_atoms                         = nullptr;
-    MainWindow*       m_mainWindow                    = nullptr;
-    Sampler*          m_sampler                       = nullptr;
-    FileOutput*       m_fileOutput                    = nullptr;
-    Thermostat*       m_thermostat                    = nullptr;
+    int                 m_skip                          = 0;
+    int                 m_n                             = 0;
+    int                 m_Nt                            = 0;
+    double              m_dt                            = 0;
+    double              m_oldTime                       = 0;
+    double              m_currentTime                   = 0;
+    double              m_startTime                     = 0;
+    double              m_lastTimeStepTime              = 0;
+    char*               m_fileName                      = nullptr;
+    bool                m_plotting                      = false;
+    bool                m_periodicBoundaryConditions    = false;
+    bool                m_thermostatActive              = false;
+    bool                m_integrating                   = false;
+    std::vector<double> m_systemSize                    = std::vector<double>(3);
+    Integrator*         m_integrator                    = nullptr;
+    Potential*          m_potential                     = nullptr;
+    InitialCondition*   m_initialCondition              = nullptr;
+    Atom*               m_atoms                         = nullptr;
+    MainWindow*         m_mainWindow                    = nullptr;
+    Sampler*            m_sampler                       = nullptr;
+    FileOutput*         m_fileOutput                    = nullptr;
+    Thermostat*         m_thermostat                    = nullptr;
 };
 

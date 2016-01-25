@@ -11,7 +11,7 @@ System::System(int argc, char** argv, char* fileName) :
 
     m_fileName          = fileName;
     m_sampler           = new Sampler;
-    m_systemSize        = vec(-1,-1,-1); // Used as flag for 'no system size set'
+    m_systemSize        = std::vector<double>{-1,-1,-1}; // Used as flag for 'no system size set'
     m_thermostatActive  = false;
 }
 
@@ -33,7 +33,7 @@ void System::setInitialCondition(InitialCondition* initialCondition) {
     m_initialCondition = initialCondition;
 }
 
-void System::setPeriodicBoundaryConditions(vec systemSize) {
+void System::setPeriodicBoundaryConditions(std::vector<double> systemSize) {
     m_periodicBoundaryConditions = true;
     m_systemSize                 = systemSize;
 }
@@ -51,7 +51,7 @@ void System::setThermostatActive(bool thermostatActive) {
     m_thermostatActive = thermostatActive;
 }
 
-void System::setSystemSize(vec systemSize) {
+void System::setSystemSize(std::vector<double> systemSize) {
     m_systemSize = systemSize;
 }
 
@@ -84,7 +84,7 @@ void System::integrate(int Nt, bool plotting) {
         m_systemSize[1] == -1 &&
         m_systemSize[2] == -1) {
         cout << endl << "### WARNING ###: No system size set. Using default value (1,1,1)." << endl << endl;
-        m_systemSize = vec(1);
+        m_systemSize = std::vector<double>{1,1,1};
     }
     m_plotting = plotting;
     if (m_plotting) {
@@ -119,6 +119,9 @@ void System::integrate(int Nt, bool plotting) {
 }
 
 void System::dumpInfoToTerminal() {
+    vec systemSizeVec = vec(m_systemSize.at(0),
+                            m_systemSize.at(1),
+                            m_systemSize.at(2));
     cout << " ┌──────────────────────────────────────────────────────┐ " << endl;
     cout << " │                Starting integration                  │ " << endl;
     cout << " └──┬───────────────────────────────────────────────────┘ " << endl;
@@ -133,7 +136,7 @@ void System::dumpInfoToTerminal() {
     cout << "    │  Time step:              " << m_dt            << endl;
     cout << "    │  Number of time steps:   " << m_Nt            << endl;
     cout << "    │  Total time:             " << m_Nt*m_dt       << endl;
-    cout << "    │  System size (cube):     " << m_systemSize    << endl;
+    cout << "    │  System size (cube):     " << systemSizeVec   << endl;
     cout << "    ├─────────────────────────────────────────────────┐ " << endl;
     cout << "    │ Progress                                        │ " << endl;
     cout << "    └─────────────────────────────────────────────────┘ " << endl;
@@ -181,8 +184,30 @@ void System::plot() {
 
 
 void System::applyPeriodicBoundaryConditions() {
+    std::vector<double> position{0,0,0};
+
     for (int i=0; i < m_n; i++) {
-        vec pos = vec();
+        bool changed = false;
+
+        for (int k=0; k<3; k++) {
+            position.at(k) = m_atoms[i].getPosition().at(k);
+
+            if (position.at(k) > m_systemSize.at(k)) {
+                changed = true;
+                position.at(k) = position.at(k) - m_systemSize.at(k);
+            } else if (position.at(k) < 0) {
+                changed = true;
+                position.at(k) = position.at(k) + m_systemSize.at(k);
+            }
+
+            if (changed) {
+                m_atoms[i].setPosition(position);
+            }
+        }
+    }
+
+
+        /*vec pos = vec();
         vec posBefore = vec();
         posBefore.set(m_atoms[i].getPosition());
         pos.set(m_atoms[i].getPosition());
@@ -201,7 +226,7 @@ void System::applyPeriodicBoundaryConditions() {
         if (changed) {
             m_atoms[i].setPosition(pos);
         }
-    }
+    }*/
 }
 
 

@@ -1,13 +1,14 @@
 #pragma once
 #include <cmath>
 #include <iostream>
+#include <vector>
 #include "potential.h"
 #include "../atom.h"
 #include "../vec.h"
 
 class LennardJones : public Potential {
 public:
-    LennardJones(double epsilon, double sigma, vec systemSize);
+    LennardJones(double epsilon, double sigma, std::vector<double> systemSize);
 
     void   computeForces(Atom* atoms, int n);
     double computePotential(Atom* atoms, int n);
@@ -19,6 +20,6 @@ private:
     double sigma6;
     double sigma12;
     double potentialEnergy;
-    vec    systemSize;
+    std::vector<double> systemSize;
 };
 

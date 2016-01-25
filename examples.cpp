@@ -26,7 +26,7 @@
 #include "Thermostats/thermostat.h"
 #include "Thermostats/berendsenthermostat.h"
 
-
+/*
 System* Examples::coldCollapseCluster(int argc, char** argv) {
     int     n   = 250;                              // Number of particles.
     double  dt  = 0.001;                            // Time step.
@@ -94,7 +94,7 @@ System* Examples::lennardJonesFCC(int argc, char** argv) {
     system->setSystemSize                (boxSize);
     system->integrate(1000, true);
     return system;
-}
+}*/
 
 System*Examples::lennardJonesBerendsen(int argc, char** argv) {
     int     nUnitCells = 2;                 // Number of unit cells in each dimension.
@@ -105,7 +105,9 @@ System*Examples::lennardJonesBerendsen(int argc, char** argv) {
     double  b           = 5.26;             // Lattice constant, in units of 1.0 Å.
     double  dt          = 0.01;             // Time step.
     double  sideLength  = nUnitCells*b;     // Size of box sides.
-    vec     boxSize     = vec(sideLength);  // Vector of box size.
+    std::vector<double> boxSize{sideLength, // Vector of box size.
+                                sideLength,
+                                sideLength};
 
     System* system = new System          (argc, argv, "../MD/movie.xyz");
     system->setIntegrator                (new VelocityVerlet(dt, system));
