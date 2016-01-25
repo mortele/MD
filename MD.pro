@@ -26,7 +26,8 @@ SOURCES += main.cpp \
     examples.cpp \
     InitialConditions/fcc.cpp \
     Thermostats/thermostat.cpp \
-    Thermostats/berendsenthermostat.cpp
+    Thermostats/berendsenthermostat.cpp \
+    celllist.cpp
 
 HEADERS += \
     atom.h \
@@ -51,7 +52,8 @@ HEADERS += \
     examples.h \
     InitialConditions/fcc.h \
     Thermostats/thermostat.h \
-    Thermostats/berendsenthermostat.h
+    Thermostats/berendsenthermostat.h \
+    celllist.h
 
 FORMS += \
     mainwindow.ui

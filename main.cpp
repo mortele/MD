@@ -9,6 +9,7 @@
 #include "vec.h"
 #include "random.h"
 #include "sampler.h"
+#include "celllist.h"
 #include "GUI/mainwindow.h"
 #include "Integrators/integrator.h"
 #include "Integrators/eulercromer.h"

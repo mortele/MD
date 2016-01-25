@@ -16,9 +16,6 @@
 #include "realtime.h"
 
 
-class Sampler;
-
-
 class System {
 public:
     System(int, char**, char*);
@@ -38,9 +35,10 @@ public:
     void applyPeriodicBoundaryConditions();
     void dumpInfoToTerminal();
     void printProgress(int);
-    bool getPlotting() { return m_plotting; }
-    bool getPeriodicBoundaryConditions() { return m_periodicBoundaryConditions; }
-    std::vector<Atom*> getAtoms() { return m_atoms; }
+    bool getPlotting()                      { return m_plotting; }
+    bool getPeriodicBoundaryConditions()    { return m_periodicBoundaryConditions; }
+    std::vector<Atom*>  getAtoms()          { return m_atoms; }
+    std::vector<double> getSystemSize()     { return m_systemSize; }
 
     QApplication m_app;
 
