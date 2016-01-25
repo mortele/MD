@@ -15,7 +15,7 @@ Gravitational::Gravitational(double G, double eps) {
 }
 
 
-void Gravitational::computeForces(Atom* atoms, int n) {
+void Gravitational::computeForces(std::vector<Atom*> atoms, int n) {
 
     Potential::setForcesToZero(atoms, n);
 
@@ -30,18 +30,18 @@ void Gravitational::computeForces(Atom* atoms, int n) {
             if (i!=j) {
                 r2 = 0;
                 for (int k=0; k < 3; k++) {
-                    dr.at(k) = atoms[i].getPosition().at(k) -
-                               atoms[j].getPosition().at(k);
+                    dr.at(k) = atoms.at(i)->getPosition().at(k) -
+                               atoms.at(j)->getPosition().at(k);
                     r2      += dr.at(k)*dr.at(k);
                 }
                 r = std::sqrt(r2);
 
-                f = -this->G * atoms[i].getMass() * atoms[j].getMass() /
+                f = -this->G * atoms.at(i)->getMass() * atoms.at(j)->getMass() /
                     (r2 + this->eps);
 
                 for (int k=0; k<3; k++) {
 
-                    atoms[i].setForce(atoms[i].getForce().at(k) + f * dr.at(k) / r, k);
+                    atoms.at(i)->addForce(f * dr.at(k) / r, k);
                     //atoms[j].setForce(atoms[j].getForce().at(k) - atoms[i].getForce().at(k), k);
                 }
 
@@ -51,7 +51,7 @@ void Gravitational::computeForces(Atom* atoms, int n) {
     }
 }
 
-double Gravitational::computePotential(Atom* atoms, int n) {
+double Gravitational::computePotential(std::vector<Atom*> atoms, int n) {
     return this->potentialEnergy / 2.0;
 }
 

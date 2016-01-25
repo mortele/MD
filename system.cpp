@@ -62,8 +62,8 @@ void System::setupGUI() {
 
 void System::setupSystem() {
     m_initialCondition->setupInitialCondition();
+    m_n = m_initialCondition->getN();
     m_atoms = m_initialCondition->getAtoms();
-    m_n     = m_initialCondition->getN();
     m_sampler->setupSampler(m_atoms, m_n);
     m_integrator->setPotential(m_potential);
     m_fileOutput = new FileOutput(m_fileName);
@@ -120,6 +120,11 @@ void System::dumpInfoToTerminal() {
     vec systemSizeVec = vec(m_systemSize.at(0),
                             m_systemSize.at(1),
                             m_systemSize.at(2));
+    m_totalMomentum = m_initialCondition->getTotalMomentum();
+    vec totalMomentum = vec(m_totalMomentum.at(0),
+                            m_totalMomentum.at(1),
+                            m_totalMomentum.at(2));
+
     cout << " ┌──────────────────────────────────────────────────────┐ " << endl;
     cout << " │                Starting integration                  │ " << endl;
     cout << " └──┬───────────────────────────────────────────────────┘ " << endl;
@@ -135,6 +140,7 @@ void System::dumpInfoToTerminal() {
     cout << "    │  Number of time steps:   " << m_Nt            << endl;
     cout << "    │  Total time:             " << m_Nt*m_dt       << endl;
     cout << "    │  System size (cube):     " << systemSizeVec   << endl;
+    cout << "    │  Total momentum removed: " << totalMomentum   << endl;
     cout << "    ├─────────────────────────────────────────────────┐ " << endl;
     cout << "    │ Progress                                        │ " << endl;
     cout << "    └─────────────────────────────────────────────────┘ " << endl;
@@ -160,7 +166,7 @@ void System::printProgress(int t) {
         double elapsedTime  = m_currentTime - m_startTime;
         double estimatedTime = elapsedTime+
                                (m_currentTime-m_oldTime+m_lastTimeStepTime)*
-                               (1-progress)*m_skip/2.0;
+                               (1-progress)*m_Nt/(2.0 * m_skip);
         double minutes = 0;
         if (estimatedTime > 200) {
             minutes = std::round(estimatedTime/60.0);
@@ -205,14 +211,14 @@ void System::applyPeriodicBoundaryConditions() {
         bool changed = false;
 
         for (int k=0; k<3; k++) {
-            position.at(k) = m_atoms[i].getPosition().at(k);
+            position.at(k) = m_atoms.at(i)->getPosition().at(k);
 
             if (position.at(k) > m_systemSize.at(k)) {
                 changed = true;
-                m_atoms[i].setPosition(position.at(k) - m_systemSize.at(k), k);
+                m_atoms.at(i)->setPosition(position.at(k) - m_systemSize.at(k), k);
             } else if (position.at(k) < 0) {
                 changed = true;
-                m_atoms[i].setPosition(position.at(k) + m_systemSize.at(k), k);
+                m_atoms.at(i)->setPosition(position.at(k) + m_systemSize.at(k), k);
             }
         }
     }
@@ -232,16 +238,16 @@ System::FileOutput::~FileOutput() {
     }
 }
 
-void System::FileOutput::saveState(Atom* atoms, int n) {
+void System::FileOutput::saveState(std::vector<Atom*> atoms, int n) {
     if (true) {//(m_outFile.is_open()) {
         m_outFile << n << endl;
         m_outFile << "Comment line" << endl;
 
         for (int i = 0; i < n; i++) {
-            m_outFile       << atoms[i].getName()        << " "
-                            << atoms[i].getPosition()[0] << " "
-                            << atoms[i].getPosition()[1] << " "
-                            << atoms[i].getPosition()[2] << " "
+            m_outFile       << atoms[i]->getName()        << " "
+                            << atoms[i]->getPosition()[0] << " "
+                            << atoms[i]->getPosition()[1] << " "
+                            << atoms[i]->getPosition()[2] << " "
                             << endl;
         }
     }

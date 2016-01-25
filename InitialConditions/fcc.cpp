@@ -21,7 +21,7 @@ FCC::FCC(int    numberOfUnitCells,
 }
 
 void FCC::setupInitialCondition() {
-    this->atoms = new Atom[this->n];
+    //this->atoms = new Atom[this->n];
     int counter = 0;
 
     for (int i=0; i<this->numberOfUnitCells; i++) {
@@ -43,10 +43,20 @@ void FCC::setupInitialCondition() {
                 atom3.at(0) += bHalf;
                 atom3.at(2) += bHalf;
 
-                this->atoms[counter+0].setPosition(atom0);
+                /*this->atoms[counter+0].setPosition(atom0);
                 this->atoms[counter+1].setPosition(atom1);
                 this->atoms[counter+2].setPosition(atom2);
-                this->atoms[counter+3].setPosition(atom3);
+                this->atoms[counter+3].setPosition(atom3);*/
+                this->atoms.push_back(new Atom());
+                this->atoms.push_back(new Atom());
+                this->atoms.push_back(new Atom());
+                this->atoms.push_back(new Atom());
+
+                this->atoms.at(counter+0)->setPosition(atom0);
+                this->atoms.at(counter+1)->setPosition(atom1);
+                this->atoms.at(counter+2)->setPosition(atom2);
+                this->atoms.at(counter+3)->setPosition(atom3);
+
                 counter += 4;
             }
         }
@@ -54,11 +64,14 @@ void FCC::setupInitialCondition() {
 
     for (int i=0; i<this->n; i++) {
         double m = 39.948;          // Mass of Argon in atomic units.
-        atoms[i].setMass(m);
+        atoms.at(i)->setMass(m);
 
         for (int k=0; k<3; k++) {
-            atoms[i].setVelocity(Random::nextGaussian(0, std::sqrt(this->temperature / m)), k);
+            atoms.at(i)->setVelocity(Random::nextGaussian(0, std::sqrt(this->temperature / m)), k);
         }
     }
+    this->removeLinearMomentum();
     InitialCondition::setupDone = true;
 }
+
+

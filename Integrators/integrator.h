@@ -2,11 +2,12 @@
 #include "../atom.h"
 #include "../Potentials/potential.h"
 #include <string>
+#include <vector>
 
 class Integrator {
 public:
     Integrator(double dt);
-    virtual void advance(Atom* atoms, int n) = 0;
+    virtual void advance(std::vector<Atom*> atoms, int n) = 0;
     void   setPotential(Potential* potential);
     double getTimeStep() { return this->dt; }
     double dt;

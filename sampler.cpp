@@ -7,7 +7,7 @@ Sampler::Sampler() {
 
 }
 
-void Sampler::setupSampler(Atom* atoms, int n) {
+void Sampler::setupSampler(std::vector<Atom*> atoms, int n) {
     this->atoms = atoms;
     this->n     = n;
 }
@@ -39,9 +39,9 @@ void Sampler::setNtDt(int Nt, double dt) {
 double Sampler::sampleKineticEnergy() {
     double kineticEnergy = 0;
     for (int i=0; i < this->n; i++) {
-        std::vector<double> v = atoms[i].getVelocity();
+        std::vector<double> v = atoms.at(i)->getVelocity();
         double v2 = v.at(0)*v.at(0) + v.at(1)*v.at(1) + v.at(2)*v.at(2);
-        kineticEnergy += 0.5 * atoms[i].getMass() * v2;
+        kineticEnergy += 0.5 * atoms.at(i)->getMass() * v2;
     }
     return kineticEnergy;
 }

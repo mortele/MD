@@ -25,6 +25,8 @@
 #include "Thermostats/thermostat.h"
 #include "Thermostats/berendsenthermostat.h"
 
+using std::cout;
+using std::endl;
 
 System* Examples::coldCollapseCluster(int argc, char** argv) {
     int     n   = 250;                              // Number of particles.
@@ -86,8 +88,8 @@ System* Examples::staticFCCLattice(int argc, char** argv) {
 }
 
 System* Examples::lennardJonesFCC(int argc, char** argv) {
-    int     nUnitCells = 4;                 // Number of unit cells in each dimension.
-    double  T = 0.2;                        // Temperature, in units of 119.8 K.
+    int     nUnitCells = 8;                 // Number of unit cells in each dimension.
+    double  T = 1.0;                        // Temperature, in units of 119.8 K.
     double  b = 5.26;                       // Lattice constant, in units of 1.0 Å.
     double  dt          = 0.01;             // Time step.
     double  sideLength  = nUnitCells*b;     // Size of box sides.
@@ -95,13 +97,14 @@ System* Examples::lennardJonesFCC(int argc, char** argv) {
                                 sideLength,
                                 sideLength};
 
+
     System* system = new System          (argc, argv, "../MD/movie.xyz");
     system->setIntegrator                (new VelocityVerlet(dt, system));
     system->setPotential                 (new LennardJones(1.0, 3.405, boxSize));
     system->setInitialCondition          (new FCC(nUnitCells, b, T));
     system->setPeriodicBoundaryConditions(true);
     system->setSystemSize                (boxSize);
-    system->integrate(1000, true);
+    system->integrate(1, false);
     return system;
 }
 

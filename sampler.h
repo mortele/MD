@@ -1,6 +1,7 @@
 #pragma once
 #include "Potentials/potential.h"
 #include <iostream>
+#include <vector>
 #include "vec.h"
 #include "atom.h"
 #include "system.h"
@@ -9,7 +10,7 @@
 class Sampler {
 public:
     Sampler();
-    void setupSampler(Atom*, int);
+    void setupSampler(std::vector<Atom*> atoms, int);
     void setPotential(Potential*);
     void setNtDt(int, double);
     void sample(int);
@@ -30,7 +31,7 @@ private:
     double*    kineticEnergies = nullptr;
     double*    time = nullptr;
     double*    instantanousTemperature = nullptr;
-    Atom*      atoms = nullptr;
+    std::vector<Atom*> atoms;
     Potential* potential = nullptr;
 };
 

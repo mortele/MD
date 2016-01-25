@@ -12,7 +12,7 @@ TwoBody::TwoBody(double e) {
 
 void TwoBody::setupInitialCondition() {
     InitialCondition::n = 2;
-    this->atoms = new Atom[InitialCondition::n];
+    //this->atoms = new Atom[InitialCondition::n];
 
     double earthMass = 0.5;
     std::vector<double> earthVelocity{0,2*std::acos(-1.0),0};
@@ -20,15 +20,17 @@ void TwoBody::setupInitialCondition() {
     std::vector<double> sunVelocity{0,-2*std::acos(-1.0)/earthMass,0};
     std::vector<double> sunPosition{0,0,0};
 
-    // Setup "earth."
-    atoms[1].setMass(earthMass);
-    atoms[1].setPosition(earthPosition);
-    atoms[1].setVelocity(earthVelocity);
-
     // Setup "sun."
-    atoms[0].setMass(1.0);
-    atoms[0].setPosition(sunPosition);
-    atoms[0].setVelocity(sunVelocity);
+    atoms.push_back(new Atom());
+    atoms.at(0)->setMass(1.0);
+    atoms.at(0)->setPosition(sunPosition);
+    atoms.at(0)->setVelocity(sunVelocity);
+
+    // Setup "earth."
+    atoms.push_back(new Atom());
+    atoms.at(1)->setMass(earthMass);
+    atoms.at(1)->setPosition(earthPosition);
+    atoms.at(1)->setVelocity(earthVelocity);
 
     InitialCondition::setupDone = true;
 }

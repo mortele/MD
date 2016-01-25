@@ -10,7 +10,7 @@ RandomSpherical::RandomSpherical(int n, double R0) {
 
 void RandomSpherical::setupInitialCondition() {
     InitialCondition::n = this->n;
-    this->atoms = new Atom[this->n];
+    //this->atoms = new Atom[this->n];
 
     using std::cos;
     using std::sin;
@@ -35,9 +35,13 @@ void RandomSpherical::setupInitialCondition() {
         y = r*sin(theta)*sin(phi)+this->R0;
         z = r*cos(theta)         +this->R0;
 
-        this->atoms[i].setMass(mass);
+        this->atoms.push_back(new Atom());
+        this->atoms.at(i)->setMass(mass);
+        this->atoms.at(i)->setPosition(std::vector<double>{x,y,z});
+        this->atoms.at(i)->setVelocity(std::vector<double>{0,0,0});
+        /*this->atoms[i].setMass(mass);
         this->atoms[i].setPosition(std::vector<double>{x,y,z});
-        this->atoms[i].setVelocity(std::vector<double>{0,0,0});
+        this->atoms[i].setVelocity(std::vector<double>{0,0,0});*/
     }
 
     InitialCondition::setupDone = true;

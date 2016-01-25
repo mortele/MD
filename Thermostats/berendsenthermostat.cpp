@@ -17,16 +17,16 @@ BerendsenThermostat::BerendsenThermostat(double targetTemperature,
     this->dtOverTau = dt/tau;
 }
 
-void BerendsenThermostat::adjustVelocities(Atom* atoms,
+void BerendsenThermostat::adjustVelocities(std::vector<Atom*> atoms,
                                            int n,
                                            double instantaneousTemperature) {
     std::vector<double> velocity;
 
     for (int i=0; i < n; i++) {
         double gamma = std::sqrt(1+this->dtOverTau*(this->targetTemperature/instantaneousTemperature-1));
-        velocity = atoms[i].getVelocity();
+        velocity = atoms.at(i)->getVelocity();
         for (int k=0; k<3; k++) {
-            atoms[i].setVelocity(velocity.at(k) * gamma, k);
+            atoms.at(i)->setVelocity(velocity.at(k) * gamma, k);
         }
     }
 }

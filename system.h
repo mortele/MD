@@ -40,6 +40,7 @@ public:
     void printProgress(int);
     bool getPlotting() { return m_plotting; }
     bool getPeriodicBoundaryConditions() { return m_periodicBoundaryConditions; }
+    std::vector<Atom*> getAtoms() { return m_atoms; }
 
     QApplication m_app;
 
@@ -50,7 +51,7 @@ private:
         public:
             FileOutput(char*);
             ~FileOutput();
-            void saveState(Atom* atoms, int n);
+            void saveState(std::vector<Atom*> atoms, int n);
 
         private:
             std::fstream m_outFile;
@@ -72,10 +73,11 @@ private:
     bool                m_thermostatActive              = false;
     bool                m_integrating                   = false;
     std::vector<double> m_systemSize                    = std::vector<double>(3);
+    std::vector<double> m_totalMomentum                 = std::vector<double>(3);
     Integrator*         m_integrator                    = nullptr;
     Potential*          m_potential                     = nullptr;
     InitialCondition*   m_initialCondition              = nullptr;
-    Atom*               m_atoms                         = nullptr;
+    std::vector<Atom*>  m_atoms                         = std::vector<Atom*>();
     MainWindow*         m_mainWindow                    = nullptr;
     Sampler*            m_sampler                       = nullptr;
     FileOutput*         m_fileOutput                    = nullptr;
