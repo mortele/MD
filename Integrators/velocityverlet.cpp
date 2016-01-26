@@ -14,7 +14,7 @@ VelocityVerlet::VelocityVerlet(double dt, System* system) :
     this->system = system;
 }
 
-void VelocityVerlet::advance(std::vector<Atom*> atoms, int n) {
+void VelocityVerlet::advance(const std::vector<Atom*> & atoms, int n) {
     if (this->firstStep) {
         this->potential->computeForces(atoms, n);
         this->firstStep = false;

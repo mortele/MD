@@ -10,13 +10,14 @@ CellList::CellList(System* system, double rCut) {
     m_rCut = rCut;
     m_system = system;
     m_systemSize = system->getSystemSize();
+    dist = std::vector<int>{0,0,0};
 }
 
 void CellList::initializeCellLists() {
     m_numberOfCellsInEachDirection = m_systemSize.at(0) / m_rCut;
 }
 
-void CellList::computeCellLists(std::vector<Atom*> atoms, int n) {
+void CellList::computeCellLists(const std::vector<Atom*> & atoms, int n) {
     if (m_firstComputation) {
         m_firstComputation = false;
         m_systemSize = m_system->getSystemSize();
@@ -35,17 +36,17 @@ int CellList::computeCellNumber(double x, int index) {
     return x / m_systemSize.at(index) * m_numberOfCellsInEachDirection;
 }
 
-bool CellList::isNeighbour(std::vector<int> atom1cellList,
-                           std::vector<int> atom2cellList) {
-    int* dist = new int[3];
+bool CellList::isNeighbour(const std::vector<int> & atom1cellList,
+                           const std::vector<int> & atom2cellList) {
+    //int* dist = new int[3];
     for (int k=0; k<3; k++) {
-        dist[k] = atom2cellList.at(k) - atom1cellList.at(k);
+        dist.at(k) = atom2cellList.at(k) - atom1cellList.at(k);
 
         // Check if the two cell lists are neighbours over the periodic
         // boundary.
         if ((atom1cellList.at(k) == m_numberOfCellsInEachDirection) &&
             (atom2cellList.at(k) == 0)) {
-            dist[k] = 1;
+            dist.at(k) = 1;
         }
     }
 

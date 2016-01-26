@@ -19,8 +19,8 @@ public:
                  double rCut,
                  class System* system);
 
-    void   computeForces(std::vector<Atom*> atoms, int n);
-    double computePotential(std::vector<Atom*> atoms, int n);
+    void   computeForces    (const std::vector<Atom*> & atoms, int n);
+    double computePotential (const std::vector<Atom*> & atoms, int n);
     std::string getName() { return "Lennard-Jones"; }
 
 private:

@@ -8,7 +8,7 @@ EulerCromer::EulerCromer(double dt) : Integrator(dt) {
 
 }
 
-void EulerCromer::advance(std::vector<Atom*> atoms, int n) {
+void EulerCromer::advance(const std::vector<Atom*> & atoms, int n) {
     this->potential->computeForces(atoms, n);
 
     /*std::vector<double> velocity{0,0,0};

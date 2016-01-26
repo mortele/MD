@@ -16,7 +16,7 @@ Gravitational::Gravitational(double G, double eps, System* system) :
 }
 
 
-void Gravitational::computeForces(std::vector<Atom*> atoms, int n) {
+void Gravitational::computeForces(const std::vector<Atom*> & atoms, int n) {
 
     Potential::setForcesToZero(atoms, n);
 
@@ -52,7 +52,7 @@ void Gravitational::computeForces(std::vector<Atom*> atoms, int n) {
     }
 }
 
-double Gravitational::computePotential(std::vector<Atom*> atoms, int n) {
+double Gravitational::computePotential(const std::vector<Atom*> & atoms, int n) {
     return this->potentialEnergy / 2.0;
 }
 

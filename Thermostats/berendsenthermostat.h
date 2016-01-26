@@ -7,7 +7,7 @@ class Atom;
 class BerendsenThermostat : public Thermostat {
 public:
     BerendsenThermostat(double targetTemperature, double tau, double dt);
-    void adjustVelocities(std::vector<Atom*> atom, int n, double instantaneousTemperature);
+    void adjustVelocities(const std::vector<Atom*> & atom, int n, double instantaneousTemperature);
 
 private:
     double targetTemperature;

@@ -29,7 +29,7 @@ LennardJones::LennardJones(double epsilon,
     this->cellList = new CellList(this->system, this->rCut);
 }
 
-void LennardJones::computeForces(std::vector<Atom*> atoms, int n) {
+void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
 
     if (this->cellListsActive &&
         (this->timeStepsSinceLastCellListUpdate == -1 ||
@@ -93,7 +93,7 @@ void LennardJones::computeForces(std::vector<Atom*> atoms, int n) {
     }
 }
 
-double LennardJones::computePotential(std::vector<Atom*> atoms, int n) {
+double LennardJones::computePotential(const std::vector<Atom*> & atoms, int n) {
     return this->potentialEnergy;
 }
 

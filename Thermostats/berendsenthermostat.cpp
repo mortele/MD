@@ -17,7 +17,7 @@ BerendsenThermostat::BerendsenThermostat(double targetTemperature,
     this->dtOverTau = dt/tau;
 }
 
-void BerendsenThermostat::adjustVelocities(std::vector<Atom*> atoms,
+void BerendsenThermostat::adjustVelocities(const std::vector<Atom*> & atoms,
                                            int n,
                                            double instantaneousTemperature) {
     std::vector<double> velocity;

@@ -175,10 +175,10 @@ System*Examples::lennardJonesBerendsenCellLists() {
     system->setSystemSize                (boxSize);
 
     system->setThermostatActive(true);
-    system->integrate(200);
+    system->integrate(50);
 
-    system->setThermostatActive(false);
-    system->integrate(200);
+    //system->setThermostatActive(false);
+    //system->integrate(200);
 
 
     return system;
