@@ -9,12 +9,13 @@ LennardJones::LennardJones(double epsilon,
                            double sigma,
                            std::vector<double> systemSize,
                            System* system) :
-    Potential(system) {
-    this->epsilon = epsilon;
-    this->sigma   = sigma;
-    this->sigma6  = sigma*sigma*sigma*sigma*sigma*sigma;
-    this->sigma12 = sigma6*sigma6;
-    this->systemSize = systemSize;
+        Potential(system) {
+    m_epsilon = epsilon;
+    m_sigma   = sigma;
+    m_sigma6  = sigma*sigma*sigma*sigma*sigma*sigma;
+    m_24epsilonSigma6 = 24*m_epsilon*m_sigma6;
+    m_4epsilonSigma6 = 4*m_epsilon*m_sigma6;
+    m_systemSize = systemSize;
 }
 
 LennardJones::LennardJones(double epsilon,
@@ -22,70 +23,68 @@ LennardJones::LennardJones(double epsilon,
                            std::vector<double> systemSize,
                            double rCut,
                            System* system) :
-    LennardJones(epsilon, sigma, systemSize, system) {
-    this->cellListsActive = true;
-    this->rCut  = rCut;
-    this->rCut2 = rCut * rCut;
-    this->cellList = new CellList(this->system, this->rCut);
+        LennardJones(epsilon, sigma, systemSize, system) {
+    m_cellListsActive = true;
+    m_rCut  = rCut;
+    m_rCut2 = rCut * rCut;
+    m_cellList = new CellList(m_system, m_rCut);
+    double r2 = 1.0 / m_rCut2;
+    m_potentialAtCut = 4*m_epsilon * r2*r2*r2 * m_sigma6 * (m_sigma6*r2-1);
 }
 
 void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
 
-    if (this->cellListsActive &&
-        (this->timeStepsSinceLastCellListUpdate == -1 ||
-         this->timeStepsSinceLastCellListUpdate >= 20)) {
+    if (m_cellListsActive &&
+        (m_timeStepsSinceLastCellListUpdate == -1 ||
+         m_timeStepsSinceLastCellListUpdate >= 20)) {
 
-        this->cellList->computeCellLists(atoms, n);
+        m_cellList->computeCellLists(atoms, n);
     }
-    this->timeStepsSinceLastCellListUpdate += 1;
-    this->setForcesToZero(atoms, n);
-    this->potentialEnergy   = 0;
+    m_timeStepsSinceLastCellListUpdate += 1;
+    setForcesToZero(atoms, n);
+    m_potentialEnergy   = 0;
     int    startIndexj      = 0;
-    double r2               = 0;
-    double f                = 0;
+    double dr2              = 0;
     double df               = 0;
     bool   compute          = false;
     std::vector<double> dr{0,0,0};
 
-
-    //#pragma omp parallel for private(r2,df,f,compute,startIndexj) num_threads(8)
     for (int i=0; i < n; i++) {
-        if (this->cellListsActive == false) {
+        if (m_cellListsActive == false) {
             startIndexj = i+1;
         } else {
             startIndexj = 0;
         }
 
         for (int j=startIndexj; j < n; j++) {
-            if (this->cellListsActive == true) {
+            if (m_cellListsActive == true) {
                 compute = (i != j) *
-                          this->cellList->isNeighbour(atoms.at(i)->getCellListIndex(),
+                          m_cellList->isNeighbour(atoms.at(i)->getCellListIndex(),
                                                       atoms.at(j)->getCellListIndex());
             } else {
                 compute = true;
             }
 
             if (compute) {
-                r2 = 0;
+                dr2 = 0;
                 for (int k=0; k < 3; k++) {
                     dr.at(k) = atoms.at(j)->getPosition().at(k) - atoms.at(i)->getPosition().at(k);
-                    if (dr.at(k) > this->systemSize.at(k) / 2.0) {
-                        dr.at(k) = dr.at(k) - this->systemSize.at(k);
-                    } else if (dr.at(k) < -this->systemSize.at(k) / 2.0) {
-                        dr.at(k) = dr.at(k) + this->systemSize.at(k);
+                    if (dr.at(k) > m_systemSize.at(k) / 2.0) {
+                        dr.at(k) = dr.at(k) - m_systemSize.at(k);
+                    } else if (dr.at(k) < -m_systemSize.at(k) / 2.0) {
+                        dr.at(k) = dr.at(k) + m_systemSize.at(k);
                     }
-                    r2 += dr.at(k)*dr.at(k);
+                    dr2 += dr.at(k)*dr.at(k);
                 }
 
-                r2  = 1.0 / r2;
-                double r6  = r2*r2*r2;
-                double r12 = r6*r6;
-                double r8  = r6*r2; //r2*r2*r2*r2;
-                double r14 = r8*r6; //r8*r2*r2*r2;
-                this->potentialEnergy += 4*this->epsilon * (this->sigma12*r12-this->sigma6*r6);
-                f = 24 * this->epsilon * (this->sigma6 * r8 - 2*this->sigma12 * r14);
+                const double r2  = 1.0 / r2;
+                const double r6 = r2*r2*r2;
+                const double sigma6r6 = m_sigma6 * r6;
+                const double f  = -24*m_epsilon * sigma6r6 *
+                                  (2*sigma6r6 - 1) * r2 * (dr2 < m_rCut2);
+                m_potentialEnergy += m_4epsilonSigma6 * r6 *
+                                     (sigma6r6 - 1) - m_potentialAtCut;
 
-                //#pragma omp critical
                 for (int k=0; k < 3; k++) {
                     df = f * dr.at(k);
                     atoms.at(i)->addForce( df, k);
@@ -97,7 +96,7 @@ void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
 }
 
 double LennardJones::computePotential(const std::vector<Atom*> & atoms, int n) {
-    return this->potentialEnergy;
+    return m_potentialEnergy;
 }
 
 

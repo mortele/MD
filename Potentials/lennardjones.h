@@ -24,11 +24,13 @@ public:
     std::string getName() { return "Lennard-Jones"; }
 
 private:
-    double epsilon = 0;
-    double sigma = 0;
-    double sigma6 = 0;
-    double sigma12 = 0;
-    double potentialEnergy = 0;
-    std::vector<double> systemSize;
+    double m_epsilon = 0;
+    double m_sigma = 0;
+    double m_sigma6 = 0;
+    double m_potentialEnergy = 0;
+    double m_24epsilonSigma6 = 0;
+    double m_4epsilonSigma6 = 0;
+    double m_potentialAtCut = 0;
+    std::vector<double> m_systemSize;
 };
 

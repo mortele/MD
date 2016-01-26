@@ -153,7 +153,7 @@ System*Examples::lennardJonesCellLists() {
 }
 
 System*Examples::lennardJonesBerendsenCellLists() {
-    int     nUnitCells   = 10;               // Number of unit cells in each dimension.
+    int     nUnitCells   = 4;               // Number of unit cells in each dimension.
     int     n = 4*std::pow(nUnitCells,3);   // Number of atoms.
     double  T            = 1.0;             // Temperature, in units of 119.8 K.
     double  TTarget      = 1.0;             // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
@@ -175,7 +175,7 @@ System*Examples::lennardJonesBerendsenCellLists() {
     system->setSystemSize                (boxSize);
 
     system->setThermostatActive(true);
-    system->integrate(20);
+    system->integrate(10000);
 
     //system->setThermostatActive(false);
     //system->integrate(200);

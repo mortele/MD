@@ -238,13 +238,11 @@ System::FileOutput::~FileOutput() {
 
 bool System::FileOutput::saveState(std::vector<Atom*> atoms, int n) {
     if (m_outFile.is_open() == false) {
-        /*cout << endl << "### ERROR ###: Could not open file. Exiting." << endl << endl;
-        return false;*/
-        return true;
+        cout << endl << "### ERROR ###: Could not open file. Exiting." << endl << endl;
+        return false;
     } else {
         m_outFile << n << endl;
-        m_outFile << "Comment?" << endl;
-
+        m_outFile << "Time step: " << m_timeStep++ << endl;
 
         for (int i = 0; i < n; i++) {
             m_outFile       << atoms.at(i)->getName()           << " "

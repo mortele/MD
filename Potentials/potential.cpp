@@ -1,7 +1,7 @@
 #include "potential.h"
 
 Potential::Potential(System* system) {
-    this->system = system;
+    m_system = system;
 }
 
 void Potential::setForcesToZero(const std::vector<Atom*> & atoms, int n) {

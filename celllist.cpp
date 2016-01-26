@@ -27,7 +27,6 @@ void CellList::computeCellLists(const std::vector<Atom*> & atoms, int n) {
         for (int k=0; k<3; k++) {
             atoms.at(i)->setCellListIndex(this->computeCellNumber(
                                               atoms.at(i)->getPosition().at(k), k), k);
-
         }
     }
 }

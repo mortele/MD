@@ -39,6 +39,7 @@ private:
             bool saveState(std::vector<class Atom*> atoms, int n);
 
         private:
+            int m_timeStep = 0;
             std::fstream m_outFile;
     };
 

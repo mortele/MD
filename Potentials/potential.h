@@ -11,16 +11,16 @@ public:
     virtual double  computePotential(const std::vector<Atom*> & atoms, int n) = 0;
     virtual std::string getName() = 0;
     void setForcesToZero (const std::vector<Atom*> & atoms, int n);
-    bool getCellListsActive()       { return this->cellListsActive; }
-    double getRCUt()                { return this->rCut; }
-    class CellList* getCellList()   { return this->cellList; }
+    bool getCellListsActive()       { return m_cellListsActive; }
+    double getRCUt()                { return m_rCut; }
+    class CellList* getCellList()   { return m_cellList; }
 
 protected:
-    int  timeStepsSinceLastCellListUpdate = -1;
-    bool cellListsActive = false;
-    double rCut  = 0;
-    double rCut2 = 0;
-    class CellList* cellList = nullptr;
-    class System*   system = nullptr;
+    int     m_timeStepsSinceLastCellListUpdate = -1;
+    bool    m_cellListsActive = false;
+    double  m_rCut  = 0;
+    double  m_rCut2 = 0;
+    class CellList* m_cellList = nullptr;
+    class System*   m_system = nullptr;
 };
 
