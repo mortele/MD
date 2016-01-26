@@ -145,7 +145,7 @@ System*Examples::lennardJonesBerendsen(int argc, char** argv) {
 }
 
 System*Examples::lennardJonesCellLists(int argc, char** argv) {
-    int     nUnitCells = 4;                 // Number of unit cells in each dimension.
+    int     nUnitCells = 2;                 // Number of unit cells in each dimension.
     int     n = 4*std::pow(nUnitCells,3);   // Number of atoms.
     double  T           = 1.0;              // Temperature, in units of 119.8 K.
     double  TTarget     = 0.5;              // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
@@ -163,7 +163,7 @@ System*Examples::lennardJonesCellLists(int argc, char** argv) {
     system->setInitialCondition          (new FCC(nUnitCells, b, T));
     system->setPeriodicBoundaryConditions(true);
     system->setSystemSize                (boxSize);
-    system->integrate(1000, false);
+    system->integrate(3, false);
     return system;
 }
 

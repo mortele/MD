@@ -17,6 +17,11 @@ void CellList::initializeCellLists() {
 }
 
 void CellList::computeCellLists(std::vector<Atom*> atoms, int n) {
+    if (m_firstComputation) {
+        m_firstComputation = false;
+        m_systemSize = m_system->getSystemSize();
+        this->initializeCellLists();
+    }
     for (int i=0; i<m_system->getN(); i++) {
         for (int k=0; k<3; k++) {
             atoms.at(i)->setCellListIndex(this->computeCellNumber(
@@ -40,7 +45,7 @@ bool CellList::isNeighbour(std::vector<int> atom1cellList,
         // boundary.
         if ((atom1cellList.at(k) == m_numberOfCellsInEachDirection) &&
             (atom2cellList.at(k) == 0)) {
-            dist[k] == 1;
+            dist[k] = 1;
         }
     }
 
