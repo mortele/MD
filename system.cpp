@@ -244,6 +244,7 @@ bool System::FileOutput::saveState(std::vector<Atom*> atoms, int n) {
 
         for (int i = 0; i < n; i++) {
             m_outFile       << atoms.at(i)->getName()           << " "
+                            << std::setprecision(10)
                             << atoms.at(i)->getPosition().at(0) << " "
                             << atoms.at(i)->getPosition().at(1) << " "
                             << atoms.at(i)->getPosition().at(2) << " "
