@@ -66,8 +66,8 @@ System* Examples::uniformBoxNoPotential() {
 }
 
 System*Examples::lennardJonesFFC() {
-    int     nUnitCells   = 4;               // Number of unit cells in each dimension.
-    double  T            = 1.0;             // Temperature, in units of 119.8 K.
+    int     nUnitCells   = 8;               // Number of unit cells in each dimension.
+    double  T            = 1.0;            // Temperature, in units of 119.8 K.
     double  TTarget      = 1.0;             // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
     double  tau          = 1.0;             // Relaxation time used by the thermostat, in units of 119.8 K.
     double  b            = 5.26;            // Lattice constant, in units of 1.0 Å.
@@ -85,9 +85,10 @@ System*Examples::lennardJonesFFC() {
     system->setThermostat                (new BerendsenThermostat(TTarget, tau, dt));
     system->setSystemSize                (boxSize);
     system->setThermostatActive          (true);
+    system->enablePressureSampling       (true);
     system->integrate                    (200);
     system->setThermostatActive          (false);
-    system->integrate                    (2000);
+    system->integrate                    (200);
     return system;
 }
 

@@ -17,7 +17,7 @@ using std::fstream;
 System::System() :
         m_fileName("../MD/movie.xyz") {
     m_fileOutput        = new FileOutput(m_fileName);
-    m_sampler           = new Sampler;
+    m_sampler           = new Sampler(this);
     m_systemSize        = std::vector<double>{-1,-1,-1}; // Used as flag for 'no system size set'
     m_thermostatActive  = false;
 }
@@ -68,16 +68,21 @@ void System::setupSystem() {
     m_atoms = m_initialCondition->getAtoms();
     m_sampler->setupSampler(m_atoms, m_n);
     m_integrator->setPotential(m_potential);
-    //m_fileOutput = new FileOutput(m_fileName);
+}
+
+void System::enablePressureSampling(bool enabled) {
+    m_sampler->setPressureSamplingEnabled(enabled);
 }
 
 
 
 bool System::integrate(int Nt) {
+    m_Nt = Nt;
     if (m_integrating == false) {
         setupSystem();
         m_integrating = true;
     }
+    m_sampler->setNtDt(Nt,m_dt);
 
     if (m_systemSize[0] == -1 &&
         m_systemSize[1] == -1 &&
@@ -85,9 +90,6 @@ bool System::integrate(int Nt) {
         cout << endl << "### WARNING ###: No system size set. Using default value (1,1,1)." << endl << endl;
         m_systemSize = std::vector<double>{1,1,1};
     }
-
-    m_Nt       = Nt;
-    m_sampler->setNtDt(Nt,m_dt);
 
     for (int t=0; t < Nt; t++) {
         if (m_fileOutput->saveState(m_atoms, m_n) == false) {
@@ -118,7 +120,6 @@ void System::dumpInfoToTerminal() {
     vec totalMomentum = vec(m_totalMomentum.at(0),
                             m_totalMomentum.at(1),
                             m_totalMomentum.at(2));
-    bool cellListsActive = m_potential->getCellListsActive();
 
     cout << " ┌──────────────────────────────────────────────────────┐ " << endl;
     cout << " │                Starting integration                  │ " << endl;
@@ -136,12 +137,8 @@ void System::dumpInfoToTerminal() {
     cout << "    │  Total time:             " << m_Nt*m_dt       << endl;
     cout << "    │  System size (cube):     " << systemSizeVec   << endl;
     cout << "    │  Total momentum removed: " << totalMomentum   << endl;
-    if (cellListsActive) {
-        cout << "    │  Cell lists active:      " << "Yes"           << endl;
-        cout << "    │  r_cut:                  " << m_potential->getRCUt()   << endl;
-    } else {
-        cout << "    │  Cell lists active:      " << "No"            << endl;
-    }
+    cout << "    │  Cell lists active:      " << "Yes"           << endl;
+    cout << "    │  r_cut:                  " << m_potential->getRCUt()   << endl;
     cout << "    ├─────────────────────────────────────────────────┐ " << endl;
     cout << "    │ Progress                                        │ " << endl;
     cout << "    └─────────────────────────────────────────────────┘ " << endl;
@@ -166,7 +163,7 @@ void System::printProgress(int t) {
         double progress     = ((double) t) / m_Nt;
         double elapsedTime  = m_currentTime - m_startTime;
         double lastTwoAverage = (m_currentTime-m_oldTime+m_lastTimeStepTime) / 2.0;
-        double estimatedTime = elapsedTime+lastTwoAverage*(1-progress)*m_Nt/m_skip;
+        double estimatedTime = elapsedTime - elapsedTime+lastTwoAverage*(1-progress)*m_Nt/m_skip;
         if (lastTwoAverage > 1 && m_skip > 1) {
             m_skip -= 1;
         } else if (lastTwoAverage < 0.1) {
@@ -186,9 +183,10 @@ void System::printProgress(int t) {
         } else {
             printf("(%5.1f s) ", estimatedTime);
         }
-        printf("E/N = %10.6f  T = %5.2f \r",
+        printf("E/N = %10.6f  T = %5.2f  P = %10.6f\r",
                m_sampler->getEnergies()[t]/m_n,
-               m_sampler->getInstantanousTemperature()[t]);
+               m_sampler->getInstantanousTemperature()[t],
+               m_sampler->getPressures()[t]);
         fflush(stdout);
         m_lastTimeStepTime = m_currentTime-m_oldTime;
     }

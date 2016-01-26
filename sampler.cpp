@@ -1,52 +1,74 @@
 #include "sampler.h"
+#include "Potentials/lennardjones.h"
 
 using std::cout;
 using std::endl;
 
-Sampler::Sampler() {
-
+Sampler::Sampler(System* system) {
+    m_system = system;
 }
 
 void Sampler::setupSampler(std::vector<Atom*> atoms, int n) {
-    this->atoms = atoms;
-    this->n     = n;
+    m_atoms = atoms;
+    m_n     = n;
+    m_volume = m_system->getSystemSize().at(0) *
+               m_system->getSystemSize().at(1) *
+               m_system->getSystemSize().at(2);
+    m_density = m_system->getN() * m_system->getAtoms().at(0)->getMass() / m_volume;
 }
 
 void Sampler::sample(int t) {
-    this->time[t]              = t*this->dt;
-    this->kineticEnergies[t]   = this->sampleKineticEnergy();
-    this->potentialEnergies[t] = this->samplePotentialEnergy();
-    this->energies[t] = this->kineticEnergies[t] + this->potentialEnergies[t];
-    this->instantanousTemperature[t] = (2.0/3.0)*this->kineticEnergies[t] / this->n;
+    m_time[t]              = t*m_dt;
+    m_kineticEnergies[t]   = sampleKineticEnergy();
+    m_potentialEnergies[t] = samplePotentialEnergy();
+    m_energies[t] = m_kineticEnergies[t] + m_potentialEnergies[t];
+    m_instantanousTemperature[t] = (2.0/3.0)*m_kineticEnergies[t] / m_n;
+
+    if (m_pressureSamplingEnabled) {
+        m_pressures[t] = samplePressure(m_instantanousTemperature[t]);
+    }
 }
 
 void Sampler::setPotential(Potential* potential) {
-    this->potential = potential;
+    m_potential = potential;
 }
 
 void Sampler::setNtDt(int Nt, double dt) {
-    this->Nt = Nt;
-    this->dt = dt;
+    m_Nt = Nt;
+    m_dt = dt;
 
     // Ready the storage arrays for later use.
-    this->time                      = new double[Nt];
-    this->energies                  = new double[Nt];
-    this->potentialEnergies         = new double[Nt];
-    this->kineticEnergies           = new double[Nt];
-    this->instantanousTemperature   = new double[Nt];
+    m_time                      = new double[Nt];
+    m_energies                  = new double[Nt];
+    m_potentialEnergies         = new double[Nt];
+    m_kineticEnergies           = new double[Nt];
+    m_instantanousTemperature   = new double[Nt];
+    m_pressures                 = new double[Nt];
 }
 
 double Sampler::sampleKineticEnergy() {
     double kineticEnergy = 0;
-    for (int i=0; i < this->n; i++) {
-        std::vector<double> v = atoms.at(i)->getVelocity();
-        double v2 = v.at(0)*v.at(0) + v.at(1)*v.at(1) + v.at(2)*v.at(2);
-        kineticEnergy += 0.5 * atoms.at(i)->getMass() * v2;
+    for (int i=0; i < m_n; i++) {
+        double v2 = m_atoms.at(i)->getVelocity().at(0)*m_atoms.at(i)->getVelocity().at(0) +
+                    m_atoms.at(i)->getVelocity().at(1)*m_atoms.at(i)->getVelocity().at(1) +
+                    m_atoms.at(i)->getVelocity().at(2)*m_atoms.at(i)->getVelocity().at(2);
+        kineticEnergy += 0.5 * m_atoms.at(i)->getMass() * v2;
     }
     return kineticEnergy;
 }
 
 double Sampler::samplePotentialEnergy() {
-    return this->potential->computePotential(this->atoms, this->n);
+    return m_potential->computePotential(m_atoms, m_n);
+}
+
+double Sampler::samplePressure(double instantaneousTemperature) {
+    double pressureFromLennardJones = m_potential->getPressure();
+    return instantaneousTemperature * m_density +
+           pressureFromLennardJones / (3 * m_volume);
+
+}
+
+void Sampler::setPressureSamplingEnabled(bool enabled) {
+    m_pressureSamplingEnabled = enabled;
 }
 

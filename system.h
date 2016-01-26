@@ -20,6 +20,7 @@ public:
     void setThermostatActive(bool);
     void setSystemSize(std::vector<double>);
     void setupSystem();
+    void enablePressureSampling(bool enabled);
     bool integrate(int Nt);
     void applyPeriodicBoundaryConditions();
     void dumpInfoToTerminal();
@@ -28,6 +29,7 @@ public:
     bool getPeriodicBoundaryConditions()    { return m_periodicBoundaryConditions; }
     std::vector<class Atom*>  getAtoms()    { return m_atoms; }
     std::vector<double> getSystemSize()     { return m_systemSize; }
+    class Thermostat*   getThermostat()     { return m_thermostat; }
 
 private:
 

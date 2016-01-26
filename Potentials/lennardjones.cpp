@@ -10,14 +10,13 @@ LennardJones::LennardJones(double epsilon,
                            std::vector<double> systemSize,
                            double rCut,
                            System* system) :
-    Potential(system) {
+        Potential(system) {
     m_epsilon = epsilon;
     m_sigma   = sigma;
     m_sigma6  = sigma*sigma*sigma*sigma*sigma*sigma;
     m_24epsilonSigma6 = 24*m_epsilon*m_sigma6;
     m_4epsilonSigma6 = 4*m_epsilon*m_sigma6;
     m_systemSize = systemSize;
-    m_cellListsActive = true;
     m_rCut  = rCut;
     m_rCut2 = rCut * rCut;
     m_cellList = new CellList(m_system, m_rCut);
@@ -34,6 +33,7 @@ void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
     m_timeStepsSinceLastCellListUpdate += 1;
     setForcesToZero(atoms, n);
     m_potentialEnergy       = 0;
+    m_pressure              = 0;
     double dr2              = 0;
     double df               = 0;
     bool   compute          = false;
@@ -56,7 +56,7 @@ void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
                     dr2 += dr.at(k)*dr.at(k);
                 }
 
-                const double r2  = 1.0 / r2;
+                const double r2  = 1.0 / dr2;
                 const double r6 = r2*r2*r2;
                 const double sigma6r6 = m_sigma6 * r6;
                 const double f  = -24*m_epsilon * sigma6r6 *
@@ -68,6 +68,7 @@ void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
                     df = f * dr.at(k);
                     atoms.at(i)->addForce( df, k);
                     atoms.at(j)->addForce(-df, k);
+                    m_pressure -= f * std::sqrt(dr2) * r2;
                 }
             }
         }

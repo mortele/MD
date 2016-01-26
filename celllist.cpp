@@ -9,7 +9,6 @@ using std::endl;
 CellList::CellList(System* system, double rCut) {
     m_rCut = rCut;
     m_system = system;
-    m_systemSize = system->getSystemSize();
     dist = std::vector<int>{0,0,0};
 }
 
