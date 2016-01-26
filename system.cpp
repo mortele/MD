@@ -238,8 +238,9 @@ System::FileOutput::~FileOutput() {
 
 bool System::FileOutput::saveState(std::vector<Atom*> atoms, int n) {
     if (m_outFile.is_open() == false) {
-        cout << endl << "### ERROR ###: Could not open file. Exiting." << endl << endl;
-        return false;
+        /*cout << endl << "### ERROR ###: Could not open file. Exiting." << endl << endl;
+        return false;*/
+        return true;
     } else {
         m_outFile << n << endl;
         m_outFile << "Comment?" << endl;

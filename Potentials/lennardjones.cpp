@@ -47,6 +47,8 @@ void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
     bool   compute          = false;
     std::vector<double> dr{0,0,0};
 
+
+    //#pragma omp parallel for private(r2,df,f,compute,startIndexj) num_threads(8)
     for (int i=0; i < n; i++) {
         if (this->cellListsActive == false) {
             startIndexj = i+1;
@@ -83,6 +85,7 @@ void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
                 this->potentialEnergy += 4*this->epsilon * (this->sigma12*r12-this->sigma6*r6);
                 f = 24 * this->epsilon * (this->sigma6 * r8 - 2*this->sigma12 * r14);
 
+                //#pragma omp critical
                 for (int k=0; k < 3; k++) {
                     df = f * dr.at(k);
                     atoms.at(i)->addForce( df, k);

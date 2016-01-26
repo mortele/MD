@@ -1,3 +1,4 @@
+//#include <omp.h>
 #include "examples.h"
 #include <iostream>
 #include <fstream>
