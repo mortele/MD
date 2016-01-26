@@ -13,5 +13,6 @@ public:
     static System* staticFCCLattice(int, char**);
     static System* lennardJonesFCC(int, char**);
     static System* lennardJonesBerendsen(int, char**);
+    static System* lennardJonesCellLists(int, char**);
 };
 

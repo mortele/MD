@@ -1,15 +1,16 @@
 #include "gravitational.h"
 #include <vector>
+#include "../system.h"
 
 using std::endl;
 using std::cout;
 
-Gravitational::Gravitational(double G) {
-    this->G     = G;
-    this->eps   = 0;
+Gravitational::Gravitational(double G, System* system) :
+        Gravitational(G, 0, system) {
 }
 
-Gravitational::Gravitational(double G, double eps) {
+Gravitational::Gravitational(double G, double eps, System* system) :
+        Potential(system) {
     this->G     = G;
     this->eps   = eps;
 }

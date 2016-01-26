@@ -1,9 +1,15 @@
 #include "lennardjones.h"
+#include "../celllist.h"
+#include "../system.h"
 
 using std::cout;
 using std::endl;
 
-LennardJones::LennardJones(double epsilon, double sigma, std::vector<double> systemSize) {
+LennardJones::LennardJones(double epsilon,
+                           double sigma,
+                           std::vector<double> systemSize,
+                           System* system) :
+        Potential(system) {
     this->epsilon = epsilon;
     this->sigma   = sigma;
     this->sigma6  = sigma*sigma*sigma*sigma*sigma*sigma;
@@ -11,8 +17,26 @@ LennardJones::LennardJones(double epsilon, double sigma, std::vector<double> sys
     this->systemSize = systemSize;
 }
 
+LennardJones::LennardJones(double epsilon,
+                           double sigma,
+                           std::vector<double> systemSize,
+                           double rCut,
+                           System* system) :
+        LennardJones(epsilon, sigma, systemSize, system) {
+    this->cellListsActive = true;
+    this->rCut = rCut;
+    this->cellList = new CellList(this->system, this->rCut);
+}
+
 void LennardJones::computeForces(std::vector<Atom*> atoms, int n) {
 
+    if (this->cellListsActive &&
+        (this->timeStepsSinceLastCellListUpdate == -1 ||
+         this->timeStepsSinceLastCellListUpdate >= 10)) {
+
+        this->timeStepsSinceLastCellListUpdate++;
+        this->cellList->computeCellLists(atoms, n);
+    }
     Potential::setForcesToZero(atoms, n);
     this->potentialEnergy = 0;
 

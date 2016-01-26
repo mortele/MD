@@ -68,6 +68,10 @@ void Atom::setName(std::string name) {
     this->name = name;
 }
 
+void Atom::setCellListIndex(int cellListIndex, int index) {
+    this->cellListIndex.at(index) = cellListIndex;
+}
+
 
 
 

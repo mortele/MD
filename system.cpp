@@ -124,6 +124,7 @@ void System::dumpInfoToTerminal() {
     vec totalMomentum = vec(m_totalMomentum.at(0),
                             m_totalMomentum.at(1),
                             m_totalMomentum.at(2));
+    bool cellListsActive = m_potential->getCellListsActive();
 
     cout << " ┌──────────────────────────────────────────────────────┐ " << endl;
     cout << " │                Starting integration                  │ " << endl;
@@ -141,6 +142,12 @@ void System::dumpInfoToTerminal() {
     cout << "    │  Total time:             " << m_Nt*m_dt       << endl;
     cout << "    │  System size (cube):     " << systemSizeVec   << endl;
     cout << "    │  Total momentum removed: " << totalMomentum   << endl;
+    if (cellListsActive) {
+        cout << "    │  Cell lists active:      " << "Yes"           << endl;
+        cout << "    │  r_cut:                  " << m_potential->getRCUt()   << endl;
+    } else {
+        cout << "    │  Cell lists active:      " << "No"            << endl;
+    }
     cout << "    ├─────────────────────────────────────────────────┐ " << endl;
     cout << "    │ Progress                                        │ " << endl;
     cout << "    └─────────────────────────────────────────────────┘ " << endl;
@@ -181,8 +188,8 @@ void System::printProgress(int t) {
         } else {
             printf("(%5.1f s) ", estimatedTime);
         }
-        printf("E = %5.1f  T = %5.1f \r",
-               m_sampler->getEnergies()[t],
+        printf("E/N = %10.6f  T = %5.2f \r",
+               m_sampler->getEnergies()[t]/m_n,
                m_sampler->getInstantanousTemperature()[t]);
         fflush(stdout);
         m_lastTimeStepTime = m_currentTime-m_oldTime;
@@ -193,7 +200,7 @@ void System::printProgress(int t) {
             elapsedTime = 0;
         }
         cout << "                                                                             ";
-        cout << endl << "Integration finished. Total elapsed time: " << elapsedTime << endl;
+        cout << endl << "Integration finished. Total elapsed time: " << elapsedTime << endl << endl;
     }
 }
 

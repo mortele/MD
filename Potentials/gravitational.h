@@ -5,8 +5,8 @@
 
 class Gravitational : public Potential {
 public:
-    Gravitational(double G);
-    Gravitational(double G, double eps);
+    Gravitational(double G, class System* system);
+    Gravitational(double G, double eps, class System* system);
     void   computeForces(std::vector<Atom*> atoms, int n);
     double computePotential(std::vector<Atom*> atoms, int n);
     std::string getName() { return "Gravitational"; }

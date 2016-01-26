@@ -21,7 +21,6 @@ FCC::FCC(int    numberOfUnitCells,
 }
 
 void FCC::setupInitialCondition() {
-    //this->atoms = new Atom[this->n];
     int counter = 0;
 
     for (int i=0; i<this->numberOfUnitCells; i++) {
@@ -43,10 +42,6 @@ void FCC::setupInitialCondition() {
                 atom3.at(0) += bHalf;
                 atom3.at(2) += bHalf;
 
-                /*this->atoms[counter+0].setPosition(atom0);
-                this->atoms[counter+1].setPosition(atom1);
-                this->atoms[counter+2].setPosition(atom2);
-                this->atoms[counter+3].setPosition(atom3);*/
                 this->atoms.push_back(new Atom());
                 this->atoms.push_back(new Atom());
                 this->atoms.push_back(new Atom());

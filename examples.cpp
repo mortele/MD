@@ -42,7 +42,7 @@ System* Examples::coldCollapseCluster(int argc, char** argv) {
 
     System* system = new System          (argc, argv, "../MD/movie.xyz");
     system->setIntegrator                (new EulerCromer(dt));
-    system->setPotential                 (new Gravitational(G, eps));
+    system->setPotential                 (new Gravitational(G, eps, system));
     system->setInitialCondition          (new RandomSpherical(n, R0));
     system->setPeriodicBoundaryConditions(false);
     system->setSystemSize                (boxSize);
@@ -60,7 +60,7 @@ System* Examples::uniformBoxNoPotential(int argc, char** argv) {
 
     System* system = new System          (argc, argv, "../MD/movie.xyz");
     system->setIntegrator                (new EulerCromer(dt));
-    system->setPotential                 (new NoPotential);
+    system->setPotential                 (new NoPotential(system));
     system->setInitialCondition          (new Uniform(n, boxSize, 5));
     system->setPeriodicBoundaryConditions(true);
     system->setSystemSize                (boxSize);
@@ -79,7 +79,7 @@ System* Examples::staticFCCLattice(int argc, char** argv) {
 
     System* system = new System          (argc, argv, "../MD/movie.xyz");
     system->setIntegrator                (new EulerCromer(dt));
-    system->setPotential                 (new NoPotential);
+    system->setPotential                 (new NoPotential(system));
     system->setInitialCondition          (new FCC(n, b, 0));
     system->setPeriodicBoundaryConditions(true);
     system->setSystemSize                (boxSize);
@@ -88,7 +88,7 @@ System* Examples::staticFCCLattice(int argc, char** argv) {
 }
 
 System* Examples::lennardJonesFCC(int argc, char** argv) {
-    int     nUnitCells = 8;                 // Number of unit cells in each dimension.
+    int     nUnitCells = 4;                 // Number of unit cells in each dimension.
     double  T = 1.0;                        // Temperature, in units of 119.8 K.
     double  b = 5.26;                       // Lattice constant, in units of 1.0 Å.
     double  dt          = 0.01;             // Time step.
@@ -100,11 +100,11 @@ System* Examples::lennardJonesFCC(int argc, char** argv) {
 
     System* system = new System          (argc, argv, "../MD/movie.xyz");
     system->setIntegrator                (new VelocityVerlet(dt, system));
-    system->setPotential                 (new LennardJones(1.0, 3.405, boxSize));
+    system->setPotential                 (new LennardJones(1.0, 3.405, boxSize, system));
     system->setInitialCondition          (new FCC(nUnitCells, b, T));
     system->setPeriodicBoundaryConditions(true);
     system->setSystemSize                (boxSize);
-    system->integrate(1, false);
+    system->integrate(1000, false);
     return system;
 }
 
@@ -123,7 +123,7 @@ System*Examples::lennardJonesBerendsen(int argc, char** argv) {
 
     System* system = new System          (argc, argv, "../MD/movie.xyz");
     system->setIntegrator                (new VelocityVerlet(dt, system));
-    system->setPotential                 (new LennardJones(1.0, 3.405, boxSize));
+    system->setPotential                 (new LennardJones(1.0, 3.405, boxSize, system));
     system->setInitialCondition          (new FCC(nUnitCells, b, T));
     system->setPeriodicBoundaryConditions(true);
     system->setThermostat                (new BerendsenThermostat(TTarget, tau, dt));
@@ -143,3 +143,44 @@ System*Examples::lennardJonesBerendsen(int argc, char** argv) {
 
     return system;
 }
+
+System*Examples::lennardJonesCellLists(int argc, char** argv) {
+    int     nUnitCells = 4;                 // Number of unit cells in each dimension.
+    int     n = 4*std::pow(nUnitCells,3);   // Number of atoms.
+    double  T           = 1.0;              // Temperature, in units of 119.8 K.
+    double  TTarget     = 0.5;              // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
+    double  tau         = 10.0;             // Relaxation time used by the thermostat, in units of 119.8 K.
+    double  b           = 5.26;             // Lattice constant, in units of 1.0 Å.
+    double  dt          = 0.001;             // Time step.
+    double  sideLength  = nUnitCells*b;     // Size of box sides.
+    std::vector<double> boxSize{sideLength, // Vector of box size.
+                                sideLength,
+                                sideLength};
+
+    System* system = new System          (argc, argv, "../MD/movie.xyz");
+    system->setIntegrator                (new VelocityVerlet(dt, system));
+    system->setPotential                 (new LennardJones(1.0, 3.405, boxSize, b, system));
+    system->setInitialCondition          (new FCC(nUnitCells, b, T));
+    system->setPeriodicBoundaryConditions(true);
+    system->setSystemSize                (boxSize);
+    system->integrate(1000, false);
+    return system;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

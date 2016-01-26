@@ -42,8 +42,9 @@ int main(int argc, char* argv[]) {
     //system = Examples::coldCollapseCluster(argc, argv);
     //system = Examples::uniformBoxNoPotential(argc, argv);
     //system = Examples::staticFCCLattice(argc, argv);
-    system = Examples::lennardJonesFCC(argc, argv);
+    //system = Examples::lennardJonesFCC(argc, argv);
     //system = Examples::lennardJonesBerendsen(argc, argv);
+    system = Examples::lennardJonesCellLists(argc, argv);
 
     // If the plot is active, return the application handle.
     if (system->getPlotting()) {
