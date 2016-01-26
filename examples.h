@@ -14,5 +14,6 @@ public:
     static System* lennardJonesFCC(int, char**);
     static System* lennardJonesBerendsen(int, char**);
     static System* lennardJonesCellLists(int, char**);
+    static System* lennardJonesBerendsenCellLists(int, char**);
 };
 

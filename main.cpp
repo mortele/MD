@@ -28,14 +28,6 @@
 using std::cout;
 using std::endl;
 
-/* FIXME: Make real time plotting work--need to be able to compute stuff in
- *        System, but update the plot in MainWindow in real time.
- * FIXME: Clean up MainWindow class and the integrate method in System.
- *
- * TODO: Velocity Verlet integrator.
- * TODO: Make the plots close when the run terminal closes.
- */
-
 int main(int argc, char* argv[]) {
 
     System* system;
@@ -44,7 +36,8 @@ int main(int argc, char* argv[]) {
     //system = Examples::staticFCCLattice(argc, argv);
     //system = Examples::lennardJonesFCC(argc, argv);
     //system = Examples::lennardJonesBerendsen(argc, argv);
-    system = Examples::lennardJonesCellLists(argc, argv);
+    //system = Examples::lennardJonesCellLists(argc, argv);
+    system = Examples::lennardJonesBerendsenCellLists(argc, argv);
 
     // If the plot is active, return the application handle.
     if (system->getPlotting()) {

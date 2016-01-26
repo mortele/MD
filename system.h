@@ -18,7 +18,7 @@
 
 class System {
 public:
-    System(int, char**, char*);
+    System(int, char**, const char*);
     void setTimeStep(double);
     void setIntegrator(Integrator*);
     void setPotential(Potential*);
@@ -30,8 +30,8 @@ public:
     void setSystemSize(std::vector<double>);
     void setupGUI();
     void setupSystem();
-    void integrate(int Nt);
-    void integrate(int Nt, bool plotting);
+    bool integrate(int Nt);
+    bool integrate(int Nt, bool plotting);
     void applyPeriodicBoundaryConditions();
     void dumpInfoToTerminal();
     void printProgress(int);
@@ -48,9 +48,9 @@ private:
     // Internal class for dumping positions to file.
     class FileOutput {
         public:
-            FileOutput(char*);
+            FileOutput(const char*);
             ~FileOutput();
-            void saveState(std::vector<Atom*> atoms, int n);
+            bool saveState(std::vector<Atom*> atoms, int n);
 
         private:
             std::fstream m_outFile;
@@ -66,7 +66,7 @@ private:
     double              m_currentTime                   = 0;
     double              m_startTime                     = 0;
     double              m_lastTimeStepTime              = 0;
-    char*               m_fileName                      = nullptr;
+    const char*         m_fileName;
     bool                m_plotting                      = false;
     bool                m_periodicBoundaryConditions    = false;
     bool                m_thermostatActive              = false;

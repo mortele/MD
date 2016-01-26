@@ -6,10 +6,10 @@ using std::endl;
 using std::ofstream;
 using std::fstream;
 
-System::System(int argc, char** argv, char* fileName) :
-    m_app(argc, argv) {
-
-    m_fileName          = fileName;
+System::System(int argc, char** argv, const char* fileName) :
+        m_app(argc, argv),
+        m_fileName(fileName) {
+    m_fileOutput        = new FileOutput(fileName);
     m_sampler           = new Sampler;
     m_systemSize        = std::vector<double>{-1,-1,-1}; // Used as flag for 'no system size set'
     m_thermostatActive  = false;
@@ -66,15 +66,15 @@ void System::setupSystem() {
     m_atoms = m_initialCondition->getAtoms();
     m_sampler->setupSampler(m_atoms, m_n);
     m_integrator->setPotential(m_potential);
-    m_fileOutput = new FileOutput(m_fileName);
+    //m_fileOutput = new FileOutput(m_fileName);
 }
 
-void System::integrate(int Nt) {
-    integrate(Nt, true);
+bool System::integrate(int Nt) {
+    return integrate(Nt, true);
 }
 
 
-void System::integrate(int Nt, bool plotting) {    
+bool System::integrate(int Nt, bool plotting) {
     if (m_integrating == false) {
         setupSystem();
         m_integrating = true;
@@ -95,9 +95,10 @@ void System::integrate(int Nt, bool plotting) {
     m_sampler->setNtDt(Nt,m_dt);
 
     for (int t=0; t < Nt; t++) {
-        m_fileOutput->saveState(m_atoms, m_n);
+        if (m_fileOutput->saveState(m_atoms, m_n) == false) {
+            return false;
+        }
         m_sampler->sample(t);
-
         m_integrator->advance(m_atoms, m_n);
 
         if (m_periodicBoundaryConditions) {
@@ -114,6 +115,7 @@ void System::integrate(int Nt, bool plotting) {
     if (m_plotting) {
         plot();
     }
+    return true;
 }
 
 void System::dumpInfoToTerminal() {
@@ -219,16 +221,13 @@ void System::applyPeriodicBoundaryConditions() {
     std::vector<double> position{0,0,0};
 
     for (int i=0; i < m_n; i++) {
-        bool changed = false;
 
         for (int k=0; k<3; k++) {
             position.at(k) = m_atoms.at(i)->getPosition().at(k);
 
             if (position.at(k) > m_systemSize.at(k)) {
-                changed = true;
                 m_atoms.at(i)->setPosition(position.at(k) - m_systemSize.at(k), k);
             } else if (position.at(k) < 0) {
-                changed = true;
                 m_atoms.at(i)->setPosition(position.at(k) + m_systemSize.at(k), k);
             }
         }
@@ -239,8 +238,10 @@ void System::applyPeriodicBoundaryConditions() {
 
 
 
-System::FileOutput::FileOutput(char* fileName) {
-    m_outFile.open(fileName, std::ios::out);
+System::FileOutput::FileOutput(const char* fileName) {
+    //m_outFile.open(fileName, std::ios::out);
+    const char* fileNameTmp = "../MD/movie.xyz";
+    m_outFile.open(fileNameTmp, std::ios::out);
 }
 
 System::FileOutput::~FileOutput() {
@@ -249,18 +250,23 @@ System::FileOutput::~FileOutput() {
     }
 }
 
-void System::FileOutput::saveState(std::vector<Atom*> atoms, int n) {
-    if (true) {//(m_outFile.is_open()) {
+bool System::FileOutput::saveState(std::vector<Atom*> atoms, int n) {
+    if (m_outFile.is_open() == false) {
+        cout << endl << "### ERROR ###: Could not open file. Exiting." << endl << endl;
+        return false;
+    } else {
         m_outFile << n << endl;
-        m_outFile << "Comment line" << endl;
+        m_outFile << "Comment?" << endl;
+
 
         for (int i = 0; i < n; i++) {
-            m_outFile       << atoms[i]->getName()        << " "
-                            << atoms[i]->getPosition()[0] << " "
-                            << atoms[i]->getPosition()[1] << " "
-                            << atoms[i]->getPosition()[2] << " "
+            m_outFile       << atoms.at(i)->getName()           << " "
+                            << atoms.at(i)->getPosition().at(0) << " "
+                            << atoms.at(i)->getPosition().at(1) << " "
+                            << atoms.at(i)->getPosition().at(2) << " "
                             << endl;
         }
+        return true;
     }
 }
 

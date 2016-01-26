@@ -1,7 +1,7 @@
 # Make the atoms pretty. 
 mol color {colorID 1} 
-mol style {NewCartoon 0.300000 6.000000 4.100000 0} 
-mol material {Transparent}
+#mol style {NewCartoon 0.300000 6.000000 4.100000 0} 
+#mol material {Transparent}
 
 # Shift the menus out of the way.
 axes location lowerleft 
