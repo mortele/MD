@@ -22,12 +22,13 @@ public:
     void setName            (std::string name);
     void setCellListIndex   (int cellListIndex, int index);
 
-    double              getMass()       { return this->mass; }
-    std::vector<double> getPosition()   { return this->position; }
-    std::vector<double> getVelocity()   { return this->velocity; }
-    std::vector<double> getForce()      { return this->force; }
-    std::string         getName()       { return this->name; }
-    int getCellListIndex(int index)     { return this->cellListIndex.at(index); }
+    double              getMass()           { return this->mass; }
+    std::vector<double> getPosition()       { return this->position; }
+    std::vector<double> getVelocity()       { return this->velocity; }
+    std::vector<double> getForce()          { return this->force; }
+    std::string         getName()           { return this->name; }
+    std::vector<int>    getCellListIndex()  { return this->cellListIndex; }
+    int getCellListIndex(int index)         { return this->cellListIndex.at(index); }
 
 private:
     double  mass = 1.0;
