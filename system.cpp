@@ -1,4 +1,12 @@
 #include "system.h"
+#include "Integrators/integrator.h"
+#include "Potentials/potential.h"
+#include "InitialConditions/initialcondition.h"
+#include "Thermostats/thermostat.h"
+#include "vec.h"
+#include "atom.h"
+#include "sampler.h"
+#include "realtime.h"
 
 
 using std::cout;
@@ -6,10 +14,9 @@ using std::endl;
 using std::ofstream;
 using std::fstream;
 
-System::System(int argc, char** argv, const char* fileName) :
-        m_app(argc, argv),
-        m_fileName(fileName) {
-    m_fileOutput        = new FileOutput(fileName);
+System::System() :
+        m_fileName("../MD/movie.xyz") {
+    m_fileOutput        = new FileOutput(m_fileName);
     m_sampler           = new Sampler;
     m_systemSize        = std::vector<double>{-1,-1,-1}; // Used as flag for 'no system size set'
     m_thermostatActive  = false;
@@ -55,11 +62,6 @@ void System::setSystemSize(std::vector<double> systemSize) {
     m_systemSize = systemSize;
 }
 
-void System::setupGUI() {
-    m_skip = 25;
-    m_mainWindow = new MainWindow;
-}
-
 void System::setupSystem() {
     m_initialCondition->setupInitialCondition();
     m_n = m_initialCondition->getN();
@@ -69,12 +71,9 @@ void System::setupSystem() {
     //m_fileOutput = new FileOutput(m_fileName);
 }
 
+
+
 bool System::integrate(int Nt) {
-    return integrate(Nt, true);
-}
-
-
-bool System::integrate(int Nt, bool plotting) {
     if (m_integrating == false) {
         setupSystem();
         m_integrating = true;
@@ -86,11 +85,7 @@ bool System::integrate(int Nt, bool plotting) {
         cout << endl << "### WARNING ###: No system size set. Using default value (1,1,1)." << endl << endl;
         m_systemSize = std::vector<double>{1,1,1};
     }
-    m_plotting = plotting;
-    if (m_plotting) {
-        setupGUI();
-        m_mainWindow->show();
-    }
+
     m_Nt       = Nt;
     m_sampler->setNtDt(Nt,m_dt);
 
@@ -112,9 +107,6 @@ bool System::integrate(int Nt, bool plotting) {
     }
     printProgress(Nt);
 
-    if (m_plotting) {
-        plot();
-    }
     return true;
 }
 
@@ -209,12 +201,6 @@ void System::printProgress(int t) {
         cout << endl << "Integration finished. Total elapsed time: " << elapsedTime << endl << endl;
     }
 }
-
-void System::plot() {
-    m_mainWindow->plot(m_n, m_Nt, m_sampler);
-    m_mainWindow->show();
-}
-
 
 
 void System::applyPeriodicBoundaryConditions() {

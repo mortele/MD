@@ -4,44 +4,30 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "QApplication"
-#include "Integrators/integrator.h"
-#include "Potentials/potential.h"
-#include "InitialConditions/initialcondition.h"
-#include "Thermostats/thermostat.h"
-#include "GUI/mainwindow.h"
-#include "vec.h"
-#include "atom.h"
-#include "sampler.h"
-#include "realtime.h"
+#include <cmath>
 
 
 class System {
 public:
-    System(int, char**, const char*);
+    System();
     void setTimeStep(double);
-    void setIntegrator(Integrator*);
-    void setPotential(Potential*);
-    void setInitialCondition(InitialCondition*);
+    void setIntegrator(class Integrator*);
+    void setPotential(class Potential*);
+    void setInitialCondition(class InitialCondition*);
     void setPeriodicBoundaryConditions(std::vector<double>);
     void setPeriodicBoundaryConditions(bool);
-    void setThermostat(Thermostat*);
+    void setThermostat(class Thermostat*);
     void setThermostatActive(bool);
     void setSystemSize(std::vector<double>);
-    void setupGUI();
     void setupSystem();
     bool integrate(int Nt);
-    bool integrate(int Nt, bool plotting);
     void applyPeriodicBoundaryConditions();
     void dumpInfoToTerminal();
     void printProgress(int);
     int  getN()                             { return m_n; }
-    bool getPlotting()                      { return m_plotting; }
     bool getPeriodicBoundaryConditions()    { return m_periodicBoundaryConditions; }
-    std::vector<Atom*>  getAtoms()          { return m_atoms; }
+    std::vector<class Atom*>  getAtoms()    { return m_atoms; }
     std::vector<double> getSystemSize()     { return m_systemSize; }
-
-    QApplication m_app;
 
 private:
 
@@ -50,13 +36,11 @@ private:
         public:
             FileOutput(const char*);
             ~FileOutput();
-            bool saveState(std::vector<Atom*> atoms, int n);
+            bool saveState(std::vector<class Atom*> atoms, int n);
 
         private:
             std::fstream m_outFile;
     };
-
-    void plot();
 
     int                 m_skip                          = 0;
     int                 m_n                             = 0;
@@ -67,19 +51,17 @@ private:
     double              m_startTime                     = 0;
     double              m_lastTimeStepTime              = 0;
     const char*         m_fileName;
-    bool                m_plotting                      = false;
     bool                m_periodicBoundaryConditions    = false;
     bool                m_thermostatActive              = false;
     bool                m_integrating                   = false;
     std::vector<double> m_systemSize                    = std::vector<double>(3);
     std::vector<double> m_totalMomentum                 = std::vector<double>(3);
-    Integrator*         m_integrator                    = nullptr;
-    Potential*          m_potential                     = nullptr;
-    InitialCondition*   m_initialCondition              = nullptr;
-    std::vector<Atom*>  m_atoms                         = std::vector<Atom*>();
-    MainWindow*         m_mainWindow                    = nullptr;
-    Sampler*            m_sampler                       = nullptr;
-    FileOutput*         m_fileOutput                    = nullptr;
-    Thermostat*         m_thermostat                    = nullptr;
+    class Integrator*         m_integrator              = nullptr;
+    class Potential*          m_potential               = nullptr;
+    class InitialCondition*   m_initialCondition        = nullptr;
+    std::vector<class Atom*>  m_atoms                   = std::vector<Atom*>();
+    class Sampler*            m_sampler                 = nullptr;
+    class Thermostat*         m_thermostat              = nullptr;
+    FileOutput*               m_fileOutput              = nullptr;
 };
 

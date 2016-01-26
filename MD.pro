@@ -1,7 +1,6 @@
 TEMPLATE = app
 CONFIG += console c++11
 CONFIG += c++11
-QT += widgets printsupport
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -O3
 
@@ -13,8 +12,6 @@ SOURCES += main.cpp \
     Potentials/potential.cpp \
     Potentials/lennardjones.cpp \
     Potentials/gravitational.cpp \
-    ../../qcustomplot/qcustomplot.cpp \
-    GUI/mainwindow.cpp \
     system.cpp \
     InitialConditions/initialcondition.cpp \
     InitialConditions/twobody.cpp \
@@ -39,8 +36,6 @@ HEADERS += \
     Potentials/potential.h \
     Potentials/lennardjones.h \
     Potentials/gravitational.h \
-    ../../qcustomplot/qcustomplot.h \
-    GUI/mainwindow.h \
     system.h \
     InitialConditions/initialcondition.h \
     InitialConditions/twobody.h \
@@ -56,7 +51,4 @@ HEADERS += \
     Thermostats/thermostat.h \
     Thermostats/berendsenthermostat.h \
     celllist.h
-
-FORMS += \
-    mainwindow.ui
 
