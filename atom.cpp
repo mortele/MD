@@ -22,9 +22,7 @@ void Atom::setPosition(double x, int index) {
     this->position.at(index) = x;
 }
 
-void Atom::addPosition(double x, int index) {
-    this->position.at(index) += x;
-}
+
 
 void Atom::setVelocity(std::vector<double>  velocity) {
     for (int k=0; k<3; k++) {
@@ -36,9 +34,7 @@ void Atom::setVelocity(double v, int index) {
     this->velocity.at(index) = v;
 }
 
-void Atom::addVelocity(double v, int index) {
-    this->velocity.at(index) += v;
-}
+
 
 void Atom::setForce(std::vector<double>  force) {
     for (int k=0; k<3; k++) {
@@ -56,9 +52,6 @@ void Atom::addForce(std::vector<double>  dforce) {
     }
 }
 
-void Atom::addForce(double f, int index) {
-    this->force.at(index) += f;
-}
 
 void Atom::setMass(double mass) {
     this->mass = mass;

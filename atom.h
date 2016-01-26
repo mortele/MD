@@ -10,17 +10,27 @@ public:
 
     void setPosition(std::vector<double>  position);
     void setPosition(double x, int index);
-    void addPosition(double x, int index);
+    //void addPosition(double x, int index);
     void setVelocity(std::vector<double>  velocity);
     void setVelocity(double v, int index);
-    void addVelocity(double v, int index);
+    //void addVelocity(double v, int index);
     void setForce           (std::vector<double>  force);
     void setForce           (double f, int index);
     void addForce           (std::vector<double>  dforce);
-    void addForce           (double f, int index);
+    //void addForce           (double f, int index);
     void setMass            (double mass);
     void setName            (std::string name);
     void setCellListIndex   (int cellListIndex, int index);
+
+    inline void addPosition(double x, int index) {
+        this->position.at(index) += x;
+    }
+    inline void addVelocity(double v, int index) {
+        this->velocity.at(index) += v;
+    }
+    inline void addForce(double f, int index) {
+        this->force.at(index) += f;
+    }
 
     double              getMass()           { return this->mass; }
     std::vector<double> getPosition()       { return this->position; }
