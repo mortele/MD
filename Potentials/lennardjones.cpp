@@ -24,7 +24,8 @@ LennardJones::LennardJones(double epsilon,
                            System* system) :
     LennardJones(epsilon, sigma, systemSize, system) {
     this->cellListsActive = true;
-    this->rCut = rCut;
+    this->rCut  = rCut;
+    this->rCut2 = rCut * rCut;
     this->cellList = new CellList(this->system, this->rCut);
 }
 
@@ -32,7 +33,7 @@ void LennardJones::computeForces(std::vector<Atom*> atoms, int n) {
 
     if (this->cellListsActive &&
         (this->timeStepsSinceLastCellListUpdate == -1 ||
-         this->timeStepsSinceLastCellListUpdate >= 1)) {
+         this->timeStepsSinceLastCellListUpdate >= 20)) {
 
         this->cellList->computeCellLists(atoms, n);
     }
@@ -55,7 +56,8 @@ void LennardJones::computeForces(std::vector<Atom*> atoms, int n) {
 
         for (int j=startIndexj; j < n; j++) {
             if (this->cellListsActive == true) {
-                compute = this->cellList->isNeighbour(atoms.at(i)->getCellListIndex(),
+                compute = (i != j) *
+                          this->cellList->isNeighbour(atoms.at(i)->getCellListIndex(),
                                                       atoms.at(j)->getCellListIndex());
             } else {
                 compute = true;
@@ -72,20 +74,19 @@ void LennardJones::computeForces(std::vector<Atom*> atoms, int n) {
                     }
                     r2 += dr.at(k)*dr.at(k);
                 }
-                if ((this->cellListsActive) && (r2 < this->rCut)) {
-                    r2  = 1.0 / r2;
-                    double r6  = r2*r2*r2;
-                    double r12 = r6*r6;
-                    double r8  = r6*r2; //r2*r2*r2*r2;
-                    double r14 = r8*r6; //r8*r2*r2*r2;
-                    this->potentialEnergy += 4*this->epsilon * (this->sigma12*r12-this->sigma6*r6);
-                    f = 24 * this->epsilon * (this->sigma6 * r8 - 2*this->sigma12 * r14);
 
-                    for (int k=0; k < 3; k++) {
-                        df = f * dr.at(k);
-                        atoms.at(i)->addForce( df, k);
-                        atoms.at(j)->addForce(-df, k);
-                    }
+                r2  = 1.0 / r2;
+                double r6  = r2*r2*r2;
+                double r12 = r6*r6;
+                double r8  = r6*r2; //r2*r2*r2*r2;
+                double r14 = r8*r6; //r8*r2*r2*r2;
+                this->potentialEnergy += 4*this->epsilon * (this->sigma12*r12-this->sigma6*r6);
+                f = 24 * this->epsilon * (this->sigma6 * r8 - 2*this->sigma12 * r14);
+
+                for (int k=0; k < 3; k++) {
+                    df = f * dr.at(k);
+                    atoms.at(i)->addForce( df, k);
+                    atoms.at(j)->addForce(-df, k);
                 }
             }
         }

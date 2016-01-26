@@ -18,7 +18,8 @@ public:
 protected:
     int  timeStepsSinceLastCellListUpdate = -1;
     bool cellListsActive = false;
-    double rCut = 0;
+    double rCut  = 0;
+    double rCut2 = 0;
     class CellList* cellList = nullptr;
     class System*   system = nullptr;
 };

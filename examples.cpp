@@ -145,13 +145,10 @@ System*Examples::lennardJonesBerendsen(int argc, char** argv) {
 }
 
 System*Examples::lennardJonesCellLists(int argc, char** argv) {
-    int     nUnitCells = 2;                 // Number of unit cells in each dimension.
-    int     n = 4*std::pow(nUnitCells,3);   // Number of atoms.
+    int     nUnitCells  = 8;                // Number of unit cells in each dimension.
     double  T           = 1.0;              // Temperature, in units of 119.8 K.
-    double  TTarget     = 0.5;              // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
-    double  tau         = 10.0;             // Relaxation time used by the thermostat, in units of 119.8 K.
     double  b           = 5.26;             // Lattice constant, in units of 1.0 Å.
-    double  dt          = 0.001;             // Time step.
+    double  dt          = 0.01;             // Time step.
     double  sideLength  = nUnitCells*b;     // Size of box sides.
     std::vector<double> boxSize{sideLength, // Vector of box size.
                                 sideLength,
@@ -159,11 +156,11 @@ System*Examples::lennardJonesCellLists(int argc, char** argv) {
 
     System* system = new System          (argc, argv, "../MD/movie.xyz");
     system->setIntegrator                (new VelocityVerlet(dt, system));
-    system->setPotential                 (new LennardJones(1.0, 3.405, boxSize, b, system));
+    system->setPotential                 (new LennardJones(1.0, 3.405, boxSize, 2*b, system));
     system->setInitialCondition          (new FCC(nUnitCells, b, T));
     system->setPeriodicBoundaryConditions(true);
     system->setSystemSize                (boxSize);
-    system->integrate(3, false);
+    system->integrate(100, false);
     return system;
 }
 

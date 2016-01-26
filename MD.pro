@@ -2,6 +2,8 @@ TEMPLATE = app
 CONFIG += console c++11
 CONFIG += c++11
 QT += widgets printsupport
+QMAKE_CXXFLAGS_RELEASE -= -O2
+QMAKE_CXXFLAGS_RELEASE += -O3
 
 SOURCES += main.cpp \
     atom.cpp \

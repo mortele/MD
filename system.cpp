@@ -171,9 +171,13 @@ void System::printProgress(int t) {
         m_currentTime   = getRealTime();
         double progress     = ((double) t) / m_Nt;
         double elapsedTime  = m_currentTime - m_startTime;
-        double estimatedTime = elapsedTime+
-                               (m_currentTime-m_oldTime+m_lastTimeStepTime)*
-                               (1-progress)*m_Nt/(2.0 * m_skip);
+        double lastTwoAverage = (m_currentTime-m_oldTime+m_lastTimeStepTime) / 2.0;
+        double estimatedTime = elapsedTime+lastTwoAverage*(1-progress)*m_Nt/m_skip;
+        if (lastTwoAverage > 1 && m_skip > 1) {
+            m_skip -= 1;
+        } else if (lastTwoAverage < 0.1) {
+            m_skip += 1;
+        }
         double minutes = 0;
         if (estimatedTime > 200) {
             minutes = std::round(estimatedTime/60.0);
