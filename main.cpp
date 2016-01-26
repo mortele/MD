@@ -30,11 +30,7 @@ int main() {
     System* system;
     //system = Examples::coldCollapseCluster();
     //system = Examples::uniformBoxNoPotential();
-    //system = Examples::staticFCCLattice();
-    //system = Examples::lennardJonesFCC();
-    //system = Examples::lennardJonesBerendsen();
-    //system = Examples::lennardJonesCellLists();
-    system = Examples::lennardJonesBerendsenCellLists();
+    system = Examples::lennardJonesFFC();
 
     return 0;
 }

@@ -8,22 +8,15 @@ using std::endl;
 LennardJones::LennardJones(double epsilon,
                            double sigma,
                            std::vector<double> systemSize,
+                           double rCut,
                            System* system) :
-        Potential(system) {
+    Potential(system) {
     m_epsilon = epsilon;
     m_sigma   = sigma;
     m_sigma6  = sigma*sigma*sigma*sigma*sigma*sigma;
     m_24epsilonSigma6 = 24*m_epsilon*m_sigma6;
     m_4epsilonSigma6 = 4*m_epsilon*m_sigma6;
     m_systemSize = systemSize;
-}
-
-LennardJones::LennardJones(double epsilon,
-                           double sigma,
-                           std::vector<double> systemSize,
-                           double rCut,
-                           System* system) :
-        LennardJones(epsilon, sigma, systemSize, system) {
     m_cellListsActive = true;
     m_rCut  = rCut;
     m_rCut2 = rCut * rCut;
@@ -34,36 +27,22 @@ LennardJones::LennardJones(double epsilon,
 
 void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
 
-    if (m_cellListsActive &&
-        (m_timeStepsSinceLastCellListUpdate == -1 ||
-         m_timeStepsSinceLastCellListUpdate >= 20)) {
-
+    if (m_timeStepsSinceLastCellListUpdate == -1 ||
+        m_timeStepsSinceLastCellListUpdate >= 10) {
         m_cellList->computeCellLists(atoms, n);
     }
     m_timeStepsSinceLastCellListUpdate += 1;
     setForcesToZero(atoms, n);
-    m_potentialEnergy   = 0;
-    int    startIndexj      = 0;
+    m_potentialEnergy       = 0;
     double dr2              = 0;
     double df               = 0;
     bool   compute          = false;
     std::vector<double> dr{0,0,0};
 
     for (int i=0; i < n; i++) {
-        if (m_cellListsActive == false) {
-            startIndexj = i+1;
-        } else {
-            startIndexj = 0;
-        }
-
-        for (int j=startIndexj; j < n; j++) {
-            if (m_cellListsActive == true) {
-                compute = (i != j) *
-                          m_cellList->isNeighbour(atoms.at(i)->getCellListIndex(),
-                                                      atoms.at(j)->getCellListIndex());
-            } else {
-                compute = true;
-            }
+        for (int j=0; j < n; j++) {
+            compute = (i != j) * m_cellList->isNeighbour(atoms.at(i)->getCellListIndex(),
+                                                         atoms.at(j)->getCellListIndex());
 
             if (compute) {
                 dr2 = 0;

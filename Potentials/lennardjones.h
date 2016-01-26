@@ -8,17 +8,7 @@
 
 class LennardJones : public Potential {
 public:
-    LennardJones(double epsilon,
-                 double sigma,
-                 std::vector<double> systemSize,
-                 class System* system);
-
-    LennardJones(double epsilon,
-                 double sigma,
-                 std::vector<double> systemSize,
-                 double rCut,
-                 class System* system);
-
+    LennardJones(double, double, std::vector<double>, double, class System*);
     void   computeForces    (const std::vector<Atom*> & atoms, int n);
     double computePotential (const std::vector<Atom*> & atoms, int n);
     std::string getName() { return "Lennard-Jones"; }

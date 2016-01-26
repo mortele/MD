@@ -11,9 +11,9 @@ public:
     std::string getName() { return "Velocity Verlet"; }
 
 private:
-    double  dtHalf;
-    bool    firstStep;
-    bool    periodicBoundaryConditions;
-    System* system;
+    double  m_dtHalf;
+    bool    m_firstStep;
+    bool    m_periodicBoundaryConditions;
+    System* m_system;
 };
 

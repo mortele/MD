@@ -10,15 +10,15 @@ public:
     virtual void  setupInitialCondition() = 0;
 
     void    removeLinearMomentum();
-    std::vector<Atom*>   getAtoms()  { return this->atoms; }
-    int     getN()      { return this->n; }
-    std::vector<double> getTotalMomentum() { return this->totalMomentum; }
+    std::vector<Atom*>   getAtoms()  { return m_atoms; }
+    int     getN()      { return m_n; }
+    std::vector<double> getTotalMomentum() { return m_totalMomentum; }
 
 
 protected:
-    int   n = 0;
-    std::vector<Atom*> atoms = std::vector<Atom*>();
-    bool  setupDone = false;
-    std::vector<double> totalMomentum = std::vector<double>(3);
+    int                 m_n             = 0;
+    std::vector<Atom*>  m_atoms         = std::vector<Atom*>();
+    bool                m_setupDone     = false;
+    std::vector<double> m_totalMomentum = std::vector<double>(3);
 };
 

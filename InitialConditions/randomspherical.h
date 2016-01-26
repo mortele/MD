@@ -11,7 +11,6 @@ public:
     void setupInitialCondition();
     std::string getName() { return "Random spherical"; }
 private:
-    int n;
-    double R0;
+    double m_R0;
 };
 

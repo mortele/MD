@@ -10,9 +10,7 @@ public:
     void adjustVelocities(const std::vector<Atom*> & atom, int n, double instantaneousTemperature);
 
 private:
-    double targetTemperature;
-    double tau;
-    double dt;
-    double dtOverTau;
+    double m_tau;
+    double m_dtOverTau;
 };
 

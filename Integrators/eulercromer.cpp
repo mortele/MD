@@ -9,7 +9,7 @@ EulerCromer::EulerCromer(double dt) : Integrator(dt) {
 }
 
 void EulerCromer::advance(const std::vector<Atom*> & atoms, int n) {
-    this->potential->computeForces(atoms, n);
+    m_potential->computeForces(atoms, n);
 
     /*std::vector<double> velocity{0,0,0};
     std::vector<double> position{0,0,0};
@@ -22,10 +22,10 @@ void EulerCromer::advance(const std::vector<Atom*> & atoms, int n) {
         force    = atoms[i].getForce();*/
 
         for (int k=0; k<3; k++) {
-            atoms.at(i)->addVelocity(this->dt/atoms.at(i)->getMass() * atoms.at(i)->getForce().at(k),k );
-            atoms.at(i)->addPosition(this->dt*atoms.at(i)->getVelocity().at(k), k);
-            /*atoms[i].setVelocity(velocity.at(k) + this->dt/mass * force.at(k),    k);
-            atoms[i].setPosition(position.at(k) + this->dt      * velocity.at(k), k);*/
+            atoms.at(i)->addVelocity(m_dt/atoms.at(i)->getMass() * atoms.at(i)->getForce().at(k),k );
+            atoms.at(i)->addPosition(m_dt*atoms.at(i)->getVelocity().at(k), k);
+            /*atoms[i].setVelocity(velocity.at(k) + m_dt/mass * force.at(k),    k);
+            atoms[i].setPosition(position.at(k) + m_dt      * velocity.at(k), k);*/
 
         }
     }

@@ -8,43 +8,43 @@ public:
     Atom(double mass);
     Atom(std::string name, double mass);
 
-    void setPosition(std::vector<double>  position);
-    void setPosition(double x, int index);
-    //void addPosition(double x, int index);
-    void setVelocity(std::vector<double>  velocity);
-    void setVelocity(double v, int index);
-    //void addVelocity(double v, int index);
+    void setPosition        (std::vector<double>  position);
+    void setPosition        (double x, int index);
+    void setVelocity        (std::vector<double>  velocity);
+    void setVelocity        (double v, int index);
     void setForce           (std::vector<double>  force);
     void setForce           (double f, int index);
     void addForce           (std::vector<double>  dforce);
-    //void addForce           (double f, int index);
     void setMass            (double mass);
     void setName            (std::string name);
     void setCellListIndex   (int cellListIndex, int index);
 
     inline void addPosition(double x, int index) {
-        this->position.at(index) += x;
+        m_position.at(index) += x;
     }
     inline void addVelocity(double v, int index) {
-        this->velocity.at(index) += v;
+        m_velocity.at(index) += v;
     }
     inline void addForce(double f, int index) {
-        this->force.at(index) += f;
+        m_force.at(index) += f;
+    }
+    inline void multiplyVelocity(double factor, int index) {
+        m_velocity.at(index) = m_velocity.at(index) * factor;
     }
 
-    double              getMass()           { return this->mass; }
-    std::vector<double> getPosition()       { return this->position; }
-    std::vector<double> getVelocity()       { return this->velocity; }
-    std::vector<double> getForce()          { return this->force; }
-    std::string         getName()           { return this->name; }
-    std::vector<int>    getCellListIndex()  { return this->cellListIndex; }
-    int getCellListIndex(int index)         { return this->cellListIndex.at(index); }
+    double              getMass()           { return m_mass; }
+    std::vector<double> getPosition()       { return m_position; }
+    std::vector<double> getVelocity()       { return m_velocity; }
+    std::vector<double> getForce()          { return m_force; }
+    std::string         getName()           { return m_name; }
+    std::vector<int>    getCellListIndex()  { return m_cellListIndex; }
+    int getCellListIndex(int index)         { return m_cellListIndex.at(index); }
 
 private:
-    double  mass = 1.0;
-    std::vector<int>    cellListIndex{-1,-1,-1};
-    std::vector<double> position        = std::vector<double>(3);
-    std::vector<double> velocity        = std::vector<double>(3);
-    std::vector<double> force           = std::vector<double>(3);
-    std::string name = "Ar";
+    double              m_mass            = 1.0;
+    std::string         m_name            = "Ar";
+    std::vector<double> m_position        = std::vector<double>(3);
+    std::vector<double> m_velocity        = std::vector<double>(3);
+    std::vector<double> m_force           = std::vector<double>(3);
+    std::vector<int>    m_cellListIndex{-1,-1,-1};
 };

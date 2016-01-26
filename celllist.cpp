@@ -37,7 +37,6 @@ int CellList::computeCellNumber(double x, int index) {
 
 bool CellList::isNeighbour(const std::vector<int> & atom1cellList,
                            const std::vector<int> & atom2cellList) {
-    //int* dist = new int[3];
     for (int k=0; k<3; k++) {
         dist.at(k) = atom2cellList.at(k) - atom1cellList.at(k);
 

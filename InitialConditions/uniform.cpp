@@ -1,27 +1,24 @@
 #include "uniform.h"
 
 Uniform::Uniform(int n, std::vector<double> boxSize, double temperature) {
-    InitialCondition::setupDone = false;
-    InitialCondition::n         = n;
-    this->boxSize       = boxSize;
-    this->n             = n;
-    this->temperature   = temperature;
+    m_setupDone = false;
+    m_boxSize       = boxSize;
+    m_n             = n;
+    m_temperature   = temperature;
 }
 
 void Uniform::setupInitialCondition() {
-    //this->atoms = new Atom[this->n];
 
-    for (int i=0; i<this->n; i++) {
-        //double m = atoms[i].getMass();
+    for (int i=0; i<m_n; i++) {
         double m = 1.0;
-        this->atoms.push_back(new Atom());
-        this->atoms.at(i)->setMass(m);
+        m_atoms.push_back(new Atom());
+        m_atoms.at(i)->setMass(m);
 
         for (int k=0; k<3; k++) {
-            atoms.at(i)->setPosition(Random::nextDouble()*this->boxSize.at(k), k);
-            atoms.at(i)->setVelocity(Random::nextGaussian(0, std::sqrt(this->temperature / m)), k);
+            m_atoms.at(i)->setPosition(Random::nextDouble()*m_boxSize.at(k), k);
+            m_atoms.at(i)->setVelocity(Random::nextGaussian(0, std::sqrt(m_temperature / m)), k);
         }
     }
-    InitialCondition::setupDone = true;
+    m_setupDone = true;
 }
 

@@ -11,6 +11,6 @@ public:
     std::string getName() { return "Two-body"; }
 
 private:
-    double e = 0.0;
+    double m_e = 0.0;
 };
 

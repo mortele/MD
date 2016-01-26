@@ -1,26 +1,26 @@
 #include "initialcondition.h"
 
 InitialCondition::InitialCondition() {
-    this->setupDone = false;
+    m_setupDone = false;
 }
 
 void InitialCondition::removeLinearMomentum() {
     for (int k=0; k<3; k++) {
-        this->totalMomentum.at(k) = 0;
+        m_totalMomentum.at(k) = 0;
     }
-    for (int i=0; i<this->n; i++) {
+    for (int i=0; i<m_n; i++) {
         for (int k=0; k<3; k++) {
-            totalMomentum.at(k) += this->atoms.at(i)->getVelocity().at(k) *
-                                   this->atoms.at(i)->getMass();
+            m_totalMomentum.at(k) += m_atoms.at(i)->getVelocity().at(k) *
+                                     m_atoms.at(i)->getMass();
         }
     }
     for (int k=0; k<3; k++) {
-        totalMomentum.at(k) /= (double) this->n;
+        m_totalMomentum.at(k) /= (double) m_n;
     }
-    for (int i=0; i<this->n; i++) {
+    for (int i=0; i<m_n; i++) {
         for (int k=0; k<3; k++) {
-            this->atoms.at(i)->addVelocity(-totalMomentum.at(k) /
-                                       this->atoms.at(i)->getMass(), k);
+            m_atoms.at(i)->addVelocity(-m_totalMomentum.at(k) /
+                                        m_atoms.at(i)->getMass(), k);
         }
     }
 }

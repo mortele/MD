@@ -10,23 +10,19 @@ using std::endl;
 
 BerendsenThermostat::BerendsenThermostat(double targetTemperature,
                                          double tau,
-                                         double dt) {
-    this->targetTemperature = targetTemperature;
-    this->tau = tau;
-    this->dt = dt;
-    this->dtOverTau = dt/tau;
+                                         double dt) :
+        Thermostat(targetTemperature, dt) {
+    m_tau = tau;
+    m_dtOverTau = dt/tau;
 }
 
 void BerendsenThermostat::adjustVelocities(const std::vector<Atom*> & atoms,
                                            int n,
                                            double instantaneousTemperature) {
-    std::vector<double> velocity;
-
     for (int i=0; i < n; i++) {
-        double gamma = std::sqrt(1+this->dtOverTau*(this->targetTemperature/instantaneousTemperature-1));
-        velocity = atoms.at(i)->getVelocity();
+        double gamma = std::sqrt(1+m_dtOverTau*(m_targetTemperature/instantaneousTemperature-1));
         for (int k=0; k<3; k++) {
-            atoms.at(i)->setVelocity(velocity.at(k) * gamma, k);
+            atoms.at(i)->multiplyVelocity(gamma, k);
         }
     }
 }

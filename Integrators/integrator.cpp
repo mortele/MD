@@ -1,10 +1,10 @@
 #include "integrator.h"
 
 Integrator::Integrator(double dt) {
-    this->dt = dt;
+    m_dt = dt;
 }
 
 void Integrator::setPotential(Potential* potential) {
-    this->potential = potential;
+    m_potential = potential;
 }
 

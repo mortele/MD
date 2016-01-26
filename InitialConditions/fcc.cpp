@@ -11,24 +11,22 @@ FCC::FCC(int    numberOfUnitCells,
          double latticeConstant,
          double temperature         ) {
 
-    this->numberOfUnitCells = numberOfUnitCells;
-    this->latticeConstant   = latticeConstant;
-    this->n                 = 4 * std::pow(numberOfUnitCells,3);
-    this->temperature       = temperature;
-
-    InitialCondition::n = this->n;
-    InitialCondition::setupDone = false;
+    m_numberOfUnitCells = numberOfUnitCells;
+    m_latticeConstant   = latticeConstant;
+    m_n                 = 4 * std::pow(numberOfUnitCells,3);
+    m_temperature       = temperature;
+    m_setupDone = false;
 }
 
 void FCC::setupInitialCondition() {
     int counter = 0;
 
-    for (int i=0; i<this->numberOfUnitCells; i++) {
-        for (int j=0; j<this->numberOfUnitCells; j++) {
-            for (int k=0; k<this->numberOfUnitCells; k++) {
+    for (int i=0; i<m_numberOfUnitCells; i++) {
+        for (int j=0; j<m_numberOfUnitCells; j++) {
+            for (int k=0; k<m_numberOfUnitCells; k++) {
 
-                double b = this->latticeConstant;
-                double bHalf = this->latticeConstant/2.0;
+                double b = m_latticeConstant;
+                double bHalf = m_latticeConstant/2.0;
                 std::vector<double> cellOrigin{i*b, j*b, k*b};
                 std::vector<double> atom0{cellOrigin.at(0), cellOrigin.at(1), cellOrigin.at(2)};
                 std::vector<double> atom1{cellOrigin.at(0), cellOrigin.at(1), cellOrigin.at(2)};
@@ -42,31 +40,31 @@ void FCC::setupInitialCondition() {
                 atom3.at(0) += bHalf;
                 atom3.at(2) += bHalf;
 
-                this->atoms.push_back(new Atom());
-                this->atoms.push_back(new Atom());
-                this->atoms.push_back(new Atom());
-                this->atoms.push_back(new Atom());
+                m_atoms.push_back(new Atom());
+                m_atoms.push_back(new Atom());
+                m_atoms.push_back(new Atom());
+                m_atoms.push_back(new Atom());
 
-                this->atoms.at(counter+0)->setPosition(atom0);
-                this->atoms.at(counter+1)->setPosition(atom1);
-                this->atoms.at(counter+2)->setPosition(atom2);
-                this->atoms.at(counter+3)->setPosition(atom3);
+                m_atoms.at(counter+0)->setPosition(atom0);
+                m_atoms.at(counter+1)->setPosition(atom1);
+                m_atoms.at(counter+2)->setPosition(atom2);
+                m_atoms.at(counter+3)->setPosition(atom3);
 
                 counter += 4;
             }
         }
     }
 
-    for (int i=0; i<this->n; i++) {
+    for (int i=0; i<m_n; i++) {
         double m = 39.948;          // Mass of Argon in atomic units.
-        atoms.at(i)->setMass(m);
+        m_atoms.at(i)->setMass(m);
 
         for (int k=0; k<3; k++) {
-            atoms.at(i)->setVelocity(Random::nextGaussian(0, std::sqrt(this->temperature / m)), k);
+            m_atoms.at(i)->setVelocity(Random::nextGaussian(0, std::sqrt(m_temperature / m)), k);
         }
     }
-    this->removeLinearMomentum();
-    InitialCondition::setupDone = true;
+    removeLinearMomentum();
+    m_setupDone = true;
 }
 
 

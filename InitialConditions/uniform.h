@@ -13,8 +13,7 @@ public:
     std::string getName() { return "Uniform random"; }
 
 private:
-    int n;
-    std::vector<double> boxSize;
-    double temperature;
+    std::vector<double> m_boxSize;
+    double              m_temperature;
 };
 

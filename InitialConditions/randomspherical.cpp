@@ -2,16 +2,13 @@
 
 
 RandomSpherical::RandomSpherical(int n, double R0) {
-    InitialCondition::setupDone = false;
-    this->n  = n;
-    this->R0 = R0;
+    m_setupDone = false;
+    m_n  = n;
+    m_R0 = R0;
 }
 
 
 void RandomSpherical::setupInitialCondition() {
-    InitialCondition::n = this->n;
-    //this->atoms = new Atom[this->n];
-
     using std::cos;
     using std::sin;
     using std::pow;
@@ -19,7 +16,7 @@ void RandomSpherical::setupInitialCondition() {
     using std::cout;
     using std::endl;
 
-    for (int i=0; i<this->n; i++) {
+    for (int i=0; i<m_n; i++) {
         double mass = Random::nextGaussian(10.0, 1.0);
 
         double u,v,w,x,y,z,r,theta,phi;
@@ -27,24 +24,21 @@ void RandomSpherical::setupInitialCondition() {
         v = (Random::nextDouble());
         w = (Random::nextDouble());
 
-        r     = R0*pow(u, 1.0/3.0);
+        r     = m_R0*pow(u, 1.0/3.0);
         theta = acos(1-2*v);
         phi   = 2*acos(-1.0)*w;
 
-        x = r*sin(theta)*cos(phi)+this->R0;
-        y = r*sin(theta)*sin(phi)+this->R0;
-        z = r*cos(theta)         +this->R0;
+        x = r*sin(theta)*cos(phi)+m_R0;
+        y = r*sin(theta)*sin(phi)+m_R0;
+        z = r*cos(theta)         +m_R0;
 
-        this->atoms.push_back(new Atom());
-        this->atoms.at(i)->setMass(mass);
-        this->atoms.at(i)->setPosition(std::vector<double>{x,y,z});
-        this->atoms.at(i)->setVelocity(std::vector<double>{0,0,0});
-        /*this->atoms[i].setMass(mass);
-        this->atoms[i].setPosition(std::vector<double>{x,y,z});
-        this->atoms[i].setVelocity(std::vector<double>{0,0,0});*/
+        m_atoms.push_back(new Atom());
+        m_atoms.at(i)->setMass(mass);
+        m_atoms.at(i)->setPosition(std::vector<double>{x,y,z});
+        m_atoms.at(i)->setVelocity(std::vector<double>{0,0,0});
     }
 
-    InitialCondition::setupDone = true;
+    m_setupDone = true;
 }
 
 
