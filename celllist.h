@@ -8,6 +8,8 @@ public:
     void computeCellLists(std::vector<class Atom*> atoms, int n);
     int computeCellNumber(double x, int index);
     int getNumberOfCellsInEachDirection() { return m_numberOfCellsInEachDirection; }
+    bool isNeighbour(std::vector<int> atom1cellList,
+                     std::vector<int> atom2cellList);
 
 private:
     int m_numberOfCellsInEachDirection = 0;
