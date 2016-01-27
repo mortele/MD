@@ -25,8 +25,7 @@
 using std::cout;
 using std::endl;
 
-/*
- * i*ny*nz + j*nz + k
+/* i*ny*nz + j*nz + k
  *
  * i = index/(ny*nz)
  * j = (index/nz) % ny
