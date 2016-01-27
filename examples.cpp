@@ -159,7 +159,7 @@ System*Examples::lennardJonesBerendsenCellLists() {
     double  TTarget      = 1.0;             // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
     double  tau          = 0.1;             // Relaxation time used by the thermostat, in units of 119.8 K.
     double  b            = 5.26;            // Lattice constant, in units of 1.0 Å.
-    double  dt           = 0.01;            // Time step.
+    double  dt           = 0.05;            // Time step.
     double  sideLength   = nUnitCells*b;    // Size of box sides.
     const char* fileName = "../MD/movie.xyz";
     std::vector<double> boxSize{sideLength, // Vector of box size.
@@ -175,7 +175,7 @@ System*Examples::lennardJonesBerendsenCellLists() {
     system->setSystemSize                (boxSize);
 
     system->setThermostatActive(true);
-    system->integrate(10000);
+    system->integrate(5000);
 
     //system->setThermostatActive(false);
     //system->integrate(200);

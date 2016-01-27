@@ -33,11 +33,11 @@ public:
     }
 
     double              getMass()           { return this->mass; }
-    std::vector<double> getPosition()       { return this->position; }
-    std::vector<double> getVelocity()       { return this->velocity; }
-    std::vector<double> getForce()          { return this->force; }
+    std::vector<double>& getPosition()       { return this->position; }
+    std::vector<double>& getVelocity()       { return this->velocity; }
+    std::vector<double>& getForce()          { return this->force; }
     std::string         getName()           { return this->name; }
-    std::vector<int>    getCellListIndex()  { return this->cellListIndex; }
+    std::vector<int>&    getCellListIndex()  { return this->cellListIndex; }
     int getCellListIndex(int index)         { return this->cellListIndex.at(index); }
 
 private:
