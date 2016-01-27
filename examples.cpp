@@ -86,9 +86,8 @@ System*Examples::lennardJonesFFC() {
     system->setSystemSize                (boxSize);
     system->setThermostatActive          (true);
     system->enablePressureSampling       (true);
-    system->integrate                    (200);
+    system->integrate                    (10);
     system->setThermostatActive          (false);
-    system->integrate                    (200);
     return system;
 }
 

@@ -25,6 +25,24 @@
 using std::cout;
 using std::endl;
 
+/*
+ * i*ny*nz + j*nz + k
+ *
+ * i = index/(ny*nz)
+ * j = (index/nz) % ny
+ * k = index % nz
+ */
+
+
+template <typename T>
+T &at(std::vector<T> &vec, int index) {
+    #ifdef VECTOR_LOOKUP_DEBUG
+        return vec.at(index);
+    #else
+        return vec[index];
+    #endif
+}
+
 int main() {
 
     System* system;
@@ -34,9 +52,6 @@ int main() {
 
     return 0;
 }
-
-
-
 
 
 

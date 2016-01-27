@@ -37,13 +37,13 @@ int CellList::computeCellNumber(double x, int index) {
 bool CellList::isNeighbour(const std::vector<int> & atom1cellList,
                            const std::vector<int> & atom2cellList) {
     for (int k=0; k<3; k++) {
-        dist.at(k) = atom2cellList.at(k) - atom1cellList.at(k);
+        dist[k] = atom2cellList[k] - atom1cellList[k];
 
         // Check if the two cell lists are neighbours over the periodic
         // boundary.
-        if ((atom1cellList.at(k) == m_numberOfCellsInEachDirection) &&
-            (atom2cellList.at(k) == 0)) {
-            dist.at(k) = 1;
+        if ((atom1cellList[k] == m_numberOfCellsInEachDirection) &&
+            (atom2cellList[k] == 0)) {
+            dist[k] = 1;
         }
     }
 
