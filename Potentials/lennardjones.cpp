@@ -74,14 +74,14 @@ void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
                         }
                         dr2 += dr[k]*dr[k];
                     }
-                    if (i != j && dr2 < m_rCut2) {
+                    if (!(index1==index2 && i == j)) {
                         const double r2  = 1.0 / dr2;
                         const double r6 = r2*r2*r2;
                         const double sigma6r6 = m_sigma6 * r6;
                         const double f  = -24*m_epsilon * sigma6r6 *
                                           (2*sigma6r6 - 1) * r2 * (dr2 < m_rCut2);
-                        m_potentialEnergy += m_4epsilonSigma6 * r6 *
-                                             (sigma6r6 - 1) - m_potentialAtCut;
+                        m_potentialEnergy += (m_4epsilonSigma6 * r6 *
+                                             (sigma6r6 - 1) - m_potentialAtCut) *  (dr2 < m_rCut2);;
 
                         for (int k=0; k < 3; k++) {
                             df = f * dr[k];

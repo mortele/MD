@@ -80,6 +80,7 @@ bool System::integrate(int Nt) {
     m_Nt = Nt;
     if (m_integrating == false) {
         setupSystem();
+        dumpInfoToTerminal();
         m_integrating = true;
     }
     m_sampler->setNtDt(Nt,m_dt);
@@ -150,7 +151,7 @@ void System::printProgress(int t) {
         m_currentTime = m_startTime;
         m_oldTime   = m_startTime;
         m_lastTimeStepTime = 0;
-        dumpInfoToTerminal();
+
         if (m_Nt < 100) {
             m_skip = 1;
         } else {
@@ -209,11 +210,10 @@ void System::applyPeriodicBoundaryConditions() {
     std::vector<double> position{0,0,0};
 
     for (int i=0; i < m_n; i++) {
-
         for (int k=0; k<3; k++) {
             position.at(k) = m_atoms.at(i)->getPosition().at(k);
 
-            if (position.at(k) > m_systemSize.at(k)) {
+            if (position.at(k) >= m_systemSize.at(k)) {
                 m_atoms.at(i)->setPosition(position.at(k) - m_systemSize.at(k), k);
             } else if (position.at(k) < 0) {
                 m_atoms.at(i)->setPosition(position.at(k) + m_systemSize.at(k), k);
