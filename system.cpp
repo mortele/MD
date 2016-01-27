@@ -15,7 +15,7 @@ using std::ofstream;
 using std::fstream;
 
 System::System() :
-        m_fileName("../MD/movie.xyz") {
+    m_fileName("../MD/movie.xyz") {
     m_fileOutput        = new FileOutput(m_fileName);
     m_sampler           = new Sampler(this);
     m_systemSize        = std::vector<double>{-1,-1,-1}; // Used as flag for 'no system size set'

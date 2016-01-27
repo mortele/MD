@@ -31,6 +31,7 @@ public:
 
 private:
     double* m_data = nullptr;
+    //double m_data[3];
 
     double* getData();
 

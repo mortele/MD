@@ -27,8 +27,8 @@ public:
     void printProgress(int);
     int  getN()                             { return m_n; }
     bool getPeriodicBoundaryConditions()    { return m_periodicBoundaryConditions; }
-    std::vector<class Atom*>  getAtoms()    { return m_atoms; }
-    std::vector<double> getSystemSize()     { return m_systemSize; }
+    std::vector<class Atom*>&  getAtoms()    { return m_atoms; }
+    std::vector<double>& getSystemSize()     { return m_systemSize; }
     class Thermostat*   getThermostat()     { return m_thermostat; }
 
 private:

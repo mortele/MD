@@ -6,69 +6,6 @@
 using std::cout;
 using std::endl;
 
-/*
-CellList::CellList(System* system, double rCut) {
-    m_rCut = rCut;
-    m_system = system;
-    dist = std::vector<int>{0,0,0};
-}
-
-void CellList::initializeCellLists() {
-    m_numberOfCellsInEachDirection = m_systemSize.at(0) / m_rCut;
-}
-
-void CellList::computeCellLists(const std::vector<Atom*> & atoms, int n) {
-    if (m_firstComputation) {
-        m_firstComputation = false;
-        m_systemSize = m_system->getSystemSize();
-        this->initializeCellLists();
-    }
-    for (int i=0; i<m_system->getN(); i++) {
-        for (int k=0; k<3; k++) {
-            atoms.at(i)->setCellListIndex(this->computeCellNumber(
-                                              atoms.at(i)->getPosition().at(k), k), k);
-        }
-    }
-}
-
-int CellList::computeCellNumber(double x, int index) {
-    return x / m_systemSize.at(index) * m_numberOfCellsInEachDirection;
-}
-
-bool CellList::isNeighbour(const std::vector<int> & atom1cellList,
-                           const std::vector<int> & atom2cellList) {
-    for (int k=0; k<3; k++) {
-        dist[k] = atom2cellList[k] - atom1cellList[k];
-
-        // Check if the two cell lists are neighbours over the periodic
-        // boundary.
-        if ((atom1cellList[k] == m_numberOfCellsInEachDirection) &&
-            (atom2cellList[k] == 0)) {
-            dist[k] = 1;
-        }
-    }
-
-    // Both atoms in same cell list.
-    if (dist[0] == 0 && dist[1] == 0 && dist[2] == 0) {
-        return true;
-    // Atom2 in the cell list directly next to the one containing atom1.
-    } else if ((dist[0] == 1 && dist[1] == 0 && dist[2] == 0) ||
-               (dist[0] == 0 && dist[1] == 1 && dist[2] == 0) ||
-               (dist[0] == 0 && dist[1] == 0 && dist[2] == 1)) {
-        return true;
-    // Atom2 in the cell list diagonally next to the one containing atom1.
-    } else if ((dist[0] == 1 && dist[1] == 1 && dist[2] == 0) ||
-               (dist[0] == 0 && dist[1] == 1 && dist[2] == 1) ||
-               (dist[0] == 1 && dist[1] == 0 && dist[2] == 1)) {
-        return true;
-    // Atom2 in the corner cell list from the one containing atom1.
-    } else if (dist[0] == 1 && dist[1] == 1 && dist[2] == 1) {
-        return true;
-    } else {
-        return false;
-    }
-}*/
-
 
 CellList::CellList(System* system, double rCut) {
     m_system = system;
@@ -77,21 +14,61 @@ CellList::CellList(System* system, double rCut) {
 
 void CellList::setup() {
     m_numberOfCellsInEachDirection = m_system->getSystemSize().at(0) / m_rCut;
-
+    if (m_numberOfCellsInEachDirection < 1) {
+        m_numberOfCellsInEachDirection = 1;
+    }
+    m_totalCells = m_numberOfCellsInEachDirection*
+                   m_numberOfCellsInEachDirection*
+                   m_numberOfCellsInEachDirection;
+    m_cells.resize(m_totalCells);
 }
 
 void CellList::updateCellLists() {
-    for (int i=0; i<m_system->getN(); i++) {
-        //std::vector<double> & position = m_system->getAtoms().at(i)->getPosition();
+    if (m_firstSetup) {
+        m_firstSetup = false;
+        setup();
+    }
+
+    for (int i=0; i<m_totalCells; i++) {
+        m_cells.at(i).clear();
+    }
+    for (int l=0; l<m_system->getN(); l++) {
+        Atom* atom = m_system->getAtoms().at(l);
+        std::vector<double>& position = m_system->getAtoms().at(l)->getPosition();
+        std::vector<double>& systemSize = m_system->getSystemSize();
+        const int i = position[0] / systemSize[0] * m_numberOfCellsInEachDirection;
+        const int j = position[1] / systemSize[1] * m_numberOfCellsInEachDirection;
+        const int k = position[2] / systemSize[2] * m_numberOfCellsInEachDirection;
+        const int index = projectFromCellCoordinatesToIndex(i,j,k);
+        m_system->getAtoms().at(l)->setCellListIndex(index);
+        m_cells.at(index).push_back(atom);
     }
 }
 
+void CellList::projectFromIndexToCellCoordinates(int index, int* coordinates) {
+    coordinates[0] = index / (m_numberOfCellsInEachDirection*
+                              m_numberOfCellsInEachDirection);
+    coordinates[1] = (index / m_numberOfCellsInEachDirection) %
+                     m_numberOfCellsInEachDirection;
+    coordinates[2] = index % m_numberOfCellsInEachDirection;
+}
 
+int CellList::projectFromCellCoordinatesToIndex(const int* coordinates) {
+    return projectFromCellCoordinatesToIndex(coordinates[0],
+                                             coordinates[1],
+                                             coordinates[2]);
+}
 
+int CellList::projectFromCellCoordinatesToIndex(int i, int j, int k) {
+    return m_numberOfCellsInEachDirection *
+            (m_numberOfCellsInEachDirection * i + j) + k;
+}
 
-
-
-
+int CellList::projectFromCellCoordinatesToIndexPeriodic(int i, int j, int k) {
+    const int NC = m_numberOfCellsInEachDirection;
+    return projectFromCellCoordinatesToIndex((i+NC) % NC, (j+NC) % NC, (k+NC) % NC);
+    //return ( (i+NC) % NC)*NC*NC + ( (j+NC) % NC)*NC + ( (k+NC) % NC);
+}
 
 
 
