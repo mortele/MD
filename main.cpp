@@ -1,8 +1,8 @@
-//#include <omp.h>
-#include "examples.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
+//#include <omp.h>
+#include "examples.h"
 #include "system.h"
 #include "atom.h"
 #include "vec.h"
@@ -22,17 +22,10 @@
 #include "Thermostats/thermostat.h"
 #include "Thermostats/berendsenthermostat.h"
 
+
 using std::cout;
 using std::endl;
 
-template <typename T>
-T &at(std::vector<T> &vec, int index) {
-    #ifdef VECTOR_LOOKUP_DEBUG
-        return vec.at(index);
-    #else
-        return vec[index];
-    #endif
-}
 
 int main() {
 

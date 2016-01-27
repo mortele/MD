@@ -33,15 +33,23 @@ void CellList::updateCellLists() {
         m_cells.at(i).clear();
     }
     for (int l=0; l<m_system->getN(); l++) {
-        Atom* atom = m_system->getAtoms().at(l);
-        std::vector<double>& position = m_system->getAtoms().at(l)->getPosition();
+        Atom* atom = at(m_system->getAtoms(),l);
+        std::vector<double>& position   = at(m_system->getAtoms(),l)->getPosition();
         std::vector<double>& systemSize = m_system->getSystemSize();
         const int i = position[0] / systemSize[0] * m_numberOfCellsInEachDirection;
         const int j = position[1] / systemSize[1] * m_numberOfCellsInEachDirection;
         const int k = position[2] / systemSize[2] * m_numberOfCellsInEachDirection;
         const int index = projectFromCellCoordinatesToIndex(i,j,k);
-        m_system->getAtoms().at(l)->setCellListIndex(index);
-        m_cells.at(index).push_back(atom);
+        at(m_system->getAtoms(),l)->setCellListIndex(index);
+        if (index >= m_totalCells ||
+            i >= m_numberOfCellsInEachDirection ||
+            j >= m_numberOfCellsInEachDirection ||
+            k >= m_numberOfCellsInEachDirection) {
+            cout << "i=" << i << ", j=" << j << ", k=" << k << endl;
+            cout << "index=" << index << ", m_total=" << m_totalCells << endl;
+            cout << "pos=" << position[0] << ", " << position[1] << ", " << position[2] << endl;
+        }
+        at(m_cells,index).push_back(atom);
     }
 }
 

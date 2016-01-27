@@ -24,5 +24,6 @@ private:
     double m_4epsilonSigma6 = 0;
     double m_potentialAtCut = 0;
     std::vector<double> m_systemSize;
+    std::vector<double> m_systemSizeHalf;
 };
 

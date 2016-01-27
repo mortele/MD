@@ -7,13 +7,6 @@ QMAKE_CXXFLAGS_RELEASE  += -O3
 #LIBS                    += -fopenmp
 
 
-debug {
-    DEFINES += VECTOR_LOOKUP_DEBUG
-}
-release {
-    DEFINES -= VECTOR_LOOKUP_DEBUG
-}
-
 SOURCES += main.cpp \
     atom.cpp \
     Integrators/integrator.cpp \

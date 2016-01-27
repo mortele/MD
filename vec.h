@@ -1,5 +1,13 @@
 #pragma once
 #include <iostream>
+#include <vector>
+
+
+template <typename T>
+T &at(std::vector<T> &vec, int index) {
+    //return vec.at(index);
+    return vec[index];
+}
 
 
 class vec {

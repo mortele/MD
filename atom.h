@@ -20,16 +20,16 @@ public:
     void setCellListIndex   (int cellListIndex);
 
     inline void addPosition(double x, int index) {
-        m_position.at(index) += x;
+        at(m_position,index) += x;
     }
     inline void addVelocity(double v, int index) {
-        m_velocity.at(index) += v;
+        at(m_velocity,index) += v;
     }
     inline void addForce(double f, int index) {
-        m_force.at(index) += f;
+        at(m_force,index) += f;
     }
     inline void multiplyVelocity(double factor, int index) {
-        m_velocity.at(index) = m_velocity.at(index) * factor;
+        at(m_velocity,index) *= factor;
     }
 
     double              getMass()           { return m_mass; }
