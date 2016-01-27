@@ -6,6 +6,7 @@
 using std::cout;
 using std::endl;
 
+/*
 CellList::CellList(System* system, double rCut) {
     m_rCut = rCut;
     m_system = system;
@@ -66,5 +67,35 @@ bool CellList::isNeighbour(const std::vector<int> & atom1cellList,
     } else {
         return false;
     }
+}*/
+
+
+CellList::CellList(System* system, double rCut) {
+    m_system = system;
+    m_rCut = rCut;
 }
+
+void CellList::setup() {
+    m_numberOfCellsInEachDirection = m_system->getSystemSize().at(0) / m_rCut;
+
+}
+
+void CellList::updateCellLists() {
+    for (int i=0; i<m_system->getN(); i++) {
+        //std::vector<double> & position = m_system->getAtoms().at(i)->getPosition();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 

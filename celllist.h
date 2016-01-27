@@ -1,8 +1,28 @@
 #pragma once
 #include <vector>
 
+using std::vector;
+
 class CellList {
 public:
+    CellList(class System* system, double rCut);
+    void setup();
+    void updateCellLists();
+
+private:
+    int             m_numberOfCellsInEachDirection = 0;
+    double          m_rCut = 0;
+    class System*   m_system = nullptr;
+    vector<vector<class Atom*>> m_cells;
+};
+
+
+
+
+
+
+
+/*public:
     CellList(class System* system, double rCut);
     void initializeCellLists();
     void computeCellLists(const std::vector<class Atom*> & atoms, int n);
@@ -17,6 +37,4 @@ private:
     double              m_rCut = 0;
     class System*       m_system = nullptr;
     std::vector<double> m_systemSize;
-    std::vector<int>    dist;
-};
-
+    std::vector<int>    dist;*/

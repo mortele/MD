@@ -17,7 +17,7 @@ public:
     void addForce           (std::vector<double>  dforce);
     void setMass            (double mass);
     void setName            (std::string name);
-    void setCellListIndex   (int cellListIndex, int index);
+    void setCellListIndex   (int cellListIndex);
 
     inline void addPosition(double x, int index) {
         m_position.at(index) += x;
@@ -33,18 +33,18 @@ public:
     }
 
     double              getMass()           { return m_mass; }
-    std::vector<double> getPosition()       { return m_position; }
-    std::vector<double> getVelocity()       { return m_velocity; }
-    std::vector<double> getForce()          { return m_force; }
+    std::vector<double>& getPosition()      { return m_position; }
+    std::vector<double>& getVelocity()       { return m_velocity; }
+    std::vector<double>& getForce()          { return m_force; }
     std::string         getName()           { return m_name; }
-    std::vector<int>    getCellListIndex()  { return m_cellListIndex; }
-    int getCellListIndex(int index)         { return m_cellListIndex.at(index); }
+    int getCellListIndex()                  { return m_cellListIndex; }
 
 private:
+    int                 m_cellListIndex   = 0;
     double              m_mass            = 1.0;
     std::string         m_name            = "Ar";
     std::vector<double> m_position        = std::vector<double>(3);
     std::vector<double> m_velocity        = std::vector<double>(3);
     std::vector<double> m_force           = std::vector<double>(3);
-    std::vector<int>    m_cellListIndex{-1,-1,-1};
+
 };

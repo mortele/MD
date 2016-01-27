@@ -8,7 +8,7 @@ using std::endl;
 LennardJones::LennardJones(std::vector<double>  systemSize,
                            double               rCut,
                            System*              system) :
-        LennardJones(1.0, 3.405, systemSize, rCut, system) {
+    LennardJones(1.0, 3.405, systemSize, rCut, system) {
 }
 
 LennardJones::LennardJones(double               epsilon,
@@ -16,7 +16,7 @@ LennardJones::LennardJones(double               epsilon,
                            std::vector<double>  systemSize,
                            double               rCut,
                            System*              system) :
-        Potential(system) {
+    Potential(system) {
 
     m_epsilon           = epsilon;
     m_sigma             = sigma;
@@ -35,7 +35,7 @@ void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
 
     if (m_timeStepsSinceLastCellListUpdate == -1 ||
         m_timeStepsSinceLastCellListUpdate >= 5) {
-        m_cellList->computeCellLists(atoms, n);
+        //m_cellList->computeCellLists(atoms, n);
     }
     m_timeStepsSinceLastCellListUpdate += 1;
     setForcesToZero(atoms, n);
@@ -47,26 +47,28 @@ void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
 
     for (int i=0; i < n; i++) {
         for (int j=0; j < n; j++) {
-            if ((i != j) && (m_cellList->isNeighbour(atoms.at(i)->getCellListIndex(),
-                                                     atoms.at(j)->getCellListIndex()))) {
-                dr2 = 0;
-                for (int k=0; k < 3; k++) {
-                    dr.at(k) = atoms.at(j)->getPosition().at(k) - atoms.at(i)->getPosition().at(k);
-                    if (dr.at(k) > m_systemSize.at(k) / 2.0) {
-                        dr.at(k) = dr.at(k) - m_systemSize.at(k);
-                    } else if (dr.at(k) < -m_systemSize.at(k) / 2.0) {
-                        dr.at(k) = dr.at(k) + m_systemSize.at(k);
-                    }
-                    dr2 += dr.at(k)*dr.at(k);
-                }
+            /*if ((i != j) && (m_cellList->isNeighbour(atoms.at(i)->getCellListIndex(),
+                                                     atoms.at(j)->getCellListIndex()))) {*/
 
-                const double r2  = 1.0 / dr2;
-                const double r6 = r2*r2*r2;
-                const double sigma6r6 = m_sigma6 * r6;
-                const double f  = -24*m_epsilon * sigma6r6 *
-                                  (2*sigma6r6 - 1) * r2 * (dr2 < m_rCut2);
-                m_potentialEnergy += m_4epsilonSigma6 * r6 *
-                                     (sigma6r6 - 1) - m_potentialAtCut;
+            dr2 = 0;
+            for (int k=0; k < 3; k++) {
+                dr.at(k) = atoms.at(j)->getPosition().at(k) - atoms.at(i)->getPosition().at(k);
+                if (dr.at(k) > m_systemSize.at(k) / 2.0) {
+                    dr.at(k) = dr.at(k) - m_systemSize.at(k);
+                } else if (dr.at(k) < -m_systemSize.at(k) / 2.0) {
+                    dr.at(k) = dr.at(k) + m_systemSize.at(k);
+                }
+                dr2 += dr.at(k)*dr.at(k);
+            }
+            if (i != j && dr2 < m_rCut2) {
+            const double r2  = 1.0 / dr2;
+            const double r6 = r2*r2*r2;
+            const double sigma6r6 = m_sigma6 * r6;
+            const double f  = -24*m_epsilon * sigma6r6 *
+                              (2*sigma6r6 - 1) * r2 * (dr2 < m_rCut2);
+            m_potentialEnergy += m_4epsilonSigma6 * r6 *
+                                 (sigma6r6 - 1) - m_potentialAtCut;
+
 
                 for (int k=0; k < 3; k++) {
                     df = f * dr.at(k);
@@ -78,6 +80,7 @@ void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
         }
     }
 }
+
 
 double LennardJones::computePotential(const std::vector<Atom*> & atoms, int n) {
     return m_potentialEnergy;
