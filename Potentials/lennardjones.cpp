@@ -84,16 +84,13 @@ void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
                             atom2->addForce( df, k);
                             m_pressure += f * std::sqrt(dr2) * r2;
                         }
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
             }
-        }
-    }
+        }}}
+    }}}
 }
+
 
 
 

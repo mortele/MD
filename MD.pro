@@ -6,8 +6,9 @@ QMAKE_CXXFLAGS_RELEASE  += -O3
 #QMAKE_CXXFLAGS_RELEASE  += -fopenmp
 #LIBS                    += -fopenmp
 
+
 debug {
-  DEFINES += VECTOR_LOOKUP_DEBUG
+    DEFINES += VECTOR_LOOKUP_DEBUG
 }
 release {
     DEFINES -= VECTOR_LOOKUP_DEBUG

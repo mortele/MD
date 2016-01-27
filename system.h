@@ -54,6 +54,7 @@ private:
     double              m_startTime                     = 0;
     double              m_lastTimeStepTime              = 0;
     const char*         m_fileName;
+    bool                m_skippedLast                   = false;
     bool                m_periodicBoundaryConditions    = false;
     bool                m_thermostatActive              = false;
     bool                m_integrating                   = false;

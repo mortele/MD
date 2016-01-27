@@ -166,9 +166,13 @@ void System::printProgress(int t) {
         double estimatedTime = elapsedTime - elapsedTime+lastTwoAverage*(1-progress)*m_Nt/m_skip;
         if (lastTwoAverage > 1 && m_skip > 1) {
             m_skip -= 1;
-        } else if (lastTwoAverage < 0.1) {
+        } else if (lastTwoAverage < 0.2 && m_skippedLast != true) {
+            m_skippedLast = true;
             m_skip += 1;
+        } else {
+            m_skippedLast = false;
         }
+
         double minutes = 0;
         if (estimatedTime > 200) {
             minutes = std::round(estimatedTime/60.0);
@@ -183,7 +187,7 @@ void System::printProgress(int t) {
         } else {
             printf("(%5.1f s) ", estimatedTime);
         }
-        printf("E/N = %10.6f  T = %5.2f  P = %10.6f\r",
+        printf("E/N = %10.6f  T = %5.2f  P = %7.5f\r",
                m_sampler->getEnergies()[t]/m_n,
                m_sampler->getInstantanousTemperature()[t],
                m_sampler->getPressures()[t]);
