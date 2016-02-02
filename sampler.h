@@ -20,10 +20,12 @@ public:
     void   setPressureSamplingEnabled(bool enabled);
 
     //double*** getPositions() { return this->positions; }
-    double*   getEnergies()  { return m_energies; }
-    double*   getTime()      { return m_time; }
-    double*   getPressures() { return m_pressures; }
-    double*   getInstantanousTemperature() { return m_instantanousTemperature; }
+    double*   getEnergies()                 { return m_energies; }
+    double*   getTime()                     { return m_time; }
+    double*   getPressures()                { return m_pressures; }
+    double*   getInstantanousTemperature()  { return m_instantanousTemperature; }
+    double*   getKineticEnergies()          { return m_kineticEnergies; }
+    double*   getPotentialEnergies()        { return m_potentialEnergies; }
 
 private:
     int                 m_n = 0;

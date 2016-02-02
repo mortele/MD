@@ -153,42 +153,41 @@ void System::printProgress(int t) {
         m_lastTimeStepTime = 0;
 
         if (m_Nt < 100) {
-            m_skip = 1;
+            m_skip = 10;
         } else {
-            m_skip = 5;
+            m_skip = 100;
         }
+        m_skippedLast = m_skip;
     }
     if (t % m_skip == 0) {
         m_oldTime       = m_currentTime;
         m_currentTime   = getRealTime();
+        if (t == 0) {
+            m_lastTimeStepTime = m_currentTime-m_oldTime;
+        }
         double progress     = ((double) t) / m_Nt;
         double elapsedTime  = m_currentTime - m_startTime;
         double lastTwoAverage = (m_currentTime-m_oldTime+m_lastTimeStepTime) / 2.0;
-        double estimatedTime = elapsedTime - elapsedTime+lastTwoAverage*(1-progress)*m_Nt/m_skip;
-        if (lastTwoAverage > 1 && m_skip > 1) {
-            m_skip -= 1;
-        } else if (lastTwoAverage < 0.2 && m_skippedLast != true) {
-            m_skippedLast = true;
-            m_skip += 1;
-        } else {
-            m_skippedLast = false;
+        if (t==m_skip) {
+            lastTwoAverage = m_currentTime - m_startTime;
         }
+        double estimatedTime = elapsedTime - elapsedTime+lastTwoAverage*(1-progress)*m_Nt/m_skip;
 
         double minutes = 0;
         if (estimatedTime > 200) {
             minutes = std::round(estimatedTime/60.0);
         }
-        cout << "                                                                             \r";
-        printf("\r %5.1f %s : %5.1f s ",
-               progress*100, "%",
-               elapsedTime);
-
+        printf("Step %5d  ", t);
         if (estimatedTime > 200) {
-            printf("(~%.0f min) ", minutes);
+            printf("(~%3.0f min) ", minutes);
+        } else if (t == 0) {
+            printf("(%7s) ", " ");
         } else {
             printf("(%5.1f s) ", estimatedTime);
         }
-        printf("E/N = %10.6f  T = %5.2f  P = %7.5f\r",
+        printf("Epot/N=%11.6f  Ekin/N=%11.6f  E/N=%11.6f  T=%11.6f  P=%11.6f \n",
+               m_sampler->getPotentialEnergies()[t]/m_n,
+               m_sampler->getKineticEnergies()[t]/m_n,
                m_sampler->getEnergies()[t]/m_n,
                m_sampler->getInstantanousTemperature()[t],
                m_sampler->getPressures()[t]);
@@ -200,8 +199,23 @@ void System::printProgress(int t) {
         if (elapsedTime < 0) {
             elapsedTime = 0;
         }
-        cout << "                                                                             ";
-        cout << endl << "Integration finished. Total elapsed time: " << elapsedTime << endl << endl;
+        double timeStepsPerSecond       = m_Nt/elapsedTime;
+        double atomTimeStepsPerSecond   = m_Nt*m_n/elapsedTime;
+
+        cout << endl << endl << "Integration finished. Total elapsed time: "
+             << elapsedTime << " s." << endl;
+        if (timeStepsPerSecond > 1000) {
+            cout << "Time steps/s : >1000." << endl;
+        } else {
+            cout << "Time steps/s : " << timeStepsPerSecond << endl;
+        }
+        if (atomTimeStepsPerSecond > 1000) {
+            cout << "Atom-time steps/s : >1000." << endl;
+        } else {
+            cout << "Atom-time steps/s : " << atomTimeStepsPerSecond << endl;
+        }
+
+        cout << "Time steps/s : " << m_Nt/elapsedTime << endl;
     }
 }
 

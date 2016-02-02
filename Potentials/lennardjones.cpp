@@ -35,8 +35,8 @@ LennardJones::LennardJones(double               epsilon,
 void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
 
     if (m_timeStepsSinceLastCellListUpdate == -1 ||
-        m_timeStepsSinceLastCellListUpdate >= 2) {
-        m_timeStepsSinceLastCellListUpdate = 0;
+        m_timeStepsSinceLastCellListUpdate >= 10) {
+        m_timeStepsSinceLastCellListUpdate = 1;
         m_cellList->updateCellLists();
     }
     m_timeStepsSinceLastCellListUpdate += 1;

@@ -66,14 +66,14 @@ System* Examples::uniformBoxNoPotential() {
 }
 
 System*Examples::lennardJonesFFC() {
-    int     nUnitCells          = 10;    // Number of unit cells in each dimension.
+    int     nUnitCells          = 8;    // Number of unit cells in each dimension.
     double  T                   = 1.0;   // Temperature, in units of 119.8 K.
     double  targetTemperature   = 1.0;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
     double  b                   = 5.26;  // Lattice constant, in units of 1.0 Å.
-    double  dt                  = 0.005; // Time step.
+    double  dt                  = 0.0997765; // Time step.
     double  tau                 = dt;    // Relaxation time used by the thermostat, in units of 119.8 K.
     double  sideLength          = nUnitCells*b; // Size of box sides.
-    double  rCut                = 3*3.405;
+    double  rCut                = 2.5*3.405;
     std::vector<double> boxSize{sideLength,     // Vector of box size.
                                 sideLength,
                                 sideLength};
@@ -89,11 +89,9 @@ System*Examples::lennardJonesFFC() {
     system->setPeriodicBoundaryConditions(true);
     system->setThermostat                (new BerendsenThermostat(targetTemperature, tau, dt));
     system->setSystemSize                (boxSize);
-    system->setThermostatActive          (true);
+    system->setThermostatActive          (false);
     system->enablePressureSampling       (true);
     system->integrate                    (1000);
-    system->setThermostatActive          (false);
-    system->integrate                    (2000);
     return system;
 }
 
