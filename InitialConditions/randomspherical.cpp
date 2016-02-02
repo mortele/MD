@@ -32,7 +32,7 @@ void RandomSpherical::setupInitialCondition() {
         y = r*sin(theta)*sin(phi)+m_R0;
         z = r*cos(theta)         +m_R0;
 
-        m_atoms.push_back(new Atom());
+        m_atoms.push_back(new Atom(1));
         m_atoms.at(i)->setMass(mass);
         m_atoms.at(i)->setPosition(std::vector<double>{x,y,z});
         m_atoms.at(i)->setVelocity(std::vector<double>{0,0,0});

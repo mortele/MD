@@ -20,18 +20,40 @@ void CellList::setup() {
     m_totalCells = m_numberOfCellsInEachDirection*
                    m_numberOfCellsInEachDirection*
                    m_numberOfCellsInEachDirection;
-    m_cells.resize(m_totalCells);
+
+    m_cells = vector<vector<vector<vector<Atom*>>>>(m_numberOfCellsInEachDirection);
+    m_cells.reserve(m_numberOfCellsInEachDirection);
+    for (int i=0; i<m_numberOfCellsInEachDirection; i++) {
+        at(m_cells,i).reserve(m_numberOfCellsInEachDirection);
+        for (int j=0; j<m_numberOfCellsInEachDirection; j++) {
+            cout << "hei2" << endl;
+            at(at(m_cells,i),j).reserve(m_numberOfCellsInEachDirection);
+            for (int k=0; k<m_numberOfCellsInEachDirection; k++) {
+
+                at(at(at(m_cells, i), j), k).reserve(m_numberOfCellsInEachDirection);
+            }
+        }
+    }
+}
+
+void CellList::clearCells() {
+    for (int i=0; i<m_numberOfCellsInEachDirection; i++) {
+        for (int j=0; j<m_numberOfCellsInEachDirection; j++) {
+            for (int k=0; k<m_numberOfCellsInEachDirection; k++) {
+                at(at(at(m_cells,i),j),k).clear();
+            }
+        }
+    }
 }
 
 void CellList::updateCellLists() {
-    if (m_firstSetup) {
-        m_firstSetup = false;
+    if (m_firstUpdate) {
+        m_firstUpdate = false;
         setup();
     }
-    m_system->applyPeriodicBoundaryConditions();
 
     for (int i=0; i<m_totalCells; i++) {
-        m_cells.at(i).clear();
+        clearCells();
     }
     for (int l=0; l<m_system->getN(); l++) {
         Atom* atom = at(m_system->getAtoms(),l);
@@ -40,44 +62,25 @@ void CellList::updateCellLists() {
         const int i = position[0] / systemSize[0] * m_numberOfCellsInEachDirection;
         const int j = position[1] / systemSize[1] * m_numberOfCellsInEachDirection;
         const int k = position[2] / systemSize[2] * m_numberOfCellsInEachDirection;
-        const int index = projectFromCellCoordinatesToIndex(i,j,k);
-        at(m_system->getAtoms(),l)->setCellListIndex(index);
-        if (index >= m_totalCells ||
-            i >= m_numberOfCellsInEachDirection ||
+        at(m_system->getAtoms(),l)->setCellListIndex(i,j,k);
+
+        if (i >= m_numberOfCellsInEachDirection ||
             j >= m_numberOfCellsInEachDirection ||
             k >= m_numberOfCellsInEachDirection) {
             cout << "atom #=" << l << endl;
             cout << "i=" << i << ", j=" << j << ", k=" << k << endl;
-            cout << "index=" << index << ", m_total=" << m_totalCells << endl;
             cout << "pos=" << position[0] << ", " << position[1] << ", " << position[2] << endl;
         }
-        at(m_cells,index).push_back(atom);
+        at(at(at(m_cells,i),j),k).push_back(atom);
     }
 }
 
-void CellList::projectFromIndexToCellCoordinates(int index, int* coordinates) {
-    coordinates[0] = index / (m_numberOfCellsInEachDirection*
-                              m_numberOfCellsInEachDirection);
-    coordinates[1] = (index / m_numberOfCellsInEachDirection) %
-                     m_numberOfCellsInEachDirection;
-    coordinates[2] = index % m_numberOfCellsInEachDirection;
-}
-
-int CellList::projectFromCellCoordinatesToIndex(const int* coordinates) {
-    return projectFromCellCoordinatesToIndex(coordinates[0],
-                                             coordinates[1],
-                                             coordinates[2]);
-}
-
-int CellList::projectFromCellCoordinatesToIndex(int i, int j, int k) {
-    return m_numberOfCellsInEachDirection *
-            (m_numberOfCellsInEachDirection * i + j) + k;
-}
-
-int CellList::projectFromCellCoordinatesToIndexPeriodic(int i, int j, int k) {
-    const int NC = m_numberOfCellsInEachDirection;
-    return projectFromCellCoordinatesToIndex((i+NC) % NC, (j+NC) % NC, (k+NC) % NC);
-    //return ( (i+NC) % NC)*NC*NC + ( (j+NC) % NC)*NC + ( (k+NC) % NC);
+int CellList::getSizeOfCellList(int i, int j, int k) {
+    if (at(at(at(m_cells,i),j),k).empty()) {
+        return 0;
+    } else {
+        return at(at(at(m_cells,i),j),k).size();
+    }
 }
 
 

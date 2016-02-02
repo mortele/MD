@@ -5,14 +5,15 @@
 
 template <typename T>
 T &at(std::vector<T> &vec, int index) {
-    //return vec.at(index);
-    return vec[index];
+    return vec.at(index);
+    //return vec[index];
 }
 
 
 class vec {
 public:
     vec();
+    vec(std::vector<double> a);
     vec(double* a);
     vec(double a);
     vec(double a, double b, double c);

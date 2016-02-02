@@ -1,7 +1,5 @@
 #include "atom.h"
 
-Atom::Atom() {
-}
 
 Atom::Atom(std::string name, double mass) {
     m_mass     = mass;
@@ -60,8 +58,14 @@ void Atom::setName(std::string name) {
     m_name = name;
 }
 
-void Atom::setCellListIndex(int cellListIndex) {
-    m_cellListIndex = cellListIndex;
+void Atom::setCellListIndex(int i, int j, int k) {
+    m_cellListIndex[0] = i;
+    m_cellListIndex[1] = j;
+    m_cellListIndex[2] = k;
+}
+
+void Atom::setIndex(int index) {
+    m_index = index;
 }
 
 

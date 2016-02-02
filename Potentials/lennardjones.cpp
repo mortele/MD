@@ -51,47 +51,63 @@ void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
     for (int ci=0; ci<numberOfCellsInEachDirection; ci++) {
     for (int cj=0; cj<numberOfCellsInEachDirection; cj++) {
     for (int ck=0; ck<numberOfCellsInEachDirection; ck++) {
-        const int index1 = m_cellList->projectFromCellCoordinatesToIndex(ci,cj,ck);
+        //const int index1 = m_cellList->projectFromCellCoordinatesToIndex(ci,cj,ck);
 
         for (int di=0; di <= 1; di++) {
         for (int dj=(di==0 ? 0 : -1); dj <= 1; dj++) {
         for (int dk=(di==0 && dj==0 ? 0 : -1); dk <= 1; dk++) {
-            const int index2 = m_cellList->projectFromCellCoordinatesToIndexPeriodic(ci+di, cj+dj, ck+dk);
+            //const int index2 = m_cellList->projectFromCellCoordinatesToIndexPeriodic(ci+di, cj+dj, ck+dk);
 
-            for (int i=0; i<m_cellList->getSizeOfCellList(index1); i++) {
-                for (int j=0; j<m_cellList->getSizeOfCellList(index2); j++) {
+            for (int i=0; i<m_cellList->getSizeOfCellList(ci,    cj,    ck);    i++) {
+            for (int j=0; j<m_cellList->getSizeOfCellList(ci+di, cj+dj, ck+dk); j++) {
 
-                    Atom* atom1 = at(m_cellList->getCell(index1),i);
-                    Atom* atom2 = at(m_cellList->getCell(index2),j);
+                Atom* atom1 = at(m_cellList->getCell(ci,    cj,    ck),   i);
+                Atom* atom2 = at(m_cellList->getCell(ci+di, cj+dj, ck+dk),j);
 
-                    dr2 = 0;
-                    for (int k=0; k < 3; k++) {
-                        dr[k] = at(atom1->getPosition(),k) - at(atom2->getPosition(),k);
-                        if (dr[k] > at(m_systemSizeHalf,k)) {
-                            dr[k] = dr[k] - at(m_systemSize,k);
-                        } else if (dr[k] < -at(m_systemSizeHalf,k)) {
-                            dr[k] = dr[k] + at(m_systemSize,k);
-                        }
-                        dr2 += dr[k]*dr[k];
+                dr2 = 0;
+                for (int k=0; k < 3; k++) {
+                    dr[k] = at(atom1->getPosition(),k) - at(atom2->getPosition(),k);
+                    if (dr[k] > at(m_systemSizeHalf,k)) {
+                        dr[k] = dr[k] - at(m_systemSize,k);
+                    } else if (dr[k] < -at(m_systemSizeHalf,k)) {
+                        dr[k] = dr[k] + at(m_systemSize,k);
                     }
-                    if (!(index1==index2 && i == j)) {
-                        const double r2  = 1.0 / dr2;
-                        const double r6 = r2*r2*r2;
-                        const double sigma6r6 = m_sigma6 * r6;
-                        const double f  = -24*m_epsilon * sigma6r6 *
-                                          (2*sigma6r6 - 1) * r2 * (dr2 < m_rCut2);
-                        m_potentialEnergy += (m_4epsilonSigma6 * r6 *
-                                             (sigma6r6 - 1) - m_potentialAtCut) *  (dr2 < m_rCut2);;
+                    dr2 += dr[k]*dr[k];
+                }
+                double f;
+                if (!((di==0 && dj==0 && dk==0) && i == j)) {
+                    const double r2  = 1.0 / dr2;
+                    const double r6 = r2*r2*r2;
+                    const double sigma6r6 = m_sigma6 * r6;
+                    f  = -24*m_epsilon * sigma6r6 *
+                                      (2*sigma6r6 - 1) * r2 * (dr2 < m_rCut2);
+                    m_potentialEnergy += (m_4epsilonSigma6 * r6 *
+                                         (sigma6r6 - 1) - m_potentialAtCut) *  (dr2 < m_rCut2);;
 
-                        for (int k=0; k < 3; k++) {
-                            df = f * dr[k];
-                            atom1->addForce(-df, k);
-                            atom2->addForce( df, k);
-                            //m_pressure += f * std::sqrt(dr2) * r2;
-                        }
+                    for (int k=0; k < 3; k++) {
+                        df = f * dr[k];
+                        atom1->addForce(-df, k);
+                        atom2->addForce( df, k);
+                        //m_pressure += f * std::sqrt(dr2) * r2;
                     }
                 }
-            }
+                if ((m_system->getT() > 670)    && f*f > 100 &&
+                    (atom1->getIndex()==60      || atom2->getIndex()==60)) {
+
+                    int ind1 = atom1->getIndex();
+                    int ind2 = atom2->getIndex();
+                    vec pos1 = vec(atom1->getPosition());
+                    vec vel1 = vec(atom1->getVelocity());
+                    vec pos2 = vec(atom2->getPosition());
+                    vec vel2 = vec(atom2->getVelocity());
+                    vec force1 = vec(atom1->getForce());
+                    vec force2 = vec(atom2->getForce());
+
+                    cout << "Time step: " << m_system->getT() << ", force_ij=" << f << endl;
+                    cout << "                  Atom[" << ind1 << "]: pos=1" << pos1 << ", vel1=" << vel1 << ", for1=" << force1 << endl;
+                    cout << "                  Atom[" << ind2 << "]: pos=2" << pos2 << ", vel2=" << vel2 << ", for2=" << force2 << endl;
+                }
+            }}
         }}}
     }}}
 }
@@ -102,5 +118,43 @@ void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
 double LennardJones::computePotential(const std::vector<Atom*> & atoms, int n) {
     return m_potentialEnergy;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

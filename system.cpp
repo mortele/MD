@@ -186,12 +186,21 @@ void System::printProgress(int t) {
         } else {
             printf("(%5.1f s) ", estimatedTime);
         }
+        if (m_t==0) {
         printf("Epot/N=%11.6f  Ekin/N=%11.6f  E/N=%11.6f  T=%11.6f  P=%11.6f \n",
                m_sampler->getPotentialEnergies()[t]/m_n,
                m_sampler->getKineticEnergies()[t]/m_n,
                m_sampler->getEnergies()[t]/m_n,
                m_sampler->getInstantanousTemperature()[t],
                m_sampler->getPressures()[t]);
+        } else {
+            printf("Epot/N=%11.6s  Ekin/N=%11.6f  E/N=%11.6f  T=%11.6f  P=%11.6f \n",
+                   " ? ",
+                   m_sampler->getKineticEnergies()[t]/m_n,
+                   m_sampler->getEnergies()[t]/m_n,
+                   m_sampler->getInstantanousTemperature()[t],
+                   m_sampler->getPressures()[t]);
+        }
         fflush(stdout);
         m_lastTimeStepTime = m_currentTime-m_oldTime;
     }

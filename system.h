@@ -26,6 +26,7 @@ public:
     void dumpInfoToTerminal();
     void printProgress(int);
     int  getN()                             { return m_n; }
+    int  getT()                             { return m_t; }
     bool getPeriodicBoundaryConditions()    { return m_periodicBoundaryConditions; }
     std::vector<class Atom*>&  getAtoms()   { return m_atoms; }
     std::vector<double>& getSystemSize()    { return m_systemSize; }

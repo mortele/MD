@@ -11,7 +11,7 @@ void Uniform::setupInitialCondition() {
 
     for (int i=0; i<m_n; i++) {
         double m = 1.0;
-        m_atoms.push_back(new Atom());
+        m_atoms.push_back(new Atom(1));
         m_atoms.at(i)->setMass(m);
 
         for (int k=0; k<3; k++) {

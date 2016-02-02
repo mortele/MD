@@ -40,10 +40,10 @@ void FCC::setupInitialCondition() {
                 atom3.at(0) += bHalf;
                 atom3.at(2) += bHalf;
 
-                m_atoms.push_back(new Atom());
-                m_atoms.push_back(new Atom());
-                m_atoms.push_back(new Atom());
-                m_atoms.push_back(new Atom());
+                m_atoms.push_back(new Atom(1));
+                m_atoms.push_back(new Atom(1));
+                m_atoms.push_back(new Atom(1));
+                m_atoms.push_back(new Atom(1));
 
                 m_atoms.at(counter+0)->setPosition(atom0);
                 m_atoms.at(counter+1)->setPosition(atom1);

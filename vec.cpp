@@ -10,6 +10,13 @@ vec::vec() {
     m_data[2] = 0;
 }
 
+vec::vec(std::vector<double> a) {
+    m_data = new double[3];
+    m_data[0] = at(a,0);
+    m_data[1] = at(a,1);
+    m_data[2] = at(a,2);
+}
+
 vec::vec(double a, double b, double c) {
     m_data = new double[3];
     m_data[0] = a;

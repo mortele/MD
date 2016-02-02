@@ -20,13 +20,13 @@ void TwoBody::setupInitialCondition() {
     std::vector<double> sunPosition{0,0,0};
 
     // Setup "sun."
-    m_atoms.push_back(new Atom());
+    m_atoms.push_back(new Atom(1));
     m_atoms.at(0)->setMass(1.0);
     m_atoms.at(0)->setPosition(sunPosition);
     m_atoms.at(0)->setVelocity(sunVelocity);
 
     // Setup "earth."
-    m_atoms.push_back(new Atom());
+    m_atoms.push_back(new Atom(1));
     m_atoms.at(1)->setMass(earthMass);
     m_atoms.at(1)->setPosition(earthPosition);
     m_atoms.at(1)->setVelocity(earthVelocity);
