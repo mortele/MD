@@ -92,21 +92,23 @@ bool System::integrate(int Nt) {
         m_systemSize = std::vector<double>{1,1,1};
     }
 
-    for (int t=0; t < Nt; t++) {
+    for (m_t=0; m_t < Nt; m_t++) {
         if (m_fileOutput->saveState(m_atoms, m_n) == false) {
             return false;
         }
-        m_sampler->sample(t);
+        m_sampler->sample(m_t);
         m_integrator->advance(m_atoms, m_n);
 
         if (m_periodicBoundaryConditions) {
-            applyPeriodicBoundaryConditions();
+            if (applyPeriodicBoundaryConditions() == false) {
+                return false;
+            }
         }
         if (m_thermostatActive) {
-            double instantaneousTemperature = m_sampler->getInstantanousTemperature()[t];
+            double instantaneousTemperature = m_sampler->getInstantanousTemperature()[m_t];
             m_thermostat->adjustVelocities(m_atoms, m_n, instantaneousTemperature);
         }
-        printProgress(t);
+        printProgress(m_t);
     }
     printProgress(Nt);
 
@@ -157,7 +159,6 @@ void System::printProgress(int t) {
         } else {
             m_skip = 100;
         }
-        m_skippedLast = m_skip;
     }
     if (t % m_skip == 0) {
         m_oldTime       = m_currentTime;
@@ -220,20 +221,38 @@ void System::printProgress(int t) {
 }
 
 
-void System::applyPeriodicBoundaryConditions() {
-    std::vector<double> position{0,0,0};
+bool System::applyPeriodicBoundaryConditions() {
+    double position[3];
+    bool returnValue = true;
 
     for (int i=0; i < m_n; i++) {
         for (int k=0; k<3; k++) {
-            position.at(k) = m_atoms.at(i)->getPosition().at(k);
+            position[k] = at(at(m_atoms,i)->getPosition(),k);
 
-            if (position.at(k) >= m_systemSize.at(k)) {
-                m_atoms.at(i)->setPosition(position.at(k) - m_systemSize.at(k), k);
-            } else if (position.at(k) < 0) {
-                m_atoms.at(i)->setPosition(position.at(k) + m_systemSize.at(k), k);
+            if (position[k] >= at(m_systemSize,k)) {
+                at(m_atoms,i)->addPosition(-at(m_systemSize,k), k);
+            } else if (position[k] < 0) {
+                at(m_atoms,i)->addPosition(at(m_systemSize,k), k);
+            }
+            if (at(at(m_atoms,i)->getPosition(), k) > at(m_systemSize,k) ||
+                at(at(m_atoms,i)->getPosition(), k) < 0) {
+
+                std::vector<double> atomPos = at(m_atoms,i)->getPosition();
+                std::vector<double> atomVel = at(m_atoms,i)->getVelocity();
+                vec pos = vec(atomPos.at(0), atomPos.at(1), atomPos.at(2));
+                vec vel = vec(atomVel.at(0), atomVel.at(1), atomVel.at(2));
+
+                cout << endl << "### ERROR ###: Atom number " << i
+                     << " at position " << pos
+                     << " has velocity " << vel
+                     << " which is larger than the size of the box / time step. Exiting."
+                     << endl << endl;
+
+                returnValue = false;
             }
         }
     }
+    return returnValue;
 }
 
 

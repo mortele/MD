@@ -22,13 +22,13 @@ public:
     void setupSystem();
     void enablePressureSampling(bool enabled);
     bool integrate(int Nt);
-    void applyPeriodicBoundaryConditions();
+    bool applyPeriodicBoundaryConditions();
     void dumpInfoToTerminal();
     void printProgress(int);
     int  getN()                             { return m_n; }
     bool getPeriodicBoundaryConditions()    { return m_periodicBoundaryConditions; }
-    std::vector<class Atom*>&  getAtoms()    { return m_atoms; }
-    std::vector<double>& getSystemSize()     { return m_systemSize; }
+    std::vector<class Atom*>&  getAtoms()   { return m_atoms; }
+    std::vector<double>& getSystemSize()    { return m_systemSize; }
     class Thermostat*   getThermostat()     { return m_thermostat; }
 
 private:
@@ -48,13 +48,13 @@ private:
     int                 m_skip                          = 0;
     int                 m_n                             = 0;
     int                 m_Nt                            = 0;
+    int                 m_t                             = 0;
     double              m_dt                            = 0;
     double              m_oldTime                       = 0;
     double              m_currentTime                   = 0;
     double              m_startTime                     = 0;
     double              m_lastTimeStepTime              = 0;
     const char*         m_fileName;
-    bool                m_skippedLast                   = false;
     bool                m_periodicBoundaryConditions    = false;
     bool                m_thermostatActive              = false;
     bool                m_integrating                   = false;

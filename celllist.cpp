@@ -28,6 +28,7 @@ void CellList::updateCellLists() {
         m_firstSetup = false;
         setup();
     }
+    m_system->applyPeriodicBoundaryConditions();
 
     for (int i=0; i<m_totalCells; i++) {
         m_cells.at(i).clear();
@@ -45,6 +46,7 @@ void CellList::updateCellLists() {
             i >= m_numberOfCellsInEachDirection ||
             j >= m_numberOfCellsInEachDirection ||
             k >= m_numberOfCellsInEachDirection) {
+            cout << "atom #=" << l << endl;
             cout << "i=" << i << ", j=" << j << ", k=" << k << endl;
             cout << "index=" << index << ", m_total=" << m_totalCells << endl;
             cout << "pos=" << position[0] << ", " << position[1] << ", " << position[2] << endl;
