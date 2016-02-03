@@ -64,27 +64,18 @@ void CellList::updateCellLists() {
         const int k = position[2] / systemSize[2] * m_numberOfCellsInEachDirection;
         at(m_system->getAtoms(),l)->setCellListIndex(i,j,k);
 
-        if (i >= m_numberOfCellsInEachDirection ||
-            j >= m_numberOfCellsInEachDirection ||
-            k >= m_numberOfCellsInEachDirection) {
-            cout << "atom #=" << l << endl;
+        /*if (i >= m_numberOfCellsInEachDirection || i < m_numberOfCellsInEachDirection ||
+            j >= m_numberOfCellsInEachDirection || j < m_numberOfCellsInEachDirection ||
+            k >= m_numberOfCellsInEachDirection || k < m_numberOfCellsInEachDirection) {
+            cout << "atom #=" << l << ", ncl=" << m_numberOfCellsInEachDirection << endl;
             cout << "i=" << i << ", j=" << j << ", k=" << k << endl;
             cout << "pos=" << position[0] << ", " << position[1] << ", " << position[2] << endl;
-        }
+        }*/
         at(at(at(m_cells,i),j),k).push_back(atom);
     }
 }
 
 int CellList::getSizeOfCellList(int i, int j, int k) {
-    i = (i==-1 ? m_numberOfCellsInEachDirection-1 : i);
-    i = (i==m_numberOfCellsInEachDirection ? 0 : i);
-
-    j = (j==-1 ? m_numberOfCellsInEachDirection-1 : j);
-    j = (j==m_numberOfCellsInEachDirection ? 0 : j);
-
-    k = (k==-1 ? m_numberOfCellsInEachDirection-1 : k);
-    k = (k==m_numberOfCellsInEachDirection ? 0 : k);
-
     if (at(at(at(m_cells,i),j),k).empty()) {
         return 0;
     } else {
@@ -93,15 +84,6 @@ int CellList::getSizeOfCellList(int i, int j, int k) {
 }
 
 vector<Atom*>& CellList::getCell(int i, int j, int k) {
-    i = (i==-1 ? m_numberOfCellsInEachDirection-1 : i);
-    i = (i==m_numberOfCellsInEachDirection ? 0 : i);
-
-    j = (j==-1 ? m_numberOfCellsInEachDirection-1 : j);
-    j = (j==m_numberOfCellsInEachDirection ? 0 : j);
-
-    k = (k==-1 ? m_numberOfCellsInEachDirection-1 : k);
-    k = (k==m_numberOfCellsInEachDirection ? 0 : k);
-
     return at(at(at(m_cells, i), j), k);
 }
 

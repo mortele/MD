@@ -58,11 +58,17 @@ void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
         for (int dk=(di==0 && dj==0 ? 0 : -1); dk <= 1; dk++) {
             //const int index2 = m_cellList->projectFromCellCoordinatesToIndexPeriodic(ci+di, cj+dj, ck+dk);
 
-            for (int i=0; i<m_cellList->getSizeOfCellList(ci,    cj,    ck);    i++) {
-            for (int j=0; j<m_cellList->getSizeOfCellList(ci+di, cj+dj, ck+dk); j++) {
+            const int cii = (ci+di==-1 ? numberOfCellsInEachDirection-1 : (ci+di==numberOfCellsInEachDirection ? 0 : ci+di));
+            const int cjj = (cj+dj==-1 ? numberOfCellsInEachDirection-1 : (cj+dj==numberOfCellsInEachDirection ? 0 : cj+dj));
+            const int ckk = (ck+dk==-1 ? numberOfCellsInEachDirection-1 : (ck+dk==numberOfCellsInEachDirection ? 0 : ck+dk));
 
-                Atom* atom1 = at(m_cellList->getCell(ci,    cj,    ck),   i);
-                Atom* atom2 = at(m_cellList->getCell(ci+di, cj+dj, ck+dk),j);
+            //cout << "ci=" << ci << ", ci=" << cj << "ck=" << ck <<", cii=" << cii << ", cii=" << cjj << ", ckk=" << ckk << endl;
+
+            for (int i=0; i<m_cellList->getSizeOfCellList(ci,  cj, ck);   i++) {
+            for (int j=0; j<m_cellList->getSizeOfCellList(cii, cjj, ckk); j++) {
+
+                Atom* atom1 = at(m_cellList->getCell(ci,  cj,  ck),  i);
+                Atom* atom2 = at(m_cellList->getCell(cii, cjj, ckk), j);
 
                 dr2 = 0;
                 for (int k=0; k < 3; k++) {
@@ -75,14 +81,17 @@ void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
                     dr2 += dr[k]*dr[k];
                 }
                 double f;
-                if (!((di==0 && dj==0 && dk==0) && i == j)) {
+                if (atom1 != atom2) {
+
                     const double r2  = 1.0 / dr2;
                     const double r6 = r2*r2*r2;
                     const double sigma6r6 = m_sigma6 * r6;
+                    const int cut = (dr2 < m_rCut2);
                     f  = -24*m_epsilon * sigma6r6 *
-                                      (2*sigma6r6 - 1) * r2 * (dr2 < m_rCut2);
+                                      (2*sigma6r6 - 1) * r2 * cut;
                     m_potentialEnergy += (m_4epsilonSigma6 * r6 *
-                                         (sigma6r6 - 1) - m_potentialAtCut) *  (dr2 < m_rCut2);;
+                                         (sigma6r6 - 1) - m_potentialAtCut) * cut;
+
 
                     for (int k=0; k < 3; k++) {
                         df = f * dr[k];
@@ -90,22 +99,6 @@ void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
                         atom2->addForce( df, k);
                         //m_pressure += f * std::sqrt(dr2) * r2;
                     }
-                }
-                if ((m_system->getT() > 670)    && f*f > 100 &&
-                    (atom1->getIndex()==60      || atom2->getIndex()==60)) {
-
-                    int ind1 = atom1->getIndex();
-                    int ind2 = atom2->getIndex();
-                    vec pos1 = vec(atom1->getPosition());
-                    vec vel1 = vec(atom1->getVelocity());
-                    vec pos2 = vec(atom2->getPosition());
-                    vec vel2 = vec(atom2->getVelocity());
-                    vec force1 = vec(atom1->getForce());
-                    vec force2 = vec(atom2->getForce());
-
-                    cout << "Time step: " << m_system->getT() << ", force_ij=" << f << endl;
-                    cout << "                  Atom[" << ind1 << "]: pos=1" << pos1 << ", vel1=" << vel1 << ", for1=" << force1 << endl;
-                    cout << "                  Atom[" << ind2 << "]: pos=2" << pos2 << ", vel2=" << vel2 << ", for2=" << force2 << endl;
                 }
             }}
         }}}

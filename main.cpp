@@ -73,6 +73,8 @@ int main() {
     //system = Examples::uniformBoxNoPotential();
     system = Examples::lennardJonesFFC();
 
+
+
     /*
     B balle = B();
     balle.setupB();

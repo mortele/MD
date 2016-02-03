@@ -157,7 +157,7 @@ void System::printProgress(int t) {
         if (m_Nt < 100) {
             m_skip = 10;
         } else {
-            m_skip = 100;
+            m_skip = 20;
         }
     }
     if (t % m_skip == 0) {
@@ -180,7 +180,9 @@ void System::printProgress(int t) {
         }
         printf("Step %5d  ", t);
         if (estimatedTime > 200) {
-            printf("(~%3.0f min) ", minutes);
+
+
+            printf("(~%2.0f min) ", minutes);
         } else if (t == 0) {
             printf("(%7s) ", " ");
         } else {
@@ -194,10 +196,10 @@ void System::printProgress(int t) {
                m_sampler->getInstantanousTemperature()[t],
                m_sampler->getPressures()[t]);
         } else {
-            printf("Epot/N=%11.6s  Ekin/N=%11.6f  E/N=%11.6f  T=%11.6f  P=%11.6f \n",
-                   " ? ",
+            printf("Epot/N=%11.6s  Ekin/N=%11.6f  E/N=%11.6s  T=%11.6f  P=%11.6f \n",
+                   " ?",
                    m_sampler->getKineticEnergies()[t]/m_n,
-                   m_sampler->getEnergies()[t]/m_n,
+                   " ?",
                    m_sampler->getInstantanousTemperature()[t],
                    m_sampler->getPressures()[t]);
         }
@@ -216,16 +218,11 @@ void System::printProgress(int t) {
              << elapsedTime << " s." << endl;
         if (timeStepsPerSecond > 1000) {
             cout << "Time steps/s : >1000." << endl;
+            cout << "Atom-time steps/s : " << m_n << " k." << endl;
         } else {
             cout << "Time steps/s : " << timeStepsPerSecond << endl;
+            cout << "Atom-time steps/s : " << atomTimeStepsPerSecond/1000 << " k." << endl;
         }
-        if (atomTimeStepsPerSecond > 1000) {
-            cout << "Atom-time steps/s : >1000." << endl;
-        } else {
-            cout << "Atom-time steps/s : " << atomTimeStepsPerSecond << endl;
-        }
-
-        cout << "Time steps/s : " << m_Nt/elapsedTime << endl;
     }
 }
 

@@ -14,7 +14,7 @@ menu graphics on
 animate forward
 
 # Set the representation of all molecules currently drawn.
-mol representation {points 10.00000}
+mol representation CPK
 
 foreach mid [molinfo list] {
   mol delrep 0 $mid

@@ -38,12 +38,12 @@ void Sampler::setNtDt(int Nt, double dt) {
     m_dt = dt;
 
     // Ready the storage arrays for later use.
-    m_time                      = new double[Nt];
-    m_energies                  = new double[Nt];
-    m_potentialEnergies         = new double[Nt];
-    m_kineticEnergies           = new double[Nt];
-    m_instantanousTemperature   = new double[Nt];
-    m_pressures                 = new double[Nt];
+    m_time                      = new double[Nt+1];
+    m_energies                  = new double[Nt+1];
+    m_potentialEnergies         = new double[Nt+1];
+    m_kineticEnergies           = new double[Nt+1];
+    m_instantanousTemperature   = new double[Nt+1];
+    m_pressures                 = new double[Nt+1];
 }
 
 double Sampler::sampleKineticEnergy() {
