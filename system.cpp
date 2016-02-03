@@ -93,8 +93,10 @@ bool System::integrate(int Nt) {
     }
 
     for (m_t=0; m_t < Nt; m_t++) {
-        if (m_fileOutput->saveState(m_atoms, m_n) == false) {
-            return false;
+        if (m_t % 2 == 0) {
+            if (m_fileOutput->saveState(m_atoms, m_n) == false) {
+                return false;
+            }
         }
         m_sampler->sample(m_t);
         m_integrator->advance(m_atoms, m_n);
@@ -110,6 +112,7 @@ bool System::integrate(int Nt) {
         }
         printProgress(m_t);
     }
+    m_sampler->sample(Nt);
     printProgress(Nt);
 
     return true;
@@ -157,7 +160,7 @@ void System::printProgress(int t) {
         if (m_Nt < 100) {
             m_skip = 10;
         } else {
-            m_skip = 20;
+            m_skip = 50;
         }
     }
     if (t % m_skip == 0) {
@@ -189,12 +192,12 @@ void System::printProgress(int t) {
             printf("(%5.1f s) ", estimatedTime);
         }
         if (m_t!=0) {
-        printf("Epot/N=%11.6f  Ekin/N=%11.6f  E/N=%11.6f  T=%11.6f  P=%11.6f \n",
-               m_sampler->getPotentialEnergies()[t]/m_n,
-               m_sampler->getKineticEnergies()[t]/m_n,
-               m_sampler->getEnergies()[t]/m_n,
-               m_sampler->getInstantanousTemperature()[t],
-               m_sampler->getPressures()[t]);
+            printf("Epot/N=%11.6f  Ekin/N=%11.6f  E/N=%11.6f  T=%11.6f  P=%11.6f \n",
+                   m_sampler->getPotentialEnergies()[t]/m_n,
+                   m_sampler->getKineticEnergies()[t]/m_n,
+                   m_sampler->getEnergies()[t]/m_n,
+                   m_sampler->getInstantanousTemperature()[t],
+                   m_sampler->getPressures()[t]);
         } else {
             printf("Epot/N=%11.6s  Ekin/N=%11.6f  E/N=%11.6s  T=%11.6f  P=%11.6f \n",
                    " ?",
@@ -283,7 +286,7 @@ bool System::FileOutput::saveState(std::vector<Atom*> atoms, int n) {
         return false;
     } else {
         m_outFile << n << endl;
-        m_outFile << "Time step: " << m_timeStep++ << endl;
+        m_outFile << "Time step: " << m_timeStep << endl;
 
         for (int i = 0; i < n; i++) {
             m_outFile       << atoms.at(i)->getName()           << " "

@@ -12,8 +12,17 @@ public:
     void updateCellLists();
     int  getTotalNumberOfCells() { return m_totalCells; }
     int  getNumberOfCellsInEachDirection() { return m_numberOfCellsInEachDirection; }
-    int  getSizeOfCellList(int i, int j, int k);
-    vector<class Atom*>& getCell(int i, int j, int k);
+    vector<class Atom*>& getCell(int i, int j, int k) { return at(at(at(m_cells, i), j), k); }
+
+    int getSizeOfCellList(int i, int j, int k) {
+        if (at(at(at(m_cells,i),j),k).empty()) {
+            return 0;
+        } else {
+            return at(at(at(m_cells,i),j),k).size();
+        }
+    }
+
+
 
 private:
     int             m_numberOfCellsInEachDirection = 0;

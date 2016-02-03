@@ -3,6 +3,7 @@
 #include <iostream>
 #include "../Potentials/potential.h"
 #include "../system.h"
+#include "../vec.h"
 
 using std::cout;
 using std::endl;
@@ -22,8 +23,8 @@ void VelocityVerlet::advance(const std::vector<Atom*> & atoms, int n) {
     }
     for (int i=0; i < n; i++) {
         for (int k=0; k<3; k++) {
-            atoms.at(i)->addVelocity(m_dtHalf/atoms.at(i)->getMass() * atoms.at(i)->getForce().at(k), k);
-            atoms.at(i)->addPosition(m_dt * atoms.at(i)->getVelocity().at(k), k);
+            atoms[i]->addVelocity(m_dtHalf/atoms[i]->getMass() * at(atoms[i]->getForce(),k), k);
+            atoms[i]->addPosition(m_dt * at(atoms[i]->getVelocity(),k), k);
         }
     }
     if (m_periodicBoundaryConditions) {
@@ -32,7 +33,7 @@ void VelocityVerlet::advance(const std::vector<Atom*> & atoms, int n) {
     m_potential->computeForces(atoms, n);
     for (int i=0; i < n; i++) {
         for (int k=0; k<3; k++) {
-            atoms.at(i)->addVelocity(m_dtHalf/atoms.at(i)->getMass() * atoms.at(i)->getForce().at(k), k);
+            atoms[i]->addVelocity(m_dtHalf/atoms[i]->getMass() * at(atoms[i]->getForce(),k), k);
         }
     }
 }
