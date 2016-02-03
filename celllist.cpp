@@ -5,6 +5,7 @@
 
 using std::cout;
 using std::endl;
+using std::vector;
 
 
 CellList::CellList(System* system, double rCut) {
@@ -21,16 +22,15 @@ void CellList::setup() {
                    m_numberOfCellsInEachDirection*
                    m_numberOfCellsInEachDirection;
 
-    m_cells = vector<vector<vector<vector<Atom*>>>>(m_numberOfCellsInEachDirection);
-    m_cells.reserve(m_numberOfCellsInEachDirection);
+    //m_cells = vector<vector<vector<vector<Atom*>>>>(m_numberOfCellsInEachDirection);
+    m_cells.resize(m_numberOfCellsInEachDirection,
+                    vector<vector<vector<Atom*>>>(m_numberOfCellsInEachDirection,
+                                               vector<vector<Atom*>>(m_numberOfCellsInEachDirection,
+                                                                  vector<Atom*>())));
     for (int i=0; i<m_numberOfCellsInEachDirection; i++) {
-        at(m_cells,i).reserve(m_numberOfCellsInEachDirection);
         for (int j=0; j<m_numberOfCellsInEachDirection; j++) {
-            cout << "hei2" << endl;
-            at(at(m_cells,i),j).reserve(m_numberOfCellsInEachDirection);
             for (int k=0; k<m_numberOfCellsInEachDirection; k++) {
-
-                at(at(at(m_cells, i), j), k).reserve(m_numberOfCellsInEachDirection);
+                at(at(at(m_cells, i), j), k).reserve(100);
             }
         }
     }
@@ -76,11 +76,33 @@ void CellList::updateCellLists() {
 }
 
 int CellList::getSizeOfCellList(int i, int j, int k) {
+    i = (i==-1 ? m_numberOfCellsInEachDirection-1 : i);
+    i = (i==m_numberOfCellsInEachDirection ? 0 : i);
+
+    j = (j==-1 ? m_numberOfCellsInEachDirection-1 : j);
+    j = (j==m_numberOfCellsInEachDirection ? 0 : j);
+
+    k = (k==-1 ? m_numberOfCellsInEachDirection-1 : k);
+    k = (k==m_numberOfCellsInEachDirection ? 0 : k);
+
     if (at(at(at(m_cells,i),j),k).empty()) {
         return 0;
     } else {
         return at(at(at(m_cells,i),j),k).size();
     }
+}
+
+vector<Atom*>& CellList::getCell(int i, int j, int k) {
+    i = (i==-1 ? m_numberOfCellsInEachDirection-1 : i);
+    i = (i==m_numberOfCellsInEachDirection ? 0 : i);
+
+    j = (j==-1 ? m_numberOfCellsInEachDirection-1 : j);
+    j = (j==m_numberOfCellsInEachDirection ? 0 : j);
+
+    k = (k==-1 ? m_numberOfCellsInEachDirection-1 : k);
+    k = (k==m_numberOfCellsInEachDirection ? 0 : k);
+
+    return at(at(at(m_cells, i), j), k);
 }
 
 

@@ -28,7 +28,7 @@ using std::vector;
 using std::cout;
 using std::endl;
 
-
+/*
 class A {
 public:
     A(int index)                { m_index = index; }
@@ -65,14 +65,15 @@ void B::setupB() {
             }
         }
     }
-}
+}*/
 
 int main() {
     System* system;
     //system = Examples::coldCollapseCluster();
     //system = Examples::uniformBoxNoPotential();
-    //system = Examples::lennardJonesFFC();
+    system = Examples::lennardJonesFFC();
 
+    /*
     B balle = B();
     balle.setupB();
     cout << "size=" << balle.getA().at(1).at(2).size() << endl;
@@ -86,8 +87,8 @@ int main() {
             }
         }
     }
+    cout << "DOne" << endl;*/
 
-    cout << "DOne" << endl;
     return 0;
 }
 

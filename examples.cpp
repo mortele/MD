@@ -66,7 +66,7 @@ System* Examples::uniformBoxNoPotential() {
 }
 
 System*Examples::lennardJonesFFC() {
-    int     nUnitCells          = 8;    // Number of unit cells in each dimension.
+    int     nUnitCells          = 4;    // Number of unit cells in each dimension.
     double  T                   = 1.0;   // Temperature, in units of 119.8 K.
     double  targetTemperature   = 1.0;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
     double  b                   = 5.26;  // Lattice constant, in units of 1.0 Å.
@@ -91,7 +91,7 @@ System*Examples::lennardJonesFFC() {
     system->setSystemSize                (boxSize);
     system->setThermostatActive          (false);
     system->enablePressureSampling       (true);
-    system->integrate                    (1000);
+    system->integrate                    (100);
     return system;
 }
 

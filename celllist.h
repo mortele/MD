@@ -13,7 +13,7 @@ public:
     int  getTotalNumberOfCells() { return m_totalCells; }
     int  getNumberOfCellsInEachDirection() { return m_numberOfCellsInEachDirection; }
     int  getSizeOfCellList(int i, int j, int k);
-    vector<class Atom*>& getCell(int i, int j, int k)  { return at(at(at(m_cells,i),j),k); }
+    vector<class Atom*>& getCell(int i, int j, int k);
 
 private:
     int             m_numberOfCellsInEachDirection = 0;
