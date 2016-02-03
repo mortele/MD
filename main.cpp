@@ -41,25 +41,27 @@ private:
 
 class B {
 public:
-    B() { m_n = 4; m_a = vector<vector<vector<A*>>>(m_n); }
+    B() { m_n = 4; }
     void setupB();
-    vector<vector<vector<A*>>> getA() { return m_a; }
+    vector<vector<vector<vector<A*>>>>& getA() { return m_a; }
 
 private:
     int m_n = 0;
-    vector<vector<vector<A*>>> m_a;// = vector<vector<A*>>();
+    vector<vector<vector<vector<A*>>>> m_a;// = vector<vector<A*>>();
 };
 
 void B::setupB() {
-    m_a.reserve(m_n);
+    // A[1:N][1:N][1:N][1:k]
+    m_a.resize(m_n, vector<vector<vector<A*>>>(m_n, vector<vector<A*>>(m_n, vector<A*>())));
     for (int i=0; i<m_n; i++) {
-        at(m_a,i) = vector<vector<A*>>(m_n);
-        at(m_a,i).reserve(m_n);
         for (int j=0; j<m_n; j++) {
-            at(at(m_a,i),j) = vector<A*>(m_n);
-            at(at(m_a,i),j).clear();
             for (int k=0; k<m_n; k++) {
-                at(at(m_a,i),j).push_back(new A(i*m_n*m_n+j*m_n+k));
+                at(at(at(m_a,i),j),k).reserve(100);
+                auto &vec = at(at(at(m_a,i),j),k);
+                for (int l=0; l<100; l++) {
+                    vec.push_back(new A(i*m_n*m_n+j*m_n+k+1000*l));
+                }
+
             }
         }
     }
@@ -77,10 +79,14 @@ int main() {
     for (int i=0; i<4; i++) {
         for (int j=0; j<4; j++) {
             for (int k=0; k<4; k++) {
-                cout << at(at(at(balle.getA(),i),j),k)->getIndex() << endl;
+                //cout << at(at(at(balle.getA(),i),j),k).getIndex() << endl;
+                for (int l=0; l<100; l++) {
+                    cout << balle.getA().at(i).at(j).at(k).at(l)->getIndex() << endl;
+                }
             }
         }
     }
+
     cout << "DOne" << endl;
     return 0;
 }
