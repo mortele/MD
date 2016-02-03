@@ -93,7 +93,7 @@ bool System::integrate(int Nt) {
     }
 
     for (m_t=0; m_t < Nt; m_t++) {
-        if (m_t % 2 == 0) {
+        if (m_t % 1 == 0) {
             if (m_fileOutput->saveState(m_atoms, m_n) == false) {
                 return false;
             }
