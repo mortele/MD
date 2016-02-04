@@ -16,11 +16,14 @@ public:
     double getPressure()            { return m_pressure; }
 
 protected:
-    int             m_timeStepsSinceLastCellListUpdate  = -1;
-    double          m_rCut                              = 0;
-    double          m_rCut2                             = 0;
-    double          m_pressure                          = 0;
-    class CellList* m_cellList                          = nullptr;
-    class System*   m_system                            = nullptr;
+    int                     m_timeStepsSinceLastCellListUpdate  = -1;
+    double                  m_rCut                              = 0;
+    double                  m_rCut2                             = 0;
+    double                  m_neighbourCut                      = 0;
+    double                  m_neighbourCut2                     = 0;
+    double                  m_pressure                          = 0;
+    class CellList*         m_cellList                          = nullptr;
+    class NeighbourList*    m_neighbourList                     = nullptr;
+    class System*           m_system                            = nullptr;
 };
 

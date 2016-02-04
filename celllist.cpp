@@ -23,10 +23,11 @@ void CellList::setup() {
                    m_numberOfCellsInEachDirection;
 
     //m_cells = vector<vector<vector<vector<Atom*>>>>(m_numberOfCellsInEachDirection);
-    m_cells.resize(m_numberOfCellsInEachDirection,
+    m_cells.resize(                               m_numberOfCellsInEachDirection,
                     vector<vector<vector<Atom*>>>(m_numberOfCellsInEachDirection,
-                                               vector<vector<Atom*>>(m_numberOfCellsInEachDirection,
-                                                                  vector<Atom*>())));
+                           vector<vector<Atom*>> (m_numberOfCellsInEachDirection,
+                                  vector<Atom*>  ())) );
+
     for (int i=0; i<m_numberOfCellsInEachDirection; i++) {
         for (int j=0; j<m_numberOfCellsInEachDirection; j++) {
             for (int k=0; k<m_numberOfCellsInEachDirection; k++) {

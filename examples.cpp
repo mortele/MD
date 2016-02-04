@@ -91,7 +91,7 @@ int Examples::lennardJonesFFC() {
     system->setThermostatActive          (false);
     system->enablePressureSampling       (true);
     system->enableSavingToFile           (true, 25);
-    return system->integrate(2000);
+    return system->integrate(1000);
 }
 
 

@@ -29,7 +29,8 @@ SOURCES += main.cpp \
     InitialConditions/fcc.cpp \
     Thermostats/thermostat.cpp \
     Thermostats/berendsenthermostat.cpp \
-    celllist.cpp
+    celllist.cpp \
+    neighbourlist.cpp
 
 HEADERS += \
     atom.h \
@@ -53,5 +54,6 @@ HEADERS += \
     InitialConditions/fcc.h \
     Thermostats/thermostat.h \
     Thermostats/berendsenthermostat.h \
-    celllist.h
+    celllist.h \
+    neighbourlist.h
 
