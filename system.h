@@ -21,10 +21,12 @@ public:
     void setSystemSize(std::vector<double>);
     void setupSystem();
     void enablePressureSampling(bool enabled);
-    bool integrate(int Nt);
+    int integrate(int Nt);
     bool applyPeriodicBoundaryConditions();
     void dumpInfoToTerminal();
     void printProgress(int);
+    void enableSavingToFile(bool);
+    void enableSavingToFile(bool, int);
     int  getN()                             { return m_n; }
     int  getT()                             { return m_t; }
     bool getPeriodicBoundaryConditions()    { return m_periodicBoundaryConditions; }
@@ -40,8 +42,10 @@ private:
             FileOutput(const char*);
             ~FileOutput();
             bool saveState(std::vector<class Atom*> atoms, int n);
+            void setFileOutputSkip(int fileOutputSkip);
 
         private:
+            int m_fileOutputSkip = 1;
             int m_timeStep = 0;
             std::fstream m_outFile;
     };
@@ -59,6 +63,7 @@ private:
     bool                m_periodicBoundaryConditions    = false;
     bool                m_thermostatActive              = false;
     bool                m_integrating                   = false;
+    bool                m_dumpToFile                    = true;
     std::vector<double> m_systemSize                    = std::vector<double>(3);
     std::vector<double> m_totalMomentum                 = std::vector<double>(3);
     class Integrator*         m_integrator              = nullptr;

@@ -25,7 +25,7 @@
 using std::cout;
 using std::endl;
 
-System* Examples::coldCollapseCluster() {
+int Examples::coldCollapseCluster() {
     int     n   = 250;                              // Number of particles.
     double  dt  = 0.001;                            // Time step.
     double  R0  = 20;                               // Initial sphere radius.
@@ -43,11 +43,10 @@ System* Examples::coldCollapseCluster() {
     system->setInitialCondition          (new RandomSpherical(n, R0));
     system->setPeriodicBoundaryConditions(false);
     system->setSystemSize                (boxSize);
-    system->integrate                    (2000);
-    return system;
+    return system->integrate(2000);
 }
 
-System* Examples::uniformBoxNoPotential() {
+int Examples::uniformBoxNoPotential() {
     int     n           = 250;              // Number of particles.
     double  dt          = 0.001;            // Time step.
     double  sideLength  = 1;                // Size of box sides.
@@ -61,17 +60,16 @@ System* Examples::uniformBoxNoPotential() {
     system->setInitialCondition          (new Uniform(n, boxSize, 5));
     system->setPeriodicBoundaryConditions(true);
     system->setSystemSize                (boxSize);
-    system->integrate                    (2000);
-    return system;
+    return system->integrate(2000);
 }
 
 // dt=1e-15 s
-System*Examples::lennardJonesFFC() {
-    int     nUnitCells          = 8;    // Number of unit cells in each dimension.
+int Examples::lennardJonesFFC() {
+    int     nUnitCells          = 15;    // Number of unit cells in each dimension.
     double  T                   = 1.0;   // Temperature, in units of 119.8 K.
     double  targetTemperature   = 1.0;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
     double  b                   = 5.26;  // Lattice constant, in units of 1.0 Å.
-    double  dt                  = 0.01;  // Time step.
+    double  dt                  = 0.005; // Time step.
     double  tau                 = dt;    // Relaxation time used by the thermostat, in units of 119.8 K.
     double  sideLength          = nUnitCells*b; // Size of box sides.
     double  rCut                = 2.5*3.405;
@@ -92,8 +90,8 @@ System*Examples::lennardJonesFFC() {
     system->setSystemSize                (boxSize);
     system->setThermostatActive          (false);
     system->enablePressureSampling       (true);
-    system->integrate                    (1000);
-    return system;
+    system->enableSavingToFile           (true, 25);
+    return system->integrate(2000);
 }
 
 

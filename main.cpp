@@ -28,12 +28,9 @@ using std::cout;
 using std::endl;
 
 int main() {
-    System* system;
-    //system = Examples::coldCollapseCluster();
-    //system = Examples::uniformBoxNoPotential();
-    system = Examples::lennardJonesFFC();
-
-    return 0;
+    //return Examples::coldCollapseCluster();
+    //return Examples::uniformBoxNoPotential();
+    return Examples::lennardJonesFFC();
 }
 
 

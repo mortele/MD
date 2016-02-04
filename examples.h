@@ -1,13 +1,9 @@
 #pragma once
 
-class vec;
-class Atom;
-class System;
-
 class Examples {
 public:
-    static System* coldCollapseCluster();
-    static System* uniformBoxNoPotential();
-    static System* lennardJonesFFC();
+    static int coldCollapseCluster();
+    static int uniformBoxNoPotential();
+    static int lennardJonesFFC();
 };
 

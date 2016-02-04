@@ -16,7 +16,6 @@ using std::fstream;
 
 System::System() :
     m_fileName("../MD/movie.xyz") {
-    m_fileOutput        = new FileOutput(m_fileName);
     m_sampler           = new Sampler(this);
     m_systemSize        = std::vector<double>{-1,-1,-1}; // Used as flag for 'no system size set'
     m_thermostatActive  = false;
@@ -54,7 +53,7 @@ void System::setThermostat(Thermostat* thermostat) {
     m_thermostatActive = true;
 }
 
-void System::setThermostatActive(bool thermostatActive) {
+void System:: setThermostatActive(bool thermostatActive) {
     m_thermostatActive = thermostatActive;
 }
 
@@ -76,12 +75,15 @@ void System::enablePressureSampling(bool enabled) {
 
 
 
-bool System::integrate(int Nt) {
+int System::integrate(int Nt) {
     m_Nt = Nt;
     if (m_integrating == false) {
         setupSystem();
         dumpInfoToTerminal();
         m_integrating = true;
+        if (m_dumpToFile && m_fileOutput == nullptr) {
+            m_fileOutput = new FileOutput(m_fileName);
+        }
     }
     m_sampler->setNtDt(Nt,m_dt);
 
@@ -93,7 +95,10 @@ bool System::integrate(int Nt) {
     }
 
     for (m_t=0; m_t < Nt; m_t++) {
-        if (m_t % 1 == 0) {
+        if (m_dumpToFile == true) {
+            if (m_fileOutput == nullptr) {
+                m_fileOutput = new FileOutput(m_fileName);
+            }
             if (m_fileOutput->saveState(m_atoms, m_n) == false) {
                 return false;
             }
@@ -133,6 +138,7 @@ void System::dumpInfoToTerminal() {
     cout << "    │  Initial condition type: " << m_initialCondition->getName() << endl;
     cout << "    │  Integrator in use:      " << m_integrator->getName()       << endl;
     cout << "    │  Potential in use:       " << m_potential->getName()        << endl;
+    cout << "    │  Saving state to file:   " << (m_dumpToFile ? "enabled" : "disabled") << endl;
     cout << "    │  Output file name:       " << m_fileName                    << endl;
     cout << "    ├─────────────────────────────────────────────────┐ " << endl;
     cout << "    │ Parameters                                      │ " << endl;
@@ -160,7 +166,7 @@ void System::printProgress(int t) {
         if (m_Nt < 100) {
             m_skip = 10;
         } else {
-            m_skip = 50;
+            m_skip = 100;
         }
     }
     if (t % m_skip == 0) {
@@ -187,7 +193,7 @@ void System::printProgress(int t) {
 
             printf("(~%2.0f min) ", minutes);
         } else if (t == 0) {
-            printf("(%7s) ", " ");
+            printf("(%7s) ", " ?");
         } else {
             printf("(%5.1f s) ", estimatedTime);
         }
@@ -226,6 +232,24 @@ void System::printProgress(int t) {
             cout << "Time steps/s : " << timeStepsPerSecond << endl;
             cout << "Atom-time steps/s : " << atomTimeStepsPerSecond/1000 << " k." << endl;
         }
+    }
+}
+
+void System::enableSavingToFile(bool dumpToFile) {
+    if (dumpToFile && m_fileOutput == nullptr) {
+        m_fileOutput = new FileOutput(m_fileName);
+    }
+    m_dumpToFile = dumpToFile;
+    if (dumpToFile) {
+        m_fileOutput->setFileOutputSkip(1);
+    }
+
+}
+
+void System::enableSavingToFile(bool dumpToFile, int skip) {
+    enableSavingToFile(dumpToFile);
+    if (dumpToFile) {
+        m_fileOutput->setFileOutputSkip(skip);
     }
 }
 
@@ -272,6 +296,8 @@ System::FileOutput::FileOutput(const char* fileName) {
     //m_outFile.open(fileName, std::ios::out);
     const char* fileNameTmp = "../MD/movie.xyz";
     m_outFile.open(fileNameTmp, std::ios::out);
+    m_fileOutputSkip = 1;
+    m_timeStep = 0;
 }
 
 System::FileOutput::~FileOutput() {
@@ -285,19 +311,28 @@ bool System::FileOutput::saveState(std::vector<Atom*> atoms, int n) {
         cout << endl << "### ERROR ###: Could not open file. Exiting." << endl << endl;
         return false;
     } else {
-        m_outFile << n << endl;
-        m_outFile << "Time step: " << m_timeStep << endl;
+        if (m_timeStep % m_fileOutputSkip == 0) {
+            m_outFile << n << endl;
+            m_outFile << "Time step: " << m_timeStep++ << endl;
 
-        for (int i = 0; i < n; i++) {
-            m_outFile       << atoms.at(i)->getName()           << " "
-                            << std::setprecision(10)
-                            << atoms.at(i)->getPosition().at(0) << " "
-                            << atoms.at(i)->getPosition().at(1) << " "
-                            << atoms.at(i)->getPosition().at(2) << " "
-                            << endl;
+            for (int i = 0; i < n; i++) {
+                m_outFile       << atoms.at(i)->getName()           << " "
+                                << std::setprecision(10)
+                                << atoms.at(i)->getPosition().at(0) << " "
+                                << atoms.at(i)->getPosition().at(1) << " "
+                                << atoms.at(i)->getPosition().at(2) << " "
+                                << endl;
+            }
+            return true;
+        } else {
+            m_timeStep++;
         }
-        return true;
     }
+    return true;
+}
+
+void System::FileOutput::setFileOutputSkip(int fileOutputSkip) {
+    m_fileOutputSkip = fileOutputSkip;
 }
 
 
