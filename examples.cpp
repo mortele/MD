@@ -72,7 +72,10 @@ int Examples::lennardJonesFFC() {
     double  dt                  = 0.005; // Time step.
     double  tau                 = dt;    // Relaxation time used by the thermostat, in units of 119.8 K.
     double  sideLength          = nUnitCells*b; // Size of box sides.
-    double  rCut                = 2.5*3.405;
+    double  epsilon             = 1;
+    double  sigma               = 3.405;
+    double  rCut                = 2.5 * sigma;
+    double  rNeighbourCut       = 3.0 * sigma;
     std::vector<double> boxSize{sideLength,     // Vector of box size.
                                 sideLength,
                                 sideLength};
@@ -83,7 +86,7 @@ int Examples::lennardJonesFFC() {
 
     System* system = new System          ();
     system->setIntegrator                (new VelocityVerlet(dt, system));
-    system->setPotential                 (new LennardJones(boxSize, rCut, system));
+    system->setPotential                 (new LennardJones(epsilon, sigma, boxSize, rCut, rNeighbourCut, system));
     system->setInitialCondition          (new FCC(nUnitCells, b, T));
     system->setPeriodicBoundaryConditions(true);
     system->setThermostat                (new BerendsenThermostat(targetTemperature, tau, dt));

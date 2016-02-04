@@ -30,8 +30,7 @@ LennardJones::LennardJones(double               epsilon,
     m_rCut              = rCut;
     m_rCut2             = rCut * rCut;
     m_neighbourCut      = neighbourCut;
-    m_neighbourCut2     = neighbourCut*neighbourCut;
-    m_neighbourList     = new NeighbourList(m_system, m_neighbourCut, m_rCut, m_systemSize);
+    m_neighbourList     = new NeighbourList(m_system, m_rCut, m_neighbourCut, m_systemSize);
     m_cellList          = m_neighbourList->getCellList();
     double r2           = 1.0 / m_rCut2;
     m_potentialAtCut    = 4*m_epsilon * r2*r2*r2 * m_sigma6 * (m_sigma6*r2*r2*r2-1);
@@ -40,7 +39,7 @@ LennardJones::LennardJones(double               epsilon,
 void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
 
     if (m_timeStepsSinceLastCellListUpdate == -1 ||
-        m_timeStepsSinceLastCellListUpdate >= 20) {
+        m_timeStepsSinceLastCellListUpdate >= 10) {
         m_timeStepsSinceLastCellListUpdate = 1;
         //m_cellList->updateCellLists();
         m_neighbourList->constructNeighbourLists();
