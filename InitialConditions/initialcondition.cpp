@@ -17,7 +17,7 @@ void InitialCondition::removeLinearMomentum() {
         }
     }
     for (int k=0; k<3; k++) {
-        m_totalMomentum.at(k) /= (double) m_n;
+        m_totalMomentum.at(k) /= (real) m_n;
     }
     for (int i=0; i<m_n; i++) {
         for (int k=0; k<3; k++) {

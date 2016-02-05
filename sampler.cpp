@@ -33,23 +33,23 @@ void Sampler::setPotential(Potential* potential) {
     m_potential = potential;
 }
 
-void Sampler::setNtDt(int Nt, double dt) {
+void Sampler::setNtDt(int Nt, real dt) {
     m_Nt = Nt;
     m_dt = dt;
 
     // Ready the storage arrays for later use.
-    m_time                      = new double[Nt+1];
-    m_energies                  = new double[Nt+1];
-    m_potentialEnergies         = new double[Nt+1];
-    m_kineticEnergies           = new double[Nt+1];
-    m_instantanousTemperature   = new double[Nt+1];
-    m_pressures                 = new double[Nt+1];
+    m_time                      = new real[Nt+1];
+    m_energies                  = new real[Nt+1];
+    m_potentialEnergies         = new real[Nt+1];
+    m_kineticEnergies           = new real[Nt+1];
+    m_instantanousTemperature   = new real[Nt+1];
+    m_pressures                 = new real[Nt+1];
 }
 
-double Sampler::sampleKineticEnergy() {
-    double kineticEnergy = 0;
+real Sampler::sampleKineticEnergy() {
+    real kineticEnergy = 0;
     for (int i=0; i < m_n; i++) {
-        double v2 = m_atoms.at(i)->getVelocity().at(0)*m_atoms.at(i)->getVelocity().at(0) +
+        real v2 = m_atoms.at(i)->getVelocity().at(0)*m_atoms.at(i)->getVelocity().at(0) +
                     m_atoms.at(i)->getVelocity().at(1)*m_atoms.at(i)->getVelocity().at(1) +
                     m_atoms.at(i)->getVelocity().at(2)*m_atoms.at(i)->getVelocity().at(2);
         kineticEnergy += 0.5 * m_atoms.at(i)->getMass() * v2;
@@ -57,12 +57,12 @@ double Sampler::sampleKineticEnergy() {
     return kineticEnergy;
 }
 
-double Sampler::samplePotentialEnergy() {
+real Sampler::samplePotentialEnergy() {
     return m_potential->computePotential(m_atoms, m_n);
 }
 
-double Sampler::samplePressure(double instantaneousTemperature) {
-    double pressureFromLennardJones = m_potential->getPressure();
+real Sampler::samplePressure(real instantaneousTemperature) {
+    real pressureFromLennardJones = m_potential->getPressure();
     return instantaneousTemperature * m_density +
            pressureFromLennardJones / (3 * m_volume);
 

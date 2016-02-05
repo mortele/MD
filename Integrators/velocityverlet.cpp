@@ -8,7 +8,7 @@
 using std::cout;
 using std::endl;
 
-VelocityVerlet::VelocityVerlet(double dt, System* system) :
+VelocityVerlet::VelocityVerlet(real dt, System* system) :
         Integrator(dt) {
     m_firstStep = true;
     m_dtHalf = dt/2.0;

@@ -1,7 +1,7 @@
 #include "randomspherical.h"
 
 
-RandomSpherical::RandomSpherical(int n, double R0) {
+RandomSpherical::RandomSpherical(int n, real R0) {
     m_setupDone = false;
     m_n  = n;
     m_R0 = R0;
@@ -17,12 +17,12 @@ void RandomSpherical::setupInitialCondition() {
     using std::endl;
 
     for (int i=0; i<m_n; i++) {
-        double mass = Random::nextGaussian(10.0, 1.0);
+        real mass = Random::nextGaussian(10.0, 1.0);
 
-        double u,v,w,x,y,z,r,theta,phi;
-        u = (Random::nextDouble());
-        v = (Random::nextDouble());
-        w = (Random::nextDouble());
+        real u,v,w,x,y,z,r,theta,phi;
+        u = (Random::nextreal());
+        v = (Random::nextreal());
+        w = (Random::nextreal());
 
         r     = m_R0*pow(u, 1.0/3.0);
         theta = acos(1-2*v);
@@ -34,8 +34,8 @@ void RandomSpherical::setupInitialCondition() {
 
         m_atoms.push_back(new Atom(1));
         m_atoms.at(i)->setMass(mass);
-        m_atoms.at(i)->setPosition(std::vector<double>{x,y,z});
-        m_atoms.at(i)->setVelocity(std::vector<double>{0,0,0});
+        m_atoms.at(i)->setPosition(std::vector<real>{x,y,z});
+        m_atoms.at(i)->setVelocity(std::vector<real>{0,0,0});
     }
 
     m_setupDone = true;

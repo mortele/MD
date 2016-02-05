@@ -5,11 +5,11 @@
 using std::endl;
 using std::cout;
 
-Gravitational::Gravitational(double G, System* system) :
+Gravitational::Gravitational(real G, System* system) :
         Gravitational(G, 0, system) {
 }
 
-Gravitational::Gravitational(double G, double eps, System* system) :
+Gravitational::Gravitational(real G, real eps, System* system) :
         Potential(system) {
     m_G     = G;
     m_eps   = eps;
@@ -20,10 +20,10 @@ void Gravitational::computeForces(const std::vector<Atom*> & atoms, int n) {
 
     setForcesToZero(atoms, n);
 
-    std::vector<double> dr{0,0,0};
-    double r  = 0;
-    double r2 = 0;
-    double f  = 0;
+    std::vector<real> dr{0,0,0};
+    real r  = 0;
+    real r2 = 0;
+    real f  = 0;
     m_potentialEnergy = 0;
 
     for (int i=0; i < n; i++) {
@@ -52,7 +52,7 @@ void Gravitational::computeForces(const std::vector<Atom*> & atoms, int n) {
     }
 }
 
-double Gravitational::computePotential(const std::vector<Atom*> & atoms, int n) {
+real Gravitational::computePotential(const std::vector<Atom*> & atoms, int n) {
     return m_potentialEnergy / 2.0;
 }
 

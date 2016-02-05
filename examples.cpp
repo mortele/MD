@@ -1,7 +1,7 @@
 #include "examples.h"
 #include <iostream>
 #include <fstream>
-#include <cmath>
+#include <tgmath.h>
 #include "system.h"
 #include "atom.h"
 #include "vec.h"
@@ -27,13 +27,13 @@ using std::endl;
 
 int Examples::coldCollapseCluster() {
     int     n   = 250;                              // Number of particles.
-    double  dt  = 0.001;                            // Time step.
-    double  R0  = 20;                               // Initial sphere radius.
-    double  PI  = acos(-1.0);                       // Pi.
-    double  G   = 4*PI*PI*R0*R0*R0/(32*10.0*n);     // Gravitational constant.
-    double  eps = 0.01;                             // Smoothing factor.
-    double  sideLength = 2*R0;
-    std::vector<double> boxSize{sideLength,         // Vector of box size.
+    real  dt  = 0.001;                            // Time step.
+    real  R0  = 20;                               // Initial sphere radius.
+    real  PI  = acos(-1.0);                       // Pi.
+    real  G   = 4*PI*PI*R0*R0*R0/(32*10.0*n);     // Gravitational constant.
+    real  eps = 0.01;                             // Smoothing factor.
+    real  sideLength = 2*R0;
+    std::vector<real> boxSize{sideLength,         // Vector of box size.
                                 sideLength,
                                 sideLength};
 
@@ -48,9 +48,9 @@ int Examples::coldCollapseCluster() {
 
 int Examples::uniformBoxNoPotential() {
     int     n           = 250;              // Number of particles.
-    double  dt          = 0.001;            // Time step.
-    double  sideLength  = 1;                // Size of box sides.
-    std::vector<double> boxSize{sideLength, // Vector of box size.
+    real  dt          = 0.001;            // Time step.
+    real  sideLength  = 1;                // Size of box sides.
+    std::vector<real> boxSize{sideLength, // Vector of box size.
                                 sideLength,
                                 sideLength};
 
@@ -66,17 +66,17 @@ int Examples::uniformBoxNoPotential() {
 // dt=1e-15 s
 int Examples::lennardJonesFFC() {
     int     nUnitCells          = 20;    // Number of unit cells in each dimension.
-    double  T                   = 1.0;   // Temperature, in units of 119.8 K.
-    double  targetTemperature   = 1.0;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
-    double  b                   = 5.26;  // Lattice constant, in units of 1.0 Å.
-    double  dt                  = 0.005; // Time step.
-    double  tau                 = dt;    // Relaxation time used by the thermostat, in units of 119.8 K.
-    double  sideLength          = nUnitCells*b; // Size of box sides.
-    double  epsilon             = 1;
-    double  sigma               = 3.405;
-    double  rCut                = 2.5 * sigma;
-    double  rNeighbourCut       = 3.0 * sigma;
-    std::vector<double> boxSize{sideLength,     // Vector of box size.
+    real  T                   = 1.0;   // Temperature, in units of 119.8 K.
+    real  targetTemperature   = 1.0;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
+    real  b                   = 5.26;  // Lattice constant, in units of 1.0 Å.
+    real  dt                  = 0.0997765; // Time step.
+    real  tau                 = dt;    // Relaxation time used by the thermostat, in units of 119.8 K.
+    real  sideLength          = nUnitCells*b; // Size of box sides.
+    real  epsilon             = 1;
+    real  sigma               = 3.405;
+    real  rCut                = 2.5 * sigma;
+    real  rNeighbourCut       = 3.0 * sigma;
+    std::vector<real> boxSize{sideLength,     // Vector of box size.
                                 sideLength,
                                 sideLength};
 
@@ -93,8 +93,8 @@ int Examples::lennardJonesFFC() {
     system->setSystemSize                (boxSize);
     system->setThermostatActive          (false);
     system->enablePressureSampling       (true);
-    system->enableSavingToFile           (true, 25);
-    return system->integrate(10000);
+    system->enableSavingToFile           (false);
+    return system->integrate(1000);
 }
 
 

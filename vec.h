@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 
+typedef double real;
 
 template <typename T>
 T& at(std::vector<T> &vec, int index) {
@@ -13,36 +14,36 @@ T& at(std::vector<T> &vec, int index) {
 class vec {
 public:
     vec();
-    vec(std::vector<double> a);
-    vec(double* a);
-    vec(double a);
-    vec(double a, double b, double c);
+    vec(std::vector<real> a);
+    vec(real* a);
+    vec(real a);
+    vec(real a, real b, real c);
 
     vec operator+(vec x);
-    vec operator+(double a);
-    vec operator*(double a);
+    vec operator+(real a);
+    vec operator*(real a);
     vec operator-(vec a);
-    double operator[](int i);
-    friend vec operator+(double a, vec x);
-    friend vec operator*(double a, vec x);
+    real operator[](int i);
+    friend vec operator+(real a, vec x);
+    friend vec operator*(real a, vec x);
     friend std::ostream& operator<<(std::ostream& os, vec a);
 
-    void setData(double* data);
+    void setData(real* data);
     void set(vec x);
-    void set(double a, int index);
-    void setX(double x);
-    void setY(double y);
-    void setZ(double z);
-    double computeLengthSquared(vec a, vec systemSize);
-    double computeLengthSquared(vec a);
-    double computeLengthSquared();
+    void set(real a, int index);
+    void setX(real x);
+    void setY(real y);
+    void setZ(real z);
+    real computeLengthSquared(vec a, vec systemSize);
+    real computeLengthSquared(vec a);
+    real computeLengthSquared();
     static vec computeLength(vec x, vec y, vec systemSize);
 
 private:
-    double* m_data = nullptr;
-    //double m_data[3];
+    real* m_data = nullptr;
+    //real m_data[3];
 
-    double* getData();
+    real* getData();
 
 
 };

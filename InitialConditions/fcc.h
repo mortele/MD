@@ -4,14 +4,14 @@
 
 class FCC : public InitialCondition {
 public:
-    FCC(int, double, double);
+    FCC(int, real, real);
     void setupInitialCondition();
 
     std::string getName() { return "FCC (face-centered cubic)"; }
 
 private:
     int     m_numberOfUnitCells;
-    double  m_latticeConstant;
-    double  m_temperature;
+    real  m_latticeConstant;
+    real  m_temperature;
 };
 

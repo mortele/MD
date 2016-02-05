@@ -6,7 +6,7 @@ using std::vector;
 
 class CellList {
 public:
-    CellList(class System* system, double rCut);
+    CellList(class System* system, real rCut);
     void setup();
     void clearCells();
     void updateCellLists();
@@ -28,7 +28,7 @@ private:
     int             m_numberOfCellsInEachDirection = 0;
     int             m_totalCells = 0;
     bool            m_firstUpdate = true;
-    double          m_rCut = 0;
+    real          m_rCut = 0;
     class System*   m_system = nullptr;
     vector<vector<vector<vector<class Atom*>>>> m_cells;
 };

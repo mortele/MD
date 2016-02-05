@@ -1,56 +1,56 @@
 #include "atom.h"
 
 
-Atom::Atom(std::string name, double mass) {
+Atom::Atom(std::string name, real mass) {
     m_mass     = mass;
     m_name     = name;
 }
 
-Atom::Atom(double mass) {
+Atom::Atom(real mass) {
     m_mass     = mass;
 }
 
-void Atom::setPosition(std::vector<double>  position) {
+void Atom::setPosition(std::vector<real>  position) {
     for (int k=0; k<3; k++) {
         m_position.at(k) = position.at(k);
     }
 }
 
-void Atom::setPosition(double x, int index) {
+void Atom::setPosition(real x, int index) {
     m_position.at(index) = x;
 }
 
 
 
-void Atom::setVelocity(std::vector<double>  velocity) {
+void Atom::setVelocity(std::vector<real>  velocity) {
     for (int k=0; k<3; k++) {
         m_velocity.at(k) = velocity.at(k);
     }
 }
 
-void Atom::setVelocity(double v, int index) {
+void Atom::setVelocity(real v, int index) {
     m_velocity.at(index) = v;
 }
 
 
-void Atom::setForce(std::vector<double>  force) {
+void Atom::setForce(std::vector<real>  force) {
     for (int k=0; k<3; k++) {
         m_force.at(k) = force.at(k);
     }
 }
 
-void Atom::setForce(double f, int index) {
+void Atom::setForce(real f, int index) {
     m_force.at(index) = f;
 }
 
-void Atom::addForce(std::vector<double>  dforce) {
+void Atom::addForce(std::vector<real>  dforce) {
     for (int k=0; k<3; k++) {
         m_force.at(k) += dforce.at(k);
     }
 }
 
 
-void Atom::setMass(double mass) {
+void Atom::setMass(real mass) {
     m_mass = mass;
 }
 

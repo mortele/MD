@@ -4,19 +4,19 @@
 using std::cout;
 using std::endl;
 
-EulerCromer::EulerCromer(double dt) : Integrator(dt) {
+EulerCromer::EulerCromer(real dt) : Integrator(dt) {
 
 }
 
 void EulerCromer::advance(const std::vector<Atom*> & atoms, int n) {
     m_potential->computeForces(atoms, n);
 
-    /*std::vector<double> velocity{0,0,0};
-    std::vector<double> position{0,0,0};
-    std::vector<double> force   {0,0,0};*/
+    /*std::vector<real> velocity{0,0,0};
+    std::vector<real> position{0,0,0};
+    std::vector<real> force   {0,0,0};*/
 
     for (int i = 0; i < n; i++) {
-        /*double mass = atoms[i].getMass();
+        /*real mass = atoms[i].getMass();
         velocity = atoms[i].getVelocity();
         position = atoms[i].getPosition();
         force    = atoms[i].getForce();*/

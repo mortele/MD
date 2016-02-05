@@ -9,9 +9,9 @@ using std::endl;
 
 
 NeighbourList::NeighbourList(System* system,
-                             double rCut,
-                             double neighbourCut,
-                             vector<double> systemSize) {
+                             real rCut,
+                             real neighbourCut,
+                             vector<real> systemSize) {
     m_system        = system;
     m_rCut          = rCut;
     m_rCut2         = rCut*rCut;
@@ -34,8 +34,8 @@ void NeighbourList::constructNeighbourLists() {
     clearNeighbours();
     m_cellList->updateCellLists();
 
-    double dr2              = 0;
-    double dr[3]            = {0,0,0};
+    real dr2              = 0;
+    real dr[3]            = {0,0,0};
 
     const int numberOfCellsInEachDirection = m_cellList->getNumberOfCellsInEachDirection();
     for (int ci=0; ci<numberOfCellsInEachDirection; ci++) {

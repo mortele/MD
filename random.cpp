@@ -1,5 +1,5 @@
 #include "random.h"
-#include <cmath>
+#include <tgmath.h>
 
 long     Random::iy = 0;
 long     Random::iv[NTAB];
@@ -8,16 +8,16 @@ void Random::setSeed(long seed) {
     Random::seed = seed;
 }
 
-double Random::nextGaussian(double mean, double standardDeviation) {
-    double standardNormalRandomNumber = sqrt( -2.0*log(1.0 - nextDouble()) ) * cos( 6.283185307 * nextDouble() );
+real Random::nextGaussian(real mean, real standardDeviation) {
+    real standardNormalRandomNumber = sqrt( -2.0*log(1.0 - nextreal()) ) * cos( 6.283185307 * nextreal() );
     return standardDeviation*standardNormalRandomNumber + mean;
 }
 
-double Random::nextDouble()
+real Random::nextreal()
 {
     int             j;
     long            k;
-    double          temp;
+    real          temp;
     if (Random::seed <= 0 || !iy) {
         if (-(Random::seed) < 1) Random::seed=1;
         else Random::seed = -(Random::seed);

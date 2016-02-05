@@ -4,21 +4,21 @@ using std::cout;
 using std::endl;
 
 vec::vec() {
-    m_data = new double[3];
+    m_data = new real[3];
     m_data[0] = 0;
     m_data[1] = 0;
     m_data[2] = 0;
 }
 
-vec::vec(std::vector<double> a) {
-    m_data = new double[3];
+vec::vec(std::vector<real> a) {
+    m_data = new real[3];
     m_data[0] = at(a,0);
     m_data[1] = at(a,1);
     m_data[2] = at(a,2);
 }
 
-vec::vec(double a, double b, double c) {
-    m_data = new double[3];
+vec::vec(real a, real b, real c) {
+    m_data = new real[3];
     m_data[0] = a;
     m_data[1] = b;
     m_data[2] = c;
@@ -26,15 +26,15 @@ vec::vec(double a, double b, double c) {
 
 
 
-vec::vec(double* a) {
-    m_data = new double[3];
+vec::vec(real* a) {
+    m_data = new real[3];
     m_data[0] = a[0];
     m_data[1] = a[1];
     m_data[2] = a[2];
 }
 
-vec::vec(double a) {
-    m_data = new double[3];
+vec::vec(real a) {
+    m_data = new real[3];
     m_data[0] = a;
     m_data[1] = a;
     m_data[2] = a;
@@ -42,9 +42,9 @@ vec::vec(double a) {
 
 vec vec::operator+(vec x) {
     vec result = vec(m_data);
-    double* resultData = new double[3];
+    real* resultData = new real[3];
 
-    double* xData = x.getData();
+    real* xData = x.getData();
     for (int i = 0; i < 3; i++) {
         resultData[i] = m_data[i] + xData[i];
     }
@@ -53,13 +53,13 @@ vec vec::operator+(vec x) {
     return result;
 }
 
-vec operator*(double a, vec x) {
+vec operator*(real a, vec x) {
     return x.operator *(a);
 }
 
-vec vec::operator+(double a) {
+vec vec::operator+(real a) {
     vec result = vec(m_data);
-    double* resultData = new double[3];
+    real* resultData = new real[3];
 
     for (int i=0; i < 3;i++) {
         resultData[i] = m_data[i] + a;
@@ -69,13 +69,13 @@ vec vec::operator+(double a) {
     return result;
 }
 
-vec operator+(double a, vec x) {
+vec operator+(real a, vec x) {
     return x.operator +(a);
 }
 
-vec vec::operator*(double a) {
+vec vec::operator*(real a) {
     vec result = vec(m_data);
-    double* resultData = new double[3];
+    real* resultData = new real[3];
 
     for (int i=0; i < 3; i++) {
         resultData[i] = m_data[i]*a;
@@ -86,14 +86,14 @@ vec vec::operator*(double a) {
 }
 
 vec vec::operator-(vec a) {
-    double* aData = a.getData();
+    real* aData = a.getData();
     return vec(-aData[0], -aData[1], -aData[2]);
 }
 
 void vec::set(vec x) {
-    double* xData = x.getData();
+    real* xData = x.getData();
     //delete [] m_data;
-    m_data = new double[3];
+    m_data = new real[3];
 
     for (int i=0; i<3; i++) {
         m_data[i] = xData[i];
@@ -101,47 +101,47 @@ void vec::set(vec x) {
 
 }
 
-void vec::set(double a, int index) {
+void vec::set(real a, int index) {
     m_data[index] = a;
 }
 
-double vec::operator[](int i) {
+real vec::operator[](int i) {
     return m_data[i];
 }
 
 
 
 std::ostream& operator<<(std::ostream& os, vec a) {
-    double* data = a.getData();
+    real* data = a.getData();
     os << "["  << data[0] << ", " << data[1]
        << ", " << data[2] << "]";
     return os;
 }
 
-void vec::setData(double* data) {
+void vec::setData(real* data) {
     m_data = data;
 }
 
-void vec::setX(double x) {
+void vec::setX(real x) {
     m_data[0] = x;
 }
 
-void vec::setY(double y) {
+void vec::setY(real y) {
     m_data[1] = y;
 }
 
-void vec::setZ(double z) {
+void vec::setZ(real z) {
     m_data[2] = z;
 }
 
 vec vec::computeLength(vec x, vec y, vec systemSize) {
-    double* xData = x.getData();
-    double* yData = y.getData();
-    double* systemSizeData = systemSize.getData();
+    real* xData = x.getData();
+    real* yData = y.getData();
+    real* systemSizeData = systemSize.getData();
     vec     result = vec();
 
     for (int i=0; i<3; i++) {
-        double dx = xData[i] - yData[i];
+        real dx = xData[i] - yData[i];
         if (dx > systemSizeData[i]/2.0) {
             dx = - systemSizeData[i] + dx;
         } else if (dx < -systemSizeData[i]/2.0) {
@@ -153,13 +153,13 @@ vec vec::computeLength(vec x, vec y, vec systemSize) {
 }
 
 
-double vec::computeLengthSquared(vec a, vec systemSize) {
-    double* x = m_data;
-    double* y = a.getData();
+real vec::computeLengthSquared(vec a, vec systemSize) {
+    real* x = m_data;
+    real* y = a.getData();
 
-    double lengthSquared = 0;
+    real lengthSquared = 0;
     for (int i = 0; i < 3; i++) {
-        double diff = x[i]-y[i];
+        real diff = x[i]-y[i];
         if (diff > systemSize[i]/2.0) {
             diff = diff - systemSize[i]/2.0;
         }
@@ -169,11 +169,11 @@ double vec::computeLengthSquared(vec a, vec systemSize) {
 }
 
 
-double vec::computeLengthSquared(vec a) {
-    double* x = m_data;
-    double* y = a.getData();
+real vec::computeLengthSquared(vec a) {
+    real* x = m_data;
+    real* y = a.getData();
 
-    double lengthSquared = 0;
+    real lengthSquared = 0;
     for (int i = 0; i < 3; i++) {
         lengthSquared += (x[i]-y[i])*(x[i]-y[i]);
     }
@@ -182,7 +182,7 @@ double vec::computeLengthSquared(vec a) {
 
 
 
-double vec::computeLengthSquared() {
+real vec::computeLengthSquared() {
     return m_data[0]*m_data[0] +
            m_data[1]*m_data[1] +
            m_data[2]*m_data[2];
@@ -190,7 +190,7 @@ double vec::computeLengthSquared() {
 }
 
 
-double* vec::getData() {
+real* vec::getData() {
     return m_data;
 }
 

@@ -8,7 +8,7 @@ using std::endl;
 using std::vector;
 
 
-CellList::CellList(System* system, double rCut) {
+CellList::CellList(System* system, real rCut) {
     m_system = system;
     m_rCut = rCut;
 }
@@ -58,8 +58,8 @@ void CellList::updateCellLists() {
     }
     for (int l=0; l<m_system->getN(); l++) {
         Atom* atom = at(m_system->getAtoms(),l);
-        std::vector<double>& position   = at(m_system->getAtoms(),l)->getPosition();
-        std::vector<double>& systemSize = m_system->getSystemSize();
+        std::vector<real>& position   = at(m_system->getAtoms(),l)->getPosition();
+        std::vector<real>& systemSize = m_system->getSystemSize();
         const int i = position[0] / systemSize[0] * m_numberOfCellsInEachDirection;
         const int j = position[1] / systemSize[1] * m_numberOfCellsInEachDirection;
         const int k = position[2] / systemSize[2] * m_numberOfCellsInEachDirection;

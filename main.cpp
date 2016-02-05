@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <cmath>
+#include <tgmath.h>
 #include <vector>
 //#include <omp.h>
 #include "examples.h"

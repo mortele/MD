@@ -1,11 +1,11 @@
 #include "twobody.h"
-#include <cmath>
+#include <tgmath.h>
 
 TwoBody::TwoBody() {
     m_setupDone = false;
 }
 
-TwoBody::TwoBody(double e) {
+TwoBody::TwoBody(real e) {
     m_setupDone = false;
     m_e = e;
 }
@@ -13,11 +13,11 @@ TwoBody::TwoBody(double e) {
 void TwoBody::setupInitialCondition() {
     m_n = 2;
 
-    double earthMass = 0.5;
-    std::vector<double> earthVelocity{0,2*std::acos(-1.0),0};
-    std::vector<double> earthPosition{1+m_e,0,0};
-    std::vector<double> sunVelocity{0,-2*std::acos(-1.0)/earthMass,0};
-    std::vector<double> sunPosition{0,0,0};
+    real earthMass = 0.5;
+    std::vector<real> earthVelocity{0,2*std::acos(-1.0f),0};
+    std::vector<real> earthPosition{1+m_e,0,0};
+    std::vector<real> sunVelocity{0,-2*std::acos(-1.0f)/earthMass,0};
+    std::vector<real> sunPosition{0,0,0};
 
     // Setup "sun."
     m_atoms.push_back(new Atom(1));

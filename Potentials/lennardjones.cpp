@@ -6,17 +6,17 @@
 using std::cout;
 using std::endl;
 
-LennardJones::LennardJones(std::vector<double>  systemSize,
-                           double               rCut,
+LennardJones::LennardJones(std::vector<real>  systemSize,
+                           real               rCut,
                            System*              system) :
     LennardJones(1.0, 3.405, systemSize, rCut, rCut, system) {
 }
 
-LennardJones::LennardJones(double               epsilon,
-                           double               sigma,
-                           std::vector<double>  systemSize,
-                           double               rCut,
-                           double               neighbourCut,
+LennardJones::LennardJones(real               epsilon,
+                           real               sigma,
+                           std::vector<real>  systemSize,
+                           real               rCut,
+                           real               neighbourCut,
                            System*              system) :
     Potential(system) {
 
@@ -26,31 +26,30 @@ LennardJones::LennardJones(double               epsilon,
     m_24epsilon         = 24*m_epsilon;
     m_4epsilonSigma6    = 4*m_epsilon*m_sigma6;
     m_systemSize        = systemSize;
-    m_systemSizeHalf    = {systemSize[0]/2.0, systemSize[1]/2.0, systemSize[2]/2.0};
+    m_systemSizeHalf    = {systemSize[0]/2.0f, systemSize[1]/2.0f, systemSize[2]/2.0f};
     m_rCut              = rCut;
     m_rCut2             = rCut * rCut;
     m_neighbourCut      = neighbourCut;
     m_neighbourList     = new NeighbourList(m_system, m_rCut, m_neighbourCut, m_systemSize);
     m_cellList          = m_neighbourList->getCellList();
-    double r2           = 1.0 / m_rCut2;
+    real r2           = 1.0f / m_rCut2;
     m_potentialAtCut    = 4*m_epsilon * r2*r2*r2 * m_sigma6 * (m_sigma6*r2*r2*r2-1);
 }
 
 void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
 
     if (m_timeStepsSinceLastCellListUpdate == -1 ||
-        m_timeStepsSinceLastCellListUpdate >= 10) {
+        m_timeStepsSinceLastCellListUpdate >= 20) {
         m_timeStepsSinceLastCellListUpdate = 1;
-        //m_cellList->updateCellLists();
         m_neighbourList->constructNeighbourLists();
     }
     m_timeStepsSinceLastCellListUpdate += 1;
     setForcesToZero(atoms, n);
     m_potentialEnergy       = 0;
     m_pressure              = 0;
-    double dr2              = 0;
-    double df               = 0;
-    double dr[3]            = {0,0,0};
+    real dr2              = 0;
+    real df               = 0;
+    real dr[3]            = {0,0,0};
 
 
     for (int i=0; i<m_system->getN(); i++) {
@@ -72,11 +71,11 @@ void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
             }
 
             if (atom1 != atom2) {
-                const double r2         = 1.0 / dr2;
-                const double r6         = r2*r2*r2;
-                const double sigma6r6   = m_sigma6 * r6;
+                const real r2         = 1.0f / dr2;
+                const real r6         = r2*r2*r2;
+                const real sigma6r6   = m_sigma6 * r6;
                 const int cut           = (dr2 < m_rCut2);
-                const double f          = -m_24epsilon * sigma6r6 *
+                const real f          = -m_24epsilon * sigma6r6 *
                                           (2*sigma6r6 - 1) * r2 * cut;
                 m_potentialEnergy      += (m_4epsilonSigma6 * r6 *
                                            (sigma6r6 - 1) - m_potentialAtCut) * cut;
@@ -94,7 +93,7 @@ void LennardJones::computeForces(const std::vector<Atom*> & atoms, int n) {
 
 
 
-double LennardJones::computePotential(const std::vector<Atom*> & atoms, int n) {
+real LennardJones::computePotential(const std::vector<Atom*> & atoms, int n) {
     return m_potentialEnergy;
 }
 

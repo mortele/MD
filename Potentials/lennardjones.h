@@ -1,5 +1,5 @@
 #pragma once
-#include <cmath>
+#include <tgmath.h>
 #include <iostream>
 #include <vector>
 #include "potential.h"
@@ -8,22 +8,22 @@
 
 class LennardJones : public Potential {
 public:
-    LennardJones(std::vector<double>, double, class System*);
-    LennardJones(double, double, std::vector<double>, double, double, class System*);
+    LennardJones(std::vector<real>, real, class System*);
+    LennardJones(real, real, std::vector<real>, real, real, class System*);
     void   computeForces    (const std::vector<Atom*> & atoms, int n);
-    double computePotential (const std::vector<Atom*> & atoms, int n);
-    double getPressure () { return m_pressure; }
+    real computePotential (const std::vector<Atom*> & atoms, int n);
+    real getPressure () { return m_pressure; }
     std::string getName() { return "Lennard-Jones"; }
 
 private:
-    double m_epsilon = 0;
-    double m_sigma = 0;
-    double m_sigma6 = 0;
-    double m_potentialEnergy = 0;
-    double m_24epsilon = 0;
-    double m_4epsilonSigma6 = 0;
-    double m_potentialAtCut = 0;
-    std::vector<double> m_systemSize;
-    std::vector<double> m_systemSizeHalf;
+    real m_epsilon = 0;
+    real m_sigma = 0;
+    real m_sigma6 = 0;
+    real m_potentialEnergy = 0;
+    real m_24epsilon = 0;
+    real m_4epsilonSigma6 = 0;
+    real m_potentialAtCut = 0;
+    std::vector<real> m_systemSize;
+    std::vector<real> m_systemSizeHalf;
 };
 

@@ -13,6 +13,7 @@
 */
 
 #pragma once
+#include "vec.h"
 
 #define IA 16807
 #define IM 2147483647
@@ -29,8 +30,8 @@ public:
     static long iy;
     static long iv[NTAB];
     static long seed;
-    static double nextDouble();
-    static double nextGaussian(double mean, double standardDeviation);
+    static real nextreal();
+    static real nextGaussian(real mean, real standardDeviation);
     static void setSeed(long seed);
 };
 

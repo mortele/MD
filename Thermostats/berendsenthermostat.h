@@ -1,16 +1,17 @@
 #pragma once
 #include "thermostat.h"
 #include <vector>
+#include "../vec.h"
 
 class Atom;
 
 class BerendsenThermostat : public Thermostat {
 public:
-    BerendsenThermostat(double targetTemperature, double tau, double dt);
-    void adjustVelocities(const std::vector<Atom*> & atom, int n, double instantaneousTemperature);
+    BerendsenThermostat(real targetTemperature, real tau, real dt);
+    void adjustVelocities(const std::vector<Atom*> & atom, int n, real instantaneousTemperature);
 
 private:
-    double m_tau;
-    double m_dtOverTau;
+    real m_tau;
+    real m_dtOverTau;
 };
 

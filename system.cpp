@@ -3,7 +3,6 @@
 #include "Potentials/potential.h"
 #include "InitialConditions/initialcondition.h"
 #include "Thermostats/thermostat.h"
-#include "vec.h"
 #include "atom.h"
 #include "sampler.h"
 #include "realtime.h"
@@ -17,11 +16,11 @@ using std::fstream;
 System::System() :
     m_fileName("../MD/movie.xyz") {
     m_sampler           = new Sampler(this);
-    m_systemSize        = std::vector<double>{-1,-1,-1}; // Used as flag for 'no system size set'
+    m_systemSize        = std::vector<real>{-1,-1,-1}; // Used as flag for 'no system size set'
     m_thermostatActive  = false;
 }
 
-void System::setTimeStep(double dt) {
+void System::setTimeStep(real dt) {
     m_dt = dt;
 }
 
@@ -39,7 +38,7 @@ void System::setInitialCondition(InitialCondition* initialCondition) {
     m_initialCondition = initialCondition;
 }
 
-void System::setPeriodicBoundaryConditions(std::vector<double> systemSize) {
+void System::setPeriodicBoundaryConditions(std::vector<real> systemSize) {
     m_periodicBoundaryConditions = true;
     m_systemSize                 = systemSize;
 }
@@ -57,7 +56,7 @@ void System:: setThermostatActive(bool thermostatActive) {
     m_thermostatActive = thermostatActive;
 }
 
-void System::setSystemSize(std::vector<double> systemSize) {
+void System::setSystemSize(std::vector<real> systemSize) {
     m_systemSize = systemSize;
 }
 
@@ -91,7 +90,7 @@ int System::integrate(int Nt) {
         m_systemSize[1] == -1 &&
         m_systemSize[2] == -1) {
         cout << endl << "### WARNING ###: No system size set. Using default value (1,1,1)." << endl << endl;
-        m_systemSize = std::vector<double>{1,1,1};
+        m_systemSize = std::vector<real>{1,1,1};
     }
 
     for (m_t=0; m_t < Nt; m_t++) {
@@ -112,7 +111,7 @@ int System::integrate(int Nt) {
             }
         }
         if (m_thermostatActive) {
-            double instantaneousTemperature = m_sampler->getInstantanousTemperature()[m_t];
+            real instantaneousTemperature = m_sampler->getInstantanousTemperature()[m_t];
             m_thermostat->adjustVelocities(m_atoms, m_n, instantaneousTemperature);
         }
         printProgress(m_t);
@@ -175,15 +174,15 @@ void System::printProgress(int t) {
         if (t == 0) {
             m_lastTimeStepTime = m_currentTime-m_oldTime;
         }
-        double progress     = ((double) t) / m_Nt;
-        double elapsedTime  = m_currentTime - m_startTime;
-        double lastTwoAverage = (m_currentTime-m_oldTime+m_lastTimeStepTime) / 2.0;
+        real progress     = ((real) t) / m_Nt;
+        real elapsedTime  = m_currentTime - m_startTime;
+        real lastTwoAverage = (m_currentTime-m_oldTime+m_lastTimeStepTime) / 2.0;
         if (t==m_skip) {
             lastTwoAverage = m_currentTime - m_startTime;
         }
-        double estimatedTime = elapsedTime - elapsedTime+lastTwoAverage*(1-progress)*m_Nt/m_skip;
+        real estimatedTime = elapsedTime - elapsedTime+lastTwoAverage*(1-progress)*m_Nt/m_skip;
 
-        double minutes = 0;
+        real minutes = 0;
         if (estimatedTime > 200) {
             minutes = std::round(estimatedTime/60.0);
         }
@@ -216,12 +215,12 @@ void System::printProgress(int t) {
         m_lastTimeStepTime = m_currentTime-m_oldTime;
     }
     if (t == m_Nt) {
-        double elapsedTime = m_currentTime - m_startTime;
+        real elapsedTime = m_currentTime - m_startTime;
         if (elapsedTime < 0) {
             elapsedTime = 0;
         }
-        double timeStepsPerSecond       = m_Nt/elapsedTime;
-        double atomTimeStepsPerSecond   = m_Nt*m_n/elapsedTime;
+        real timeStepsPerSecond       = m_Nt/elapsedTime;
+        real atomTimeStepsPerSecond   = m_Nt*m_n/elapsedTime;
 
         cout << endl << endl << "Integration finished. Total elapsed time: "
              << elapsedTime << " s." << endl;
@@ -255,7 +254,7 @@ void System::enableSavingToFile(bool dumpToFile, int skip) {
 
 
 bool System::applyPeriodicBoundaryConditions() {
-    double position[3];
+    real position[3];
     bool returnValue = true;
 
     for (int i=0; i < m_n; i++) {
@@ -270,8 +269,8 @@ bool System::applyPeriodicBoundaryConditions() {
             if (at(at(m_atoms,i)->getPosition(), k) > at(m_systemSize,k) ||
                 at(at(m_atoms,i)->getPosition(), k) < 0) {
 
-                std::vector<double> atomPos = at(m_atoms,i)->getPosition();
-                std::vector<double> atomVel = at(m_atoms,i)->getVelocity();
+                std::vector<real> atomPos = at(m_atoms,i)->getPosition();
+                std::vector<real> atomVel = at(m_atoms,i)->getVelocity();
                 vec pos = vec(atomPos.at(0), atomPos.at(1), atomPos.at(2));
                 vec vel = vec(atomVel.at(0), atomVel.at(1), atomVel.at(2));
 

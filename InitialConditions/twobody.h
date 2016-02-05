@@ -6,11 +6,11 @@
 class TwoBody : public InitialCondition {
 public:
     TwoBody();
-    TwoBody(double);
+    TwoBody(real);
     void  setupInitialCondition();
     std::string getName() { return "Two-body"; }
 
 private:
-    double m_e = 0.0;
+    real m_e = 0.0;
 };
 

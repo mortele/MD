@@ -1,6 +1,6 @@
 #include "integrator.h"
 
-Integrator::Integrator(double dt) {
+Integrator::Integrator(real dt) {
     m_dt = dt;
 }
 

@@ -1,5 +1,5 @@
 #include "fcc.h"
-#include <cmath>
+#include <tgmath.h>
 #include <vector>
 #include "../atom.h"
 #include "../random.h"
@@ -8,8 +8,8 @@ using std::cout;
 using std::endl;
 
 FCC::FCC(int    numberOfUnitCells,
-         double latticeConstant,
-         double temperature         ) {
+         real latticeConstant,
+         real temperature         ) {
 
     m_numberOfUnitCells = numberOfUnitCells;
     m_latticeConstant   = latticeConstant;
@@ -25,13 +25,13 @@ void FCC::setupInitialCondition() {
         for (int j=0; j<m_numberOfUnitCells; j++) {
             for (int k=0; k<m_numberOfUnitCells; k++) {
 
-                double b = m_latticeConstant;
-                double bHalf = m_latticeConstant/2.0;
-                std::vector<double> cellOrigin{i*b, j*b, k*b};
-                std::vector<double> atom0{cellOrigin.at(0), cellOrigin.at(1), cellOrigin.at(2)};
-                std::vector<double> atom1{cellOrigin.at(0), cellOrigin.at(1), cellOrigin.at(2)};
-                std::vector<double> atom2{cellOrigin.at(0), cellOrigin.at(1), cellOrigin.at(2)};
-                std::vector<double> atom3{cellOrigin.at(0), cellOrigin.at(1), cellOrigin.at(2)};
+                real b = m_latticeConstant;
+                real bHalf = m_latticeConstant/2.0;
+                std::vector<real> cellOrigin{i*b, j*b, k*b};
+                std::vector<real> atom0{cellOrigin.at(0), cellOrigin.at(1), cellOrigin.at(2)};
+                std::vector<real> atom1{cellOrigin.at(0), cellOrigin.at(1), cellOrigin.at(2)};
+                std::vector<real> atom2{cellOrigin.at(0), cellOrigin.at(1), cellOrigin.at(2)};
+                std::vector<real> atom3{cellOrigin.at(0), cellOrigin.at(1), cellOrigin.at(2)};
 
                 atom1.at(0) += bHalf;
                 atom1.at(1) += bHalf;
@@ -56,7 +56,7 @@ void FCC::setupInitialCondition() {
     }
 
     for (int i=0; i<m_n; i++) {
-        double m = 39.948;          // Mass of Argon in atomic units.
+        real m = 39.948;          // Mass of Argon in atomic units.
         m_atoms.at(i)->setMass(m);
 
         for (int k=0; k<3; k++) {

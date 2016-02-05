@@ -1,5 +1,5 @@
 #pragma once
-#include <cmath>
+#include <tgmath.h>
 #include <vector>
 #include "initialcondition.h"
 #include "../atom.h"
@@ -8,12 +8,12 @@
 
 class Uniform : public InitialCondition {
 public:
-    Uniform(int n, std::vector<double> boxSize, double temperature);
+    Uniform(int n, std::vector<real> boxSize, real temperature);
     void setupInitialCondition();
     std::string getName() { return "Uniform random"; }
 
 private:
-    std::vector<double> m_boxSize;
-    double              m_temperature;
+    std::vector<real> m_boxSize;
+    real              m_temperature;
 };
 
