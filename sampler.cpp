@@ -58,7 +58,7 @@ real Sampler::sampleKineticEnergy() {
 }
 
 real Sampler::samplePotentialEnergy() {
-    return m_potential->computePotential(m_atoms, m_n);
+    return m_potential->computePotential();
 }
 
 real Sampler::samplePressure(real instantaneousTemperature) {

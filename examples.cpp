@@ -28,7 +28,7 @@ using std::cout;
 using std::endl;
 
 int Examples::coldCollapseCluster() {
-    int     n   = 250;                              // Number of particles.
+    int   n   = 2000;                              // Number of particles.
     real  dt  = 0.001;                            // Time step.
     real  R0  = 20;                               // Initial sphere radius.
     real  PI  = acos(-1.0);                       // Pi.
@@ -40,16 +40,17 @@ int Examples::coldCollapseCluster() {
                                 sideLength};
 
     System* system = new System          ();
-    system->setIntegrator                (new EulerCromer(dt));
+    system->setIntegrator                (new EulerCromer(dt, system));
     system->setPotential                 (new Gravitational(G, eps, system));
     system->setInitialCondition          (new RandomSpherical(n, R0));
     system->setPeriodicBoundaryConditions(false);
     system->setSystemSize                (boxSize);
-    return system->integrate(2000);
+    system->enableSavingToFile           (true, 25);
+    return system->integrate(5000);
 }
 
 int Examples::uniformBoxNoPotential() {
-    int     n           = 250;              // Number of particles.
+    int     n         = 10000;              // Number of particles.
     real  dt          = 0.001;            // Time step.
     real  sideLength  = 1;                // Size of box sides.
     std::vector<real> boxSize{sideLength, // Vector of box size.
@@ -57,11 +58,12 @@ int Examples::uniformBoxNoPotential() {
                                 sideLength};
 
     System* system = new System          ();
-    system->setIntegrator                (new EulerCromer(dt));
+    system->setIntegrator                (new EulerCromer(dt, system));
     system->setPotential                 (new NoPotential(system));
     system->setInitialCondition          (new Uniform(n, boxSize, 5));
     system->setPeriodicBoundaryConditions(true);
     system->setSystemSize                (boxSize);
+    system->enableSavingToFile           (false);
     return system->integrate(2000);
 }
 
@@ -89,7 +91,7 @@ int Examples::lennardJonesFCC() {
     system->setSystemSize                (boxSize);
     system->setThermostatActive          (false);
     system->enablePressureSampling       (true);
-    system->enableSavingToFile           (true, 25);
+    system->enableSavingToFile           (false);
     return system->integrate(1000);
 }
 
@@ -104,7 +106,6 @@ int Examples::lennardJonesFCCCellLists() {
     real  epsilon             = 1;
     real  sigma               = 3.405;
     real  rCut                = 2.5 * sigma;
-    real  rNeighbourCut       = 3.0 * sigma;
     std::vector<real> boxSize{sideLength,     // Vector of box size.
                                 sideLength,
                                 sideLength};
@@ -122,12 +123,12 @@ int Examples::lennardJonesFCCCellLists() {
     system->setSystemSize                (boxSize);
     system->setThermostatActive          (false);
     system->enablePressureSampling       (true);
-    system->enableSavingToFile           (true, 25);
+    system->enableSavingToFile           (false);
     return system->integrate(1000);
 }
 
 int Examples::lennardJonesFCCNeighbourLists() {
-    int   nUnitCells          = 20;    // Number of unit cells in each dimension.
+    int   nUnitCells          = 10;    // Number of unit cells in each dimension.
     real  T                   = 1.0;   // Temperature, in units of 119.8 K.
     real  targetTemperature   = 1.0;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
     real  b                   = 5.26;  // Lattice constant, in units of 1.0 Å.

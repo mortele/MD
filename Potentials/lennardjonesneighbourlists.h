@@ -10,10 +10,10 @@ class LennardJonesNeighbourLists : public Potential {
 public:
     LennardJonesNeighbourLists(std::vector<real>, real, class System*);
     LennardJonesNeighbourLists(real, real, std::vector<real>, real, real, class System*);
-    void   computeForces    (const std::vector<Atom*> & atoms, int n);
-    real computePotential (const std::vector<Atom*> & atoms, int n);
+    void   computeForces();
+    real computePotential();
     real getPressure () { return m_pressure; }
-    std::string getName() { return "Lennard-Jones"; }
+    std::string getName() { return "Lennard-Jones (Neighbour Lists)"; }
 
 private:
     real m_epsilon = 0;

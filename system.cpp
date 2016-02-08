@@ -103,7 +103,7 @@ int System::integrate(int Nt) {
             }
         }
         m_sampler->sample(m_t);
-        m_integrator->advance(m_atoms, m_n);
+        m_integrator->advance();
 
         if (m_periodicBoundaryConditions) {
             if (applyPeriodicBoundaryConditions() == false) {
@@ -148,8 +148,7 @@ void System::dumpInfoToTerminal() {
     cout << "    │  Total time:             " << m_Nt*m_dt       << endl;
     cout << "    │  System size (cube):     " << systemSizeVec   << endl;
     cout << "    │  Total momentum removed: " << totalMomentum   << endl;
-    cout << "    │  Cell lists active:      " << "Yes"           << endl;
-    cout << "    │  r_cut:                  " << m_potential->getRCUt()   << endl;
+    cout << "    │  r_cut:                  " << m_potential->getRCut()   << endl;
     cout << "    ├─────────────────────────────────────────────────┐ " << endl;
     cout << "    │ Progress                                        │ " << endl;
     cout << "    └─────────────────────────────────────────────────┘ " << endl;

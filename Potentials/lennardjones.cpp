@@ -1,4 +1,7 @@
 #include "lennardjones.h"
+#include "../atom.h"
+#include "../vec.h"
+#include "../system.h"
 
 using std::cout;
 using std::endl;
@@ -22,25 +25,27 @@ LennardJones::LennardJones(double epsilon,
     m_potentialAtCut = 4*m_epsilon * r2*r2*r2 * m_sigma6 * (m_sigma6 * r2*r2*r2 -1);
 }
 
-void LennardJones::computeForces(const std::vector<Atom*>& atoms, int n) {
+void LennardJones::computeForces() {
 
-    Potential::setForcesToZero(atoms, n);
+    Potential::setForcesToZero();
     m_potentialEnergy = 0;
 
     std::vector<double> dr{0,0,0};
     double dr2 = 0;
 
-    for (int i=0; i < n; i++) {
-        for (int j=i+1; j < n; j++) {
+    for (int i=0; i < m_system->getN(); i++) {
+        Atom* atomi = at(m_system->getAtoms(),i);
+        for (int j=i+1; j < m_system->getN(); j++) {
+            Atom* atomj = at(m_system->getAtoms(), j);
             dr2 = 0;
             for (int k=0; k < 3; k++) {
-                dr.at(k) = atoms.at(j)->getPosition().at(k) - atoms.at(i)->getPosition().at(k);
-                if (dr.at(k) > m_systemSize.at(k) / 2.0) {
-                    dr.at(k) = dr.at(k) - m_systemSize.at(k);
-                } else if (dr.at(k) < -m_systemSize.at(k) / 2.0) {
-                    dr.at(k) = dr.at(k) + m_systemSize.at(k);
+                at(dr,k) = at(atomj->getPosition(),k) - at(atomi->getPosition(),k);
+                if (at(dr,k) > at(m_systemSize,k)*0.5) {
+                    at(dr,k) = at(dr,k) - at(m_systemSize,k);
+                } else if (at(dr,k) < -at(m_systemSize,k)*0.5) {
+                    at(dr,k) = at(dr,k) + at(m_systemSize,k);
                 }
-                dr2 += dr.at(k)*dr.at(k);
+                dr2 += at(dr,k)*at(dr,k);
             }
             const real r2         = 1.0f / dr2;
             const real r6         = r2*r2*r2;
@@ -52,13 +57,13 @@ void LennardJones::computeForces(const std::vector<Atom*>& atoms, int n) {
                                        (sigma6r6 - 1) - m_potentialAtCut) * cut;
             for (int k=0; k < 3; k++) {
                 const double df = f * dr.at(k);
-                atoms.at(i)->addForce( df, k);
-                atoms.at(j)->addForce(-df, k);
+                atomi->addForce( df, k);
+                atomj->addForce(-df, k);
             }
         }
     }
 }
 
-double LennardJones::computePotential(const std::vector<Atom*>& atoms, int n) {
+double LennardJones::computePotential() {
     return m_potentialEnergy;
 }

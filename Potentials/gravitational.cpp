@@ -16,15 +16,18 @@ Gravitational::Gravitational(real G, real eps, System* system) :
 }
 
 
-void Gravitational::computeForces(const std::vector<Atom*> & atoms, int n) {
+void Gravitational::computeForces() {
 
-    setForcesToZero(atoms, n);
+    setForcesToZero();
 
     std::vector<real> dr{0,0,0};
     real r  = 0;
     real r2 = 0;
     real f  = 0;
     m_potentialEnergy = 0;
+
+    std::vector<Atom*> atoms = m_system->getAtoms();
+    int n = m_system->getN();
 
     for (int i=0; i < n; i++) {
         for (int j=0; j < n; j++) {
@@ -52,7 +55,7 @@ void Gravitational::computeForces(const std::vector<Atom*> & atoms, int n) {
     }
 }
 
-real Gravitational::computePotential(const std::vector<Atom*> & atoms, int n) {
+real Gravitational::computePotential() {
     return m_potentialEnergy / 2.0;
 }
 

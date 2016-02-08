@@ -32,7 +32,7 @@ LennardJonesCellLists::LennardJonesCellLists(   double               epsilon,
     m_potentialAtCut    = 4*m_epsilon * r2*r2*r2 * m_sigma6 * (m_sigma6*r2*r2*r2-1);
 }
 
-void LennardJonesCellLists::computeForces(const std::vector<Atom*> & atoms, int n) {
+void LennardJonesCellLists::computeForces() {
 
     if (m_timeStepsSinceLastCellListUpdate == -1 ||
         m_timeStepsSinceLastCellListUpdate >= 20) {
@@ -40,7 +40,7 @@ void LennardJonesCellLists::computeForces(const std::vector<Atom*> & atoms, int 
         m_cellList->updateCellLists();
     }
     m_timeStepsSinceLastCellListUpdate += 1;
-    setForcesToZero(atoms, n);
+    setForcesToZero();
     m_potentialEnergy       = 0;
     m_pressure              = 0;
     double dr2              = 0;
@@ -100,6 +100,6 @@ void LennardJonesCellLists::computeForces(const std::vector<Atom*> & atoms, int 
 
 
 
-double LennardJonesCellLists::computePotential(const std::vector<Atom*> & atoms, int n) {
+double LennardJonesCellLists::computePotential() {
     return m_potentialEnergy;
 }

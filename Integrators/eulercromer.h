@@ -2,12 +2,11 @@
 #include "integrator.h"
 #include "vec.h"
 #include <vector>
-#include "../atom.h"
 
 class EulerCromer : public Integrator {
 public:
-    EulerCromer(real dt);
-    void advance(const std::vector<Atom*> & atoms, int n);
+    EulerCromer(real dt, class System* system);
+    void advance();
     std::string getName() { return "Euler-Cromer"; }
 };
 

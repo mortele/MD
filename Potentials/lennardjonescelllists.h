@@ -10,10 +10,10 @@ class LennardJonesCellLists : public Potential {
 public:
     LennardJonesCellLists(std::vector<double>, double, class System*);
     LennardJonesCellLists(double, double, std::vector<double>, double, class System*);
-    void   computeForces    (const std::vector<Atom*> & atoms, int n);
-    double computePotential (const std::vector<Atom*> & atoms, int n);
+    void   computeForces();
+    double computePotential();
     double getPressure () { return m_pressure; }
-    std::string getName() { return "Lennard-Jones"; }
+    std::string getName() { return "Lennard-Jones (Cell Lists)"; }
 
 private:
     double m_epsilon = 0;

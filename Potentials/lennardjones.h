@@ -3,15 +3,14 @@
 #include <iostream>
 #include <vector>
 #include "potential.h"
-#include "../atom.h"
-#include "../vec.h"
+
 
 class LennardJones : public Potential {
 public:
     LennardJones(double epsilon, double sigma, std::vector<double> systemSize, double rCut, class System* system);
 
-    void   computeForces(const std::vector<Atom*>& atoms, int n);
-    double computePotential(const std::vector<Atom*>& atoms, int n);
+    void   computeForces();
+    double computePotential();
     std::string getName() { return "Lennard-Jones"; }
 
 private:

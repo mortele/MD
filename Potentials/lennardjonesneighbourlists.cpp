@@ -36,7 +36,7 @@ LennardJonesNeighbourLists::LennardJonesNeighbourLists(real               epsilo
     m_potentialAtCut    = 4*m_epsilon * r2*r2*r2 * m_sigma6 * (m_sigma6*r2*r2*r2-1);
 }
 
-void LennardJonesNeighbourLists::computeForces(const std::vector<Atom*> & atoms, int n) {
+void LennardJonesNeighbourLists::computeForces() {
 
     if (m_timeStepsSinceLastCellListUpdate == -1 ||
         m_timeStepsSinceLastCellListUpdate >= 20) {
@@ -44,7 +44,7 @@ void LennardJonesNeighbourLists::computeForces(const std::vector<Atom*> & atoms,
         m_neighbourList->constructNeighbourLists();
     }
     m_timeStepsSinceLastCellListUpdate += 1;
-    setForcesToZero(atoms, n);
+    setForcesToZero();
     m_potentialEnergy       = 0;
     m_pressure              = 0;
     real dr2              = 0;
@@ -55,7 +55,7 @@ void LennardJonesNeighbourLists::computeForces(const std::vector<Atom*> & atoms,
         Atom* atom1 = at(m_system->getAtoms(), i);
         vector<Atom*> neighbours = m_neighbourList->getNeighbours(atom1->getIndex());
 
-        for (int j=0; j<neighbours.size(); j++) {
+        for (unsigned int j=0; j<neighbours.size(); j++) {
             Atom* atom2 = at(neighbours, j);
 
             dr2 = 0;
@@ -92,7 +92,7 @@ void LennardJonesNeighbourLists::computeForces(const std::vector<Atom*> & atoms,
 
 
 
-real LennardJonesNeighbourLists::computePotential(const std::vector<Atom*> & atoms, int n) {
+real LennardJonesNeighbourLists::computePotential() {
     return m_potentialEnergy;
 }
 
