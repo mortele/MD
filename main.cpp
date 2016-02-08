@@ -14,6 +14,8 @@
 #include "Integrators/eulercromer.h"
 #include "Potentials/potential.h"
 #include "Potentials/lennardjones.h"
+#include "Potentials/lennardjonescelllists.h"
+#include "Potentials/lennardjonesneighbourlists.h"
 #include "Potentials/gravitational.h"
 #include "Potentials/nopotential.h"
 #include "InitialConditions/initialcondition.h"
@@ -30,7 +32,9 @@ using std::endl;
 int main() {
     //return Examples::coldCollapseCluster();
     //return Examples::uniformBoxNoPotential();
-    return Examples::lennardJonesFFC();
+    //return Examples::lennardJonesFCC();
+    //return Examples::lennardJonesFCCCellLists();
+    return Examples::lennardJonesFCCNeighbourLists();
 }
 
 

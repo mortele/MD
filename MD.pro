@@ -30,7 +30,9 @@ SOURCES += main.cpp \
     Thermostats/thermostat.cpp \
     Thermostats/berendsenthermostat.cpp \
     celllist.cpp \
-    neighbourlist.cpp
+    neighbourlist.cpp \
+    Potentials/lennardjonescelllists.cpp \
+    Potentials/lennardjonesneighbourlists.cpp
 
 HEADERS += \
     atom.h \
@@ -55,5 +57,7 @@ HEADERS += \
     Thermostats/thermostat.h \
     Thermostats/berendsenthermostat.h \
     celllist.h \
-    neighbourlist.h
+    neighbourlist.h \
+    Potentials/lennardjonescelllists.h \
+    Potentials/lennardjonesneighbourlists.h
 

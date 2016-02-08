@@ -58,7 +58,7 @@ void CellList::updateCellLists() {
     }
     for (int l=0; l<m_system->getN(); l++) {
         Atom* atom = at(m_system->getAtoms(),l);
-        std::vector<real>& position   = at(m_system->getAtoms(),l)->getPosition();
+        std::vector<real_posvel>& position   = at(m_system->getAtoms(),l)->getPosition();
         std::vector<real>& systemSize = m_system->getSystemSize();
         const int i = position[0] / systemSize[0] * m_numberOfCellsInEachDirection;
         const int j = position[1] / systemSize[1] * m_numberOfCellsInEachDirection;

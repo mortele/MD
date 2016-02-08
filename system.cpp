@@ -112,7 +112,7 @@ int System::integrate(int Nt) {
         }
         if (m_thermostatActive) {
             real instantaneousTemperature = m_sampler->getInstantanousTemperature()[m_t];
-            m_thermostat->adjustVelocities(m_atoms, m_n, instantaneousTemperature);
+            m_thermostat->adjustVelocities(instantaneousTemperature);
         }
         printProgress(m_t);
     }
@@ -254,7 +254,7 @@ void System::enableSavingToFile(bool dumpToFile, int skip) {
 
 
 bool System::applyPeriodicBoundaryConditions() {
-    real position[3];
+    real_posvel position[3];
     bool returnValue = true;
 
     for (int i=0; i < m_n; i++) {
@@ -269,8 +269,8 @@ bool System::applyPeriodicBoundaryConditions() {
             if (at(at(m_atoms,i)->getPosition(), k) > at(m_systemSize,k) ||
                 at(at(m_atoms,i)->getPosition(), k) < 0) {
 
-                std::vector<real> atomPos = at(m_atoms,i)->getPosition();
-                std::vector<real> atomVel = at(m_atoms,i)->getVelocity();
+                std::vector<real_posvel> atomPos = at(m_atoms,i)->getPosition();
+                std::vector<real_posvel> atomVel = at(m_atoms,i)->getVelocity();
                 vec pos = vec(atomPos.at(0), atomPos.at(1), atomPos.at(2));
                 vec vel = vec(atomVel.at(0), atomVel.at(1), atomVel.at(2));
 

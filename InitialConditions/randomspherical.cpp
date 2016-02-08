@@ -34,8 +34,8 @@ void RandomSpherical::setupInitialCondition() {
 
         m_atoms.push_back(new Atom(1));
         m_atoms.at(i)->setMass(mass);
-        m_atoms.at(i)->setPosition(std::vector<real>{x,y,z});
-        m_atoms.at(i)->setVelocity(std::vector<real>{0,0,0});
+        m_atoms.at(i)->setPosition(std::vector<real_posvel>{x,y,z});
+        m_atoms.at(i)->setVelocity(std::vector<real_posvel>{0,0,0});
     }
 
     m_setupDone = true;

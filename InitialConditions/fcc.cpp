@@ -27,18 +27,18 @@ void FCC::setupInitialCondition() {
 
                 real b = m_latticeConstant;
                 real bHalf = m_latticeConstant/2.0;
-                std::vector<real> cellOrigin{i*b, j*b, k*b};
-                std::vector<real> atom0{cellOrigin.at(0), cellOrigin.at(1), cellOrigin.at(2)};
-                std::vector<real> atom1{cellOrigin.at(0), cellOrigin.at(1), cellOrigin.at(2)};
-                std::vector<real> atom2{cellOrigin.at(0), cellOrigin.at(1), cellOrigin.at(2)};
-                std::vector<real> atom3{cellOrigin.at(0), cellOrigin.at(1), cellOrigin.at(2)};
+                std::vector<real_posvel> cellOrigin{i*b, j*b, k*b};
+                std::vector<real_posvel> atom0{cellOrigin.at(0), cellOrigin.at(1), cellOrigin.at(2)};
+                std::vector<real_posvel> atom1{cellOrigin.at(0), cellOrigin.at(1), cellOrigin.at(2)};
+                std::vector<real_posvel> atom2{cellOrigin.at(0), cellOrigin.at(1), cellOrigin.at(2)};
+                std::vector<real_posvel> atom3{cellOrigin.at(0), cellOrigin.at(1), cellOrigin.at(2)};
 
-                atom1.at(0) += bHalf;
-                atom1.at(1) += bHalf;
-                atom2.at(1) += bHalf;
-                atom2.at(2) += bHalf;
-                atom3.at(0) += bHalf;
-                atom3.at(2) += bHalf;
+                at(atom1,0) += bHalf;
+                at(atom1,1) += bHalf;
+                at(atom2,1) += bHalf;
+                at(atom2,2) += bHalf;
+                at(atom3,0) += bHalf;
+                at(atom3,2) += bHalf;
 
                 m_atoms.push_back(new Atom(1));
                 m_atoms.push_back(new Atom(1));

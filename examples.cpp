@@ -12,6 +12,8 @@
 #include "Integrators/velocityverlet.h"
 #include "Potentials/potential.h"
 #include "Potentials/lennardjones.h"
+#include "Potentials/lennardjonescelllists.h"
+#include "Potentials/lennardjonesneighbourlists.h"
 #include "Potentials/gravitational.h"
 #include "Potentials/nopotential.h"
 #include "InitialConditions/initialcondition.h"
@@ -63,9 +65,36 @@ int Examples::uniformBoxNoPotential() {
     return system->integrate(2000);
 }
 
-// dt=1e-15 s
-int Examples::lennardJonesFFC() {
-    int     nUnitCells          = 20;    // Number of unit cells in each dimension.
+int Examples::lennardJonesFCC() {
+    int   nUnitCells          = 6;    // Number of unit cells in each dimension.
+    real  T                   = 1.0;   // Temperature, in units of 119.8 K.
+    real  targetTemperature   = 1.0;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
+    real  b                   = 5.26;  // Lattice constant, in units of 1.0 Å.
+    real  dt                  = 0.0997765; // Time step.
+    real  tau                 = dt;    // Relaxation time used by the thermostat, in units of 119.8 K.
+    real  sideLength          = nUnitCells*b; // Size of box sides.
+    real  epsilon             = 1;
+    real  sigma               = 3.405;
+    real  rCut                = 2.5*sigma;
+    std::vector<real> boxSize{sideLength,     // Vector of box size.
+                                sideLength,
+                                sideLength};
+
+    System* system = new System          ();
+    system->setIntegrator                (new VelocityVerlet(dt, system));
+    system->setPotential                 (new LennardJones(epsilon, sigma, boxSize, rCut, system));
+    system->setInitialCondition          (new FCC(nUnitCells, b, T));
+    system->setPeriodicBoundaryConditions(true);
+    system->setThermostat                (new BerendsenThermostat(system, targetTemperature, tau, dt));
+    system->setSystemSize                (boxSize);
+    system->setThermostatActive          (false);
+    system->enablePressureSampling       (true);
+    system->enableSavingToFile           (true, 25);
+    return system->integrate(1000);
+}
+
+int Examples::lennardJonesFCCCellLists() {
+    int   nUnitCells          = 8;    // Number of unit cells in each dimension.
     real  T                   = 1.0;   // Temperature, in units of 119.8 K.
     real  targetTemperature   = 1.0;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
     real  b                   = 5.26;  // Lattice constant, in units of 1.0 Å.
@@ -86,10 +115,43 @@ int Examples::lennardJonesFFC() {
 
     System* system = new System          ();
     system->setIntegrator                (new VelocityVerlet(dt, system));
-    system->setPotential                 (new LennardJones(epsilon, sigma, boxSize, rCut, rNeighbourCut, system));
+    system->setPotential                 (new LennardJonesCellLists(epsilon, sigma, boxSize, rCut, system));
     system->setInitialCondition          (new FCC(nUnitCells, b, T));
     system->setPeriodicBoundaryConditions(true);
-    system->setThermostat                (new BerendsenThermostat(targetTemperature, tau, dt));
+    system->setThermostat                (new BerendsenThermostat(system, targetTemperature, tau, dt));
+    system->setSystemSize                (boxSize);
+    system->setThermostatActive          (false);
+    system->enablePressureSampling       (true);
+    system->enableSavingToFile           (true, 25);
+    return system->integrate(1000);
+}
+
+int Examples::lennardJonesFCCNeighbourLists() {
+    int   nUnitCells          = 20;    // Number of unit cells in each dimension.
+    real  T                   = 1.0;   // Temperature, in units of 119.8 K.
+    real  targetTemperature   = 1.0;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
+    real  b                   = 5.26;  // Lattice constant, in units of 1.0 Å.
+    real  dt                  = 0.0997765; // Time step.
+    real  tau                 = dt;    // Relaxation time used by the thermostat, in units of 119.8 K.
+    real  sideLength          = nUnitCells*b; // Size of box sides.
+    real  epsilon             = 1;
+    real  sigma               = 3.405;
+    real  rCut                = 2.5 * sigma;
+    real  rNeighbourCut       = 3.0 * sigma;
+    std::vector<real> boxSize{sideLength,     // Vector of box size.
+                                sideLength,
+                                sideLength};
+
+    if (sideLength < 3*rCut) {
+        cout << endl << "### WARNING ###: System size smaller than 3 sigma, may cause segfault." << endl << endl;
+    }
+
+    System* system = new System          ();
+    system->setIntegrator                (new VelocityVerlet(dt, system));
+    system->setPotential                 (new LennardJonesNeighbourLists(epsilon, sigma, boxSize, rCut, rNeighbourCut, system));
+    system->setInitialCondition          (new FCC(nUnitCells, b, T));
+    system->setPeriodicBoundaryConditions(true);
+    system->setThermostat                (new BerendsenThermostat(system, targetTemperature, tau, dt));
     system->setSystemSize                (boxSize);
     system->setThermostatActive          (false);
     system->enablePressureSampling       (true);

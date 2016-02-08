@@ -2,7 +2,8 @@
 #include <iostream>
 #include <vector>
 
-typedef double real;
+typedef double  real;
+typedef double  real_posvel;
 
 template <typename T>
 T& at(std::vector<T> &vec, int index) {
