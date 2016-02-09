@@ -3,6 +3,7 @@
 #include <tgmath.h>
 #include <vector>
 //#include <omp.h>
+#include <mpi.h>
 #include "examples.h"
 #include "system.h"
 #include "atom.h"
@@ -29,7 +30,7 @@ using std::vector;
 using std::cout;
 using std::endl;
 
-int main() {
+int main(int argc, char** argv) {
     //return Examples::coldCollapseCluster();
     //return Examples::uniformBoxNoPotential();
     //return Examples::lennardJonesFCC();

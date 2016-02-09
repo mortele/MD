@@ -128,7 +128,7 @@ int Examples::lennardJonesFCCCellLists() {
 }
 
 int Examples::lennardJonesFCCNeighbourLists() {
-    int   nUnitCells          = 10;    // Number of unit cells in each dimension.
+    int   nUnitCells          = 30;    // Number of unit cells in each dimension.
     real  T                   = 1.0;   // Temperature, in units of 119.8 K.
     real  targetTemperature   = 1.0;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
     real  b                   = 5.26;  // Lattice constant, in units of 1.0 Å.
