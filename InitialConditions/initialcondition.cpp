@@ -12,8 +12,8 @@ void InitialCondition::removeLinearMomentum() {
     for (int i=0; i<m_n; i++) {
         m_atoms.at(i)->setIndex(i);
         for (int k=0; k<3; k++) {
-            m_totalMomentum.at(k) += m_atoms.at(i)->getVelocity().at(k) *
-                                     m_atoms.at(i)->getMass();
+            m_totalMomentum.at(k) += at(at(m_atoms,i)->getVelocity(),k) *
+                                     at(m_atoms,i)->getMass();
         }
     }
     for (int k=0; k<3; k++) {

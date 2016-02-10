@@ -1,7 +1,8 @@
 #include "examples.h"
 #include <iostream>
 #include <fstream>
-#include <tgmath.h>
+//#include <tgmath.h>
+#include <cmath>
 #include "system.h"
 #include "atom.h"
 #include "vec.h"
@@ -31,7 +32,7 @@ int Examples::coldCollapseCluster() {
     int   n   = 2000;                              // Number of particles.
     real  dt  = 0.001;                            // Time step.
     real  R0  = 20;                               // Initial sphere radius.
-    real  PI  = acos(-1.0);                       // Pi.
+    real  PI  = std::acos(-1.0);                       // Pi.
     real  G   = 4*PI*PI*R0*R0*R0/(32*10.0*n);     // Gravitational constant.
     real  eps = 0.01;                             // Smoothing factor.
     real  sideLength = 2*R0;
@@ -128,17 +129,18 @@ int Examples::lennardJonesFCCCellLists() {
 }
 
 int Examples::lennardJonesFCCNeighbourLists() {
-    int   nUnitCells          = 30;    // Number of unit cells in each dimension.
+    int   nUnitCells          = 15;    // Number of unit cells in each dimension.
     real  T                   = 1.0;   // Temperature, in units of 119.8 K.
     real  targetTemperature   = 1.0;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
     real  b                   = 5.26;  // Lattice constant, in units of 1.0 Å.
-    real  dt                  = 0.0997765; // Time step.
+    // real  dt                  = 0.0997765; // Time step.
+    real  dt                  = 0.01; // Time step. 1 t0 = 1.00224e-13 s
     real  tau                 = dt;    // Relaxation time used by the thermostat, in units of 119.8 K.
     real  sideLength          = nUnitCells*b; // Size of box sides.
     real  epsilon             = 1;
     real  sigma               = 3.405;
     real  rCut                = 2.5 * sigma;
-    real  rNeighbourCut       = 3.0 * sigma;
+    real  rNeighbourCut       = 2.8 * sigma;
     std::vector<real> boxSize{sideLength,     // Vector of box size.
                                 sideLength,
                                 sideLength};

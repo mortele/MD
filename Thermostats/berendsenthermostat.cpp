@@ -1,5 +1,6 @@
 #include "berendsenthermostat.h"
-#include <tgmath.h>
+//#include <tgmath.h>
+#include <cmath>
 #include <vector>
 #include <iostream>
 #include "../atom.h"

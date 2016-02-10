@@ -1,5 +1,6 @@
 #include "random.h"
-#include <tgmath.h>
+//#include <tgmath.h>
+#include <cmath>
 
 long     Random::iy = 0;
 long     Random::iv[NTAB];

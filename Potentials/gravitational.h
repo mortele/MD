@@ -1,6 +1,7 @@
 #pragma once
 #include "potential.h"
-#include <tgmath.h>
+//#include <tgmath.h>
+#include <cmath>
 
 
 class Gravitational : public Potential {

@@ -34,9 +34,10 @@ void Gravitational::computeForces() {
             if (i!=j) {
                 r2 = 0;
                 for (int k=0; k < 3; k++) {
-                    dr.at(k) = atoms.at(i)->getPosition().at(k) -
-                               atoms.at(j)->getPosition().at(k);
-                    r2      += dr.at(k)*dr.at(k);
+//                    dr.at(k) = atoms.at(i)->getPosition().at(k) -
+//                               atoms.at(j)->getPosition().at(k);
+//                    r2      += dr.at(k)*dr.at(k);
+                    cout << "FAEN DA!" << endl;
                 }
                 r = std::sqrt(r2);
 

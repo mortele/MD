@@ -49,9 +49,10 @@ void Sampler::setNtDt(int Nt, real dt) {
 real Sampler::sampleKineticEnergy() {
     real kineticEnergy = 0;
     for (int i=0; i < m_n; i++) {
-        real v2 = m_atoms.at(i)->getVelocity().at(0)*m_atoms.at(i)->getVelocity().at(0) +
-                    m_atoms.at(i)->getVelocity().at(1)*m_atoms.at(i)->getVelocity().at(1) +
-                    m_atoms.at(i)->getVelocity().at(2)*m_atoms.at(i)->getVelocity().at(2);
+        real v2 = at(at(m_atoms,i)->getVelocity(),0)*at(at(m_atoms,i)->getVelocity(),0) +
+                  at(at(m_atoms,i)->getVelocity(),1)*at(at(m_atoms,i)->getVelocity(),1) +
+                  at(at(m_atoms,i)->getVelocity(),2)*at(at(m_atoms,i)->getVelocity(),2);
+
         kineticEnergy += 0.5 * m_atoms.at(i)->getMass() * v2;
     }
     return kineticEnergy;

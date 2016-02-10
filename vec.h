@@ -2,11 +2,17 @@
 #include <iostream>
 #include <vector>
 
-typedef double  real;
+typedef float  real;
 typedef double  real_posvel;
 
 template <typename T>
 T& at(std::vector<T> &vec, int index) {
+    //return vec.at(index);
+    return vec[index];
+}
+
+template <typename T>
+T& at(T* vec, int index) {
     //return vec.at(index);
     return vec[index];
 }

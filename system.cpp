@@ -268,16 +268,18 @@ bool System::applyPeriodicBoundaryConditions() {
             if (at(at(m_atoms,i)->getPosition(), k) > at(m_systemSize,k) ||
                 at(at(m_atoms,i)->getPosition(), k) < 0) {
 
-                std::vector<real_posvel> atomPos = at(m_atoms,i)->getPosition();
-                std::vector<real_posvel> atomVel = at(m_atoms,i)->getVelocity();
-                vec pos = vec(atomPos.at(0), atomPos.at(1), atomPos.at(2));
-                vec vel = vec(atomVel.at(0), atomVel.at(1), atomVel.at(2));
+//                std::vector<real_posvel> atomPos = at(m_atoms,i)->getPosition();
+//                std::vector<real_posvel> atomVel = at(m_atoms,i)->getVelocity();
+//                real_posvel* atomPos = at(m_atoms,i)->getPosition();
+//                real_posvel* atomVel = at(m_atoms,i)->getVelocity();
+//                vec pos = vec(atomPos.at(0), atomPos.at(1), atomPos.at(2));
+//                vec vel = vec(atomVel.at(0), atomVel.at(1), atomVel.at(2));
 
-                cout << endl << "### ERROR ###: Atom number " << i
-                     << " at position " << pos
-                     << " has velocity " << vel
-                     << " which is larger than the size of the box / time step. Exiting."
-                     << endl << endl;
+//                cout << endl << "### ERROR ###: Atom number " << i
+//                     << " at position " << pos
+//                     << " has velocity " << vel
+//                     << " which is larger than the size of the box / time step. Exiting."
+//                     << endl << endl;
 
                 returnValue = false;
             }
@@ -316,9 +318,9 @@ bool System::FileOutput::saveState(std::vector<Atom*> atoms, int n) {
             for (int i = 0; i < n; i++) {
                 m_outFile       << atoms.at(i)->getName()           << " "
                                 << std::setprecision(10)
-                                << atoms.at(i)->getPosition().at(0) << " "
-                                << atoms.at(i)->getPosition().at(1) << " "
-                                << atoms.at(i)->getPosition().at(2) << " "
+                                << at(at(atoms,i)->getPosition(),0) << " "
+                                << at(at(atoms,i)->getPosition(),1) << " "
+                                << at(at(atoms,i)->getPosition(),2) << " "
                                 << endl;
             }
             return true;

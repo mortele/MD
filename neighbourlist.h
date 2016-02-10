@@ -9,6 +9,8 @@ public:
     void clearNeighbours();
     class CellList*           getCellList()           { return m_cellList; }
     std::vector<class Atom*>& getNeighbours(int i)    { return at(m_neighbours,i); }
+    std::vector<int>& getNeighbourIndices(int i)    { return at(m_neighbourIndices,i); }
+    real getShellThickness() { return m_neighbourCut - m_rCut; }
 
 private:
     real          m_rCut              = 0;
@@ -19,6 +21,7 @@ private:
     class System*   m_system            = nullptr;
     class CellList* m_cellList          = nullptr;
     std::vector<std::vector<class Atom*>> m_neighbours;
+    std::vector<std::vector<int>>       m_neighbourIndices;
     std::vector<real>                   m_systemSize;
     std::vector<real>                   m_systemSizeHalf;
 };

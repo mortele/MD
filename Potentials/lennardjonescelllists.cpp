@@ -5,16 +5,16 @@
 using std::cout;
 using std::endl;
 
-LennardJonesCellLists::LennardJonesCellLists(   std::vector<double>  systemSize,
-                                                double               rCut,
+LennardJonesCellLists::LennardJonesCellLists(   std::vector<real>  systemSize,
+                                                real               rCut,
                                                 System*              system) :
     LennardJonesCellLists(1.0, 3.405, systemSize, rCut, system) {
 }
 
-LennardJonesCellLists::LennardJonesCellLists(   double               epsilon,
-                                                double               sigma,
-                                                std::vector<double>  systemSize,
-                                                double               rCut,
+LennardJonesCellLists::LennardJonesCellLists(   real               epsilon,
+                                                real               sigma,
+                                                std::vector<real>  systemSize,
+                                                real               rCut,
                                                 System*              system) :
     Potential(system) {
 
@@ -24,11 +24,11 @@ LennardJonesCellLists::LennardJonesCellLists(   double               epsilon,
     m_24epsilon         = 24*m_epsilon;
     m_4epsilonSigma6    = 4*m_epsilon*m_sigma6;
     m_systemSize        = systemSize;
-    m_systemSizeHalf    = {systemSize[0]/2.0, systemSize[1]/2.0, systemSize[2]/2.0};
+    m_systemSizeHalf    = {systemSize[0]/2.0f, systemSize[1]/2.0f, systemSize[2]/2.0f};
     m_rCut              = rCut;
     m_rCut2             = rCut * rCut;
     m_cellList          = new CellList(m_system, m_rCut);
-    double r2           = 1.0 / m_rCut2;
+    real r2           = 1.0 / m_rCut2;
     m_potentialAtCut    = 4*m_epsilon * r2*r2*r2 * m_sigma6 * (m_sigma6*r2*r2*r2-1);
 }
 
@@ -43,9 +43,9 @@ void LennardJonesCellLists::computeForces() {
     setForcesToZero();
     m_potentialEnergy       = 0;
     m_pressure              = 0;
-    double dr2              = 0;
-    double df               = 0;
-    double dr[3]            = {0,0,0};
+    real dr2              = 0;
+    real df               = 0;
+    real dr[3]            = {0,0,0};
 
     const int numberOfCellsInEachDirection = m_cellList->getNumberOfCellsInEachDirection();
     for (int ci=0; ci<numberOfCellsInEachDirection; ci++) {
@@ -77,11 +77,11 @@ void LennardJonesCellLists::computeForces() {
                     dr2 += dr[k]*dr[k];
                 }
 
-                const double r2         = 1.0 / dr2;
-                const double r6         = r2*r2*r2;
-                const double sigma6r6   = m_sigma6 * r6;
+                const real r2         = 1.0 / dr2;
+                const real r6         = r2*r2*r2;
+                const real sigma6r6   = m_sigma6 * r6;
                 const int cut           = (dr2 < m_rCut2);
-                const double f          = -m_24epsilon * sigma6r6 *
+                const real f          = -m_24epsilon * sigma6r6 *
                                           (2*sigma6r6 - 1) * r2 * cut;
                 m_potentialEnergy      += (m_4epsilonSigma6 * r6 *
                                            (sigma6r6 - 1) - m_potentialAtCut) * cut;
@@ -100,6 +100,6 @@ void LennardJonesCellLists::computeForces() {
 
 
 
-double LennardJonesCellLists::computePotential() {
+real LennardJonesCellLists::computePotential() {
     return m_potentialEnergy;
 }

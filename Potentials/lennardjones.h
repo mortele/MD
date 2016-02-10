@@ -7,22 +7,22 @@
 
 class LennardJones : public Potential {
 public:
-    LennardJones(double epsilon, double sigma, std::vector<double> systemSize, double rCut, class System* system);
+    LennardJones(real epsilon, real sigma, std::vector<real> systemSize, real rCut, class System* system);
 
     void   computeForces();
-    double computePotential();
+    real computePotential();
     std::string getName() { return "Lennard-Jones"; }
 
 private:
-    double m_epsilon = 0;
-    double m_sigma = 0;
-    double m_sigma6 = 0;
-    double m_sigma12 = 0;
-    double m_potentialEnergy = 0;
-    double m_rCut = 0;
-    double m_rCut2 = 0;
-    double m_potentialAtCut = 0;
-    double m_24epsilon = 0;
-    double m_4epsilonSigma6 = 0;
-    std::vector<double> m_systemSize;
+    real m_epsilon = 0;
+    real m_sigma = 0;
+    real m_sigma6 = 0;
+    real m_sigma12 = 0;
+    real m_potentialEnergy = 0;
+    real m_rCut = 0;
+    real m_rCut2 = 0;
+    real m_potentialAtCut = 0;
+    real m_24epsilon = 0;
+    real m_4epsilonSigma6 = 0;
+    std::vector<real> m_systemSize;
 };

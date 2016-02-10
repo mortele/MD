@@ -6,10 +6,10 @@
 using std::cout;
 using std::endl;
 
-LennardJones::LennardJones(double epsilon,
-                           double sigma,
-                           std::vector<double> systemSize,
-                           double rCut,
+LennardJones::LennardJones(real epsilon,
+                           real sigma,
+                           std::vector<real> systemSize,
+                           real rCut,
                            System* system) :
         Potential(system) {
     m_epsilon = epsilon;
@@ -21,7 +21,7 @@ LennardJones::LennardJones(double epsilon,
     m_rCut = rCut;
     m_rCut2 = rCut*rCut;
     m_systemSize = systemSize;
-    double r2 = 1.0/m_rCut2;
+    real r2 = 1.0/m_rCut2;
     m_potentialAtCut = 4*m_epsilon * r2*r2*r2 * m_sigma6 * (m_sigma6 * r2*r2*r2 -1);
 }
 
@@ -30,8 +30,8 @@ void LennardJones::computeForces() {
     Potential::setForcesToZero();
     m_potentialEnergy = 0;
 
-    std::vector<double> dr{0,0,0};
-    double dr2 = 0;
+    std::vector<real> dr{0,0,0};
+    real dr2 = 0;
 
     for (int i=0; i < m_system->getN(); i++) {
         Atom* atomi = at(m_system->getAtoms(),i);
@@ -56,7 +56,7 @@ void LennardJones::computeForces() {
             m_potentialEnergy      += (m_4epsilonSigma6 * r6 *
                                        (sigma6r6 - 1) - m_potentialAtCut) * cut;
             for (int k=0; k < 3; k++) {
-                const double df = f * dr.at(k);
+                const real df = f * dr.at(k);
                 atomi->addForce( df, k);
                 atomj->addForce(-df, k);
             }
@@ -64,6 +64,6 @@ void LennardJones::computeForces() {
     }
 }
 
-double LennardJones::computePotential() {
+real LennardJones::computePotential() {
     return m_potentialEnergy;
 }

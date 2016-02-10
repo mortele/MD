@@ -4,7 +4,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <tgmath.h>
+//#include <tgmath.h>
+#include <cmath>
 #include "vec.h"
 
 

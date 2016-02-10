@@ -15,11 +15,7 @@ public:
     vector<class Atom*>& getCell(int i, int j, int k) { return at(at(at(m_cells, i), j), k); }
 
     int getSizeOfCellList(int i, int j, int k) {
-        if (at(at(at(m_cells,i),j),k).empty()) {
-            return 0;
-        } else {
-            return at(at(at(m_cells,i),j),k).size();
-        }
+        return at(at(at(m_cells,i),j),k).size();
     }
 
 

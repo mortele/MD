@@ -1,5 +1,6 @@
 #pragma once
-#include <tgmath.h>
+//#include <tgmath.h>
+#include <cmath>
 #include <iostream>
 #include <vector>
 #include "potential.h"
@@ -23,6 +24,11 @@ private:
     real m_24epsilon = 0;
     real m_4epsilonSigma6 = 0;
     real m_potentialAtCut = 0;
+    real *delx = nullptr;
+    real *dely = nullptr;
+    real *delz = nullptr;
+    real *delr2 = nullptr;
+    int *jindex = nullptr;
     std::vector<real> m_systemSize;
     std::vector<real> m_systemSizeHalf;
 };

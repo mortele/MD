@@ -8,21 +8,21 @@
 
 class LennardJonesCellLists : public Potential {
 public:
-    LennardJonesCellLists(std::vector<double>, double, class System*);
-    LennardJonesCellLists(double, double, std::vector<double>, double, class System*);
+    LennardJonesCellLists(std::vector<real>, real, class System*);
+    LennardJonesCellLists(real, real, std::vector<real>, real, class System*);
     void   computeForces();
-    double computePotential();
-    double getPressure () { return m_pressure; }
+    real computePotential();
+    real getPressure () { return m_pressure; }
     std::string getName() { return "Lennard-Jones (Cell Lists)"; }
 
 private:
-    double m_epsilon = 0;
-    double m_sigma = 0;
-    double m_sigma6 = 0;
-    double m_potentialEnergy = 0;
-    double m_24epsilon = 0;
-    double m_4epsilonSigma6 = 0;
-    double m_potentialAtCut = 0;
-    std::vector<double> m_systemSize;
-    std::vector<double> m_systemSizeHalf;
+    real m_epsilon = 0;
+    real m_sigma = 0;
+    real m_sigma6 = 0;
+    real m_potentialEnergy = 0;
+    real m_24epsilon = 0;
+    real m_4epsilonSigma6 = 0;
+    real m_potentialAtCut = 0;
+    std::vector<real> m_systemSize;
+    std::vector<real> m_systemSizeHalf;
 };

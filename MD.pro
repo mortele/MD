@@ -2,22 +2,12 @@ TEMPLATE                 = app
 CONFIG                  += console c++11
 CONFIG                  += c++11
 QMAKE_CXXFLAGS_RELEASE  -= -O2
-QMAKE_CXXFLAGS_RELEASE  += -O3
+QMAKE_CXXFLAGS_RELEASE  += -O3 -xHost -fno-alias -ansi-alias -restrict -override-limits -vec-report2
+QMAKE_LFLAGS += -xHost
 #QMAKE_CXXFLAGS_RELEASE  += -fopenmp
 #LIBS                    += -fopenmp
 
-# MPI Settings
-QMAKE_CXX = mpicxx
-QMAKE_CXX_RELEASE = $$QMAKE_CXX
-QMAKE_CXX_DEBUG = $$QMAKE_CXX
-QMAKE_LINK = $$QMAKE_CXX
-QMAKE_CC = mpicc
 
-QMAKE_CFLAGS += $$system(mpicc --showme:compile)
-QMAKE_LFLAGS += $$system(mpicxx --showme:link)
-QMAKE_CXXFLAGS += $$system(mpicxx --showme:compile) -DMPICH_IGNORE_CXX_SEEK
-QMAKE_CXXFLAGS_RELEASE += $$system(mpicxx --showme:compile) -DMPICH_IGNORE_CXX_SEEK
-INCLUDEPATH += /usr/local/include
 
 SOURCES += main.cpp \
     atom.cpp \
@@ -44,7 +34,8 @@ SOURCES += main.cpp \
     celllist.cpp \
     neighbourlist.cpp \
     Potentials/lennardjonescelllists.cpp \
-    Potentials/lennardjonesneighbourlists.cpp
+    Potentials/lennardjonesneighbourlists.cpp \
+    elapsedtimer.cpp
 
 HEADERS += \
     atom.h \
@@ -71,5 +62,6 @@ HEADERS += \
     celllist.h \
     neighbourlist.h \
     Potentials/lennardjonescelllists.h \
-    Potentials/lennardjonesneighbourlists.h
+    Potentials/lennardjonesneighbourlists.h \
+    elapsedtimer.h
 
