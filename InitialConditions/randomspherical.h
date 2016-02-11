@@ -1,6 +1,6 @@
 #pragma once
 #include "initialcondition.h"
-#include <tgmath.h>
+#include <cmath>
 #include "../atom.h"
 #include "../random.h"
 

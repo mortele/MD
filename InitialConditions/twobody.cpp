@@ -1,5 +1,5 @@
 #include "twobody.h"
-#include <tgmath.h>
+#include <cmath>
 
 TwoBody::TwoBody() {
     m_setupDone = false;

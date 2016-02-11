@@ -1,5 +1,5 @@
 #pragma once
-#include <tgmath.h>
+#include <cmath>
 #include <iostream>
 #include <vector>
 #include "potential.h"

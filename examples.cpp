@@ -1,7 +1,7 @@
 #include "examples.h"
 #include <iostream>
 #include <fstream>
-#include <tgmath.h>
+#include <cmath>
 #include "system.h"
 #include "atom.h"
 #include "vec.h"
@@ -128,11 +128,11 @@ int Examples::lennardJonesFCCCellLists() {
 }
 
 int Examples::lennardJonesFCCNeighbourLists() {
-    int   nUnitCells          = 30;    // Number of unit cells in each dimension.
+    int   nUnitCells          = 15;    // Number of unit cells in each dimension.
     real  T                   = 1.0;   // Temperature, in units of 119.8 K.
     real  targetTemperature   = 1.0;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
     real  b                   = 5.26;  // Lattice constant, in units of 1.0 Å.
-    real  dt                  = 0.0997765; // Time step.
+    real  dt                  = 0.01; // Time step.
     real  tau                 = dt;    // Relaxation time used by the thermostat, in units of 119.8 K.
     real  sideLength          = nUnitCells*b; // Size of box sides.
     real  epsilon             = 1;

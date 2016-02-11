@@ -1,5 +1,5 @@
 #pragma once
-#include <tgmath.h>
+#include <cmath>
 #include <vector>
 #include "initialcondition.h"
 #include "../atom.h"
