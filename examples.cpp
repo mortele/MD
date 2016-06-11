@@ -21,8 +21,10 @@
 #include "InitialConditions/randomspherical.h"
 #include "InitialConditions/uniform.h"
 #include "InitialConditions/fcc.h"
+#include "InitialConditions/loadfromfile.h"
 #include "Thermostats/thermostat.h"
 #include "Thermostats/berendsenthermostat.h"
+#include "Thermostats/andersenthermostat.h"
 
 using std::cout;
 using std::endl;
@@ -36,8 +38,8 @@ int Examples::coldCollapseCluster() {
     real  eps = 0.01;                             // Smoothing factor.
     real  sideLength = 2*R0;
     std::vector<real> boxSize{sideLength,         // Vector of box size.
-                                sideLength,
-                                sideLength};
+                sideLength,
+                sideLength};
 
     System* system = new System          ();
     system->setIntegrator                (new EulerCromer(dt, system));
@@ -54,8 +56,8 @@ int Examples::uniformBoxNoPotential() {
     real  dt          = 0.001;            // Time step.
     real  sideLength  = 1;                // Size of box sides.
     std::vector<real> boxSize{sideLength, // Vector of box size.
-                                sideLength,
-                                sideLength};
+                sideLength,
+                sideLength};
 
     System* system = new System          ();
     system->setIntegrator                (new EulerCromer(dt, system));
@@ -79,8 +81,8 @@ int Examples::lennardJonesFCC() {
     real  sigma               = 3.405;
     real  rCut                = 2.5*sigma;
     std::vector<real> boxSize{sideLength,     // Vector of box size.
-                                sideLength,
-                                sideLength};
+                sideLength,
+                sideLength};
 
     System* system = new System          ();
     system->setIntegrator                (new VelocityVerlet(dt, system));
@@ -107,8 +109,8 @@ int Examples::lennardJonesFCCCellLists() {
     real  sigma               = 3.405;
     real  rCut                = 2.5 * sigma;
     std::vector<real> boxSize{sideLength,     // Vector of box size.
-                                sideLength,
-                                sideLength};
+                sideLength,
+                sideLength};
 
     if (sideLength < 3*rCut) {
         cout << endl << "### WARNING ###: System size smaller than 3 sigma, may cause segfault." << endl << endl;
@@ -140,8 +142,45 @@ int Examples::lennardJonesFCCNeighbourLists() {
     real  rCut                = 2.5 * sigma;
     real  rNeighbourCut       = 3.0 * sigma;
     std::vector<real> boxSize{sideLength,     // Vector of box size.
-                              sideLength,
-                              sideLength};
+                sideLength,
+                sideLength};
+
+    if (sideLength < 3*rCut) {
+        cout << endl << "### WARNING ###: System size smaller than 3 sigma, may cause segfault." << endl << endl;
+    }
+
+    System* system = new System          ();
+    system->setIntegrator                (new VelocityVerlet(dt, system));
+    system->setPotential                 (new LennardJonesNeighbourLists(epsilon, sigma, boxSize, rCut, rNeighbourCut, system));
+    system->setInitialCondition          (new FCC(nUnitCells, b, T));
+    system->setPeriodicBoundaryConditions(true);
+    system->setThermostat                (new AndersenThermostat(system, targetTemperature, tau, dt));
+    system->setSystemSize                (boxSize);
+    system->setThermostatActive          (true);
+    system->enablePressureSampling       (true);
+    system->enableSavingToFile           (true);
+
+    system->integrate                    (1000);
+    system->setThermostatActive(false);
+    return system->integrate(1000);
+
+}
+
+int Examples::lennardJonesLiquid() {
+    int   nUnitCells          = 20;    // Number of unit cells in each dimension.
+    real  T                   = 0.851;   // Temperature, in units of 119.8 K.
+    real  targetTemperature   = 0.851;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
+    real  b                   = 5.72;  // Lattice constant, in units of 1.0 Å.
+    real  dt                  = 0.01;  // Time step.
+    real  tau                 = dt*10;    // Relaxation time used by the thermostat, in units of 119.8 K.
+    real  sideLength          = nUnitCells*b; // Size of box sides.
+    real  epsilon             = 1.0;
+    real  sigma               = 3.405;
+    real  rCut                = 2.5 * sigma;
+    real  rNeighbourCut       = 3.0 * sigma;
+    std::vector<real> boxSize{sideLength,     // Vector of box size.
+                sideLength,
+                sideLength};
 
     if (sideLength < 3*rCut) {
         cout << endl << "### WARNING ###: System size smaller than 3 sigma, may cause segfault." << endl << endl;
@@ -156,26 +195,58 @@ int Examples::lennardJonesFCCNeighbourLists() {
     system->setSystemSize                (boxSize);
     system->setThermostatActive          (true);
     system->enablePressureSampling       (true);
+    system->enableSavingToFile           (false);
+
+    system->integrate                    (1000);
+    system->setThermostatActive          (false);
+    system->integrate                    (1000);
+    return system->saveSnapShot();
+}
+
+int Examples::loadFromFile() {
+    real  targetTemperature   = 0.851;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
+    real  dt                  = 0.01;  // Time step.
+    real  tau                 = dt*10;    // Relaxation time used by the thermostat, in units of 119.8 K.
+    real  epsilon             = 1.0;
+    real  sigma               = 3.405;
+    real  rCut                = 2.5 * sigma;
+    real  rNeighbourCut       = 3.0 * sigma;
+
+    System* system = new System          ();
+    system->setIntegrator                (new VelocityVerlet(dt, system));
+    system->setInitialCondition          (new LoadFromFile("snapShot.dat", system));
+    system->setPotential                 (new LennardJonesNeighbourLists(epsilon, sigma, rCut, rNeighbourCut, system));
+    system->setPeriodicBoundaryConditions(true);
+    system->setThermostat                (new BerendsenThermostat(system, targetTemperature, tau, dt));
+    system->setSystemSize                (system->getInitialCondition()->getSystemSize());
+    system->setThermostatActive          (true);
+    system->enablePressureSampling       (true);
+    system->enableSavingToFile           (false);
+    system->integrate                    (1000);
+}
+
+int Examples::lennardJonesFCCNanoPorous() {
+    real  targetTemperature   = 0.851;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
+    real  dt                  = 0.01;  // Time step.
+    real  tau                 = dt*10;    // Relaxation time used by the thermostat, in units of 119.8 K.
+    real  epsilon             = 1.0;
+    real  sigma               = 3.405;
+    real  rCut                = 2.5 * sigma;
+    real  rNeighbourCut       = 3.0 * sigma;
+
+    System* system = new System          ();
+    system->setIntegrator                (new VelocityVerlet(dt, system));
+    system->setInitialCondition          (new LoadFromFile("snapShot.dat", system));
+    system->setPotential                 (new LennardJonesNeighbourLists(epsilon, sigma, rCut, rNeighbourCut, system));
+    system->setPeriodicBoundaryConditions(true);
+    system->setThermostat                (new BerendsenThermostat(system, targetTemperature, tau, dt));
+    system->setSystemSize                (system->getInitialCondition()->getSystemSize());
+    system->setThermostatActive          (true);
+    system->enablePressureSampling       (true);
     system->enableSavingToFile           (true);
-
+    system->integrate                    (0);
+    system->generateTestMatrix           (20.0);
     system->integrate                    (1000);
-    system->setThermostatActive(false);
-    return system->integrate(1000);
-
-    system->setTargetTemperature         (0.6);
-    system->integrate                    (1000);
-
-    system->setTargetTemperature         (0.7);
-    system->integrate                    (1000);
-
-    system->setTargetTemperature         (0.8);
-    system->integrate                    (1000);
-
-    system->setTargetTemperature         (0.9);
-    system->integrate                    (1000);
-
-    system->setTargetTemperature         (1.0);
-    return system->integrate(100);
 }
 
 

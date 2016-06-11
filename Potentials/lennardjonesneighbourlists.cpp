@@ -36,6 +36,20 @@ LennardJonesNeighbourLists::LennardJonesNeighbourLists(real               epsilo
     m_potentialAtCut    = 4*m_epsilon * r2*r2*r2 * m_sigma6 * (m_sigma6*r2*r2*r2-1);
 }
 
+LennardJonesNeighbourLists::LennardJonesNeighbourLists( real               epsilon,
+                                                        real               sigma,
+                                                        real               rCut,
+                                                        real               neighbourCut,
+                                                        System*            system) :
+        LennardJonesNeighbourLists(epsilon,
+                                   sigma,
+                                   system->getSystemSize(),
+                                   rCut,
+                                   neighbourCut,
+                                   system) {
+
+}
+
 void LennardJonesNeighbourLists::computeForces() {
 
     if (m_timeStepsSinceLastCellListUpdate == -1 ||

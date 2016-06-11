@@ -44,7 +44,9 @@ SOURCES += main.cpp \
     celllist.cpp \
     neighbourlist.cpp \
     Potentials/lennardjonescelllists.cpp \
-    Potentials/lennardjonesneighbourlists.cpp
+    Potentials/lennardjonesneighbourlists.cpp \
+    Thermostats/andersenthermostat.cpp \
+    InitialConditions/loadfromfile.cpp
 
 HEADERS += \
     atom.h \
@@ -71,5 +73,7 @@ HEADERS += \
     celllist.h \
     neighbourlist.h \
     Potentials/lennardjonescelllists.h \
-    Potentials/lennardjonesneighbourlists.h
+    Potentials/lennardjonesneighbourlists.h \
+    Thermostats/andersenthermostat.h \
+    InitialConditions/loadfromfile.h
 

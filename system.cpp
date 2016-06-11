@@ -72,6 +72,10 @@ void System::setupSystem() {
     m_integrator->setPotential(m_potential);
 }
 
+void System::generateTestMatrix(double radius) {
+    m_initialCondition->generateTestMatrix(radius);
+}
+
 void System::enablePressureSampling(bool enabled) {
     m_sampler->setPressureSamplingEnabled(enabled);
 }
@@ -85,7 +89,7 @@ int System::integrate(int Nt) {
         dumpInfoToTerminal();
         m_integrating = true;
         if (m_dumpToFile && m_fileOutput == nullptr) {
-            m_fileOutput = new FileOutput(m_fileName);
+            m_fileOutput = new FileOutput(this, m_fileName);
         }
     }
     m_sampler->setNtDt(Nt,m_dt);
@@ -100,7 +104,7 @@ int System::integrate(int Nt) {
     for (m_t=0; m_t < Nt; m_t++) {
         if (m_dumpToFile == true) {
             if (m_fileOutput == nullptr) {
-                m_fileOutput = new FileOutput(m_fileName);
+                m_fileOutput = new FileOutput(this, m_fileName);
             }
             if (m_fileOutput->saveState(m_atoms, m_n) == false) {
                 return false;
@@ -120,8 +124,10 @@ int System::integrate(int Nt) {
         }
         printProgress(m_t);
     }
-    m_sampler->sample(Nt);
-    printProgress(Nt);
+    if (m_Nt != 0) {
+        m_sampler->sample(Nt);
+        printProgress(Nt);
+    }
 
     return true;
 }
@@ -241,7 +247,7 @@ void System::printProgress(int t) {
 
 void System::enableSavingToFile(bool dumpToFile) {
     if (dumpToFile && m_fileOutput == nullptr) {
-        m_fileOutput = new FileOutput(m_fileName);
+        m_fileOutput = new FileOutput(this, m_fileName);
     }
     m_dumpToFile = dumpToFile;
     if (dumpToFile) {
@@ -255,6 +261,13 @@ void System::enableSavingToFile(bool dumpToFile, int skip) {
     if (dumpToFile) {
         m_fileOutput->setFileOutputSkip(skip);
     }
+}
+
+bool System::saveSnapShot() {
+    if (m_fileOutput == nullptr) {
+        m_fileOutput = new FileOutput(this, " ");
+    }
+    m_fileOutput->saveSnapshot(m_atoms, m_n);
 }
 
 
@@ -271,7 +284,7 @@ bool System::applyPeriodicBoundaryConditions() {
             } else if (position[k] < 0) {
                 at(m_atoms,i)->addPosition(at(m_systemSize,k), k);
             }
-            if (at(at(m_atoms,i)->getPosition(), k) > at(m_systemSize,k) ||
+            /*if (at(at(m_atoms,i)->getPosition(), k) > at(m_systemSize,k) ||
                 at(at(m_atoms,i)->getPosition(), k) < 0) {
 
                 std::vector<real_posvel> atomPos = at(m_atoms,i)->getPosition();
@@ -286,7 +299,7 @@ bool System::applyPeriodicBoundaryConditions() {
                      << endl << endl;
 
                 returnValue = false;
-            }
+            }*/
         }
     }
     return returnValue;
@@ -296,12 +309,13 @@ bool System::applyPeriodicBoundaryConditions() {
 
 
 
-System::FileOutput::FileOutput(const char* fileName) {
+System::FileOutput::FileOutput(System* system, const char* fileName) {
     //m_outFile.open(fileName, std::ios::out);
     const char* fileNameTmp = "../MD/movie.xyz";
     m_outFile.open(fileNameTmp, std::ios::out);
     m_fileOutputSkip = 1;
     m_timeStep = 0;
+    m_system = system;
 }
 
 System::FileOutput::~FileOutput() {
@@ -333,6 +347,34 @@ bool System::FileOutput::saveState(std::vector<Atom*> atoms, int n) {
         }
     }
     return true;
+}
+
+bool System::FileOutput::saveSnapshot(std::vector<Atom*> atoms, int n) {
+    const char* snapShotFileName ="../MD/snapShot.dat";
+    m_snapShotFile.open(snapShotFileName, std::ios::out);
+
+    if (m_snapShotFile.is_open() == false) {
+        cout << endl << "### ERROR ###: Could not open snap shot file. Exiting." << endl << endl;
+        return false;
+    } else {
+        m_snapShotFile << n << " " << m_system->getSystemSize().at(0)
+                       << " " << m_system->getSystemSize().at(1)
+                       << " " << m_system->getSystemSize().at(2)
+                       << endl;
+        for (int i = 0; i < n; i++) {
+            m_snapShotFile  << atoms.at(i)->getName()           << " "
+                            << std::setprecision(15)
+                            << atoms.at(i)->getPosition().at(0) << " "
+                            << atoms.at(i)->getPosition().at(1) << " "
+                            << atoms.at(i)->getPosition().at(2) << " "
+                            << atoms.at(i)->getVelocity().at(0) << " "
+                            << atoms.at(i)->getVelocity().at(1) << " "
+                            << atoms.at(i)->getVelocity().at(2) << " "
+                            << atoms.at(i)->getMass()           << " "
+                            << endl;
+        }
+        return true;
+    }
 }
 
 void System::FileOutput::setFileOutputSkip(int fileOutputSkip) {

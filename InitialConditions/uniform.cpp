@@ -15,7 +15,7 @@ void Uniform::setupInitialCondition() {
         m_atoms.at(i)->setMass(m);
 
         for (int k=0; k<3; k++) {
-            m_atoms.at(i)->setPosition(Random::nextreal()*m_boxSize.at(k), k);
+            m_atoms.at(i)->setPosition(Random::nextReal()*m_boxSize.at(k), k);
             m_atoms.at(i)->setVelocity(Random::nextGaussian(0, std::sqrt(m_temperature / m)), k);
         }
     }

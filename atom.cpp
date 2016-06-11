@@ -74,6 +74,10 @@ void Atom::setIndex(int index) {
     m_index = index;
 }
 
+void Atom::setIsMatrix(bool isMatrix) {
+    m_isMatrix = isMatrix;
+}
+
 
 
 

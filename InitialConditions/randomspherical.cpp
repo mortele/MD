@@ -20,9 +20,9 @@ void RandomSpherical::setupInitialCondition() {
         real mass = Random::nextGaussian(10.0, 1.0);
 
         real u,v,w,x,y,z,r,theta,phi;
-        u = (Random::nextreal());
-        v = (Random::nextreal());
-        w = (Random::nextreal());
+        u = (Random::nextReal());
+        v = (Random::nextReal());
+        w = (Random::nextReal());
 
         r     = m_R0*pow(u, 1.0/3.0);
         theta = acos(1-2*v);

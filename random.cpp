@@ -9,11 +9,11 @@ void Random::setSeed(long seed) {
 }
 
 real Random::nextGaussian(real mean, real standardDeviation) {
-    real standardNormalRandomNumber = sqrt( -2.0*log(1.0 - nextreal()) ) * cos( 6.283185307 * nextreal() );
+    real standardNormalRandomNumber = sqrt( -2.0*log(1.0 - nextReal()) ) * cos( 6.283185307 * nextReal() );
     return standardDeviation*standardNormalRandomNumber + mean;
 }
 
-real Random::nextreal()
+real Random::nextReal()
 {
     int             j;
     long            k;

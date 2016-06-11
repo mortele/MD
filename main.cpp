@@ -35,7 +35,10 @@ int main(int argc, char** argv) {
     //return Examples::uniformBoxNoPotential();
     //return Examples::lennardJonesFCC();
     //return Examples::lennardJonesFCCCellLists();
-    return Examples::lennardJonesFCCNeighbourLists();
+    //return Examples::lennardJonesFCCNeighbourLists();
+    //return Examples::lennardJonesLiquid();
+    //return Examples::loadFromFile();
+    return Examples::lennardJonesFCCNanoPorous();
 }
 
 

@@ -19,6 +19,7 @@ public:
     void setName            (std::string name);
     void setCellListIndex   (int, int, int);
     void setIndex           (int index);
+    void setIsMatrix          (bool isMatrix);
 
     inline void addPosition(real_posvel x, int index) {
         at(m_position,index) += x;
@@ -34,6 +35,7 @@ public:
     }
 
     int                       getIndex()            { return m_index; }
+    bool                      getIsMatrix()         { return m_isMatrix; }
     real                      getMass()             { return m_mass; }
     std::vector<real_posvel>& getPosition()         { return m_position; }
     std::vector<real_posvel>& getInitialPosition()  { return m_initialPosition; }
@@ -43,6 +45,7 @@ public:
     std::vector<int>&         getCellListIndex()    { return m_cellListIndex; }
 
 private:
+    bool                m_isMatrix        = false;
     int                 m_index           = 0;
     real                m_mass            = 1.0;
     std::string         m_name            = "Ar";

@@ -10,7 +10,7 @@ public:
     std::string getName() { return "FCC (face-centered cubic)"; }
 
 private:
-    int     m_numberOfUnitCells;
+    int   m_numberOfUnitCells;
     real  m_latticeConstant;
     real  m_temperature;
 };

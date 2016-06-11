@@ -10,6 +10,7 @@ class LennardJonesNeighbourLists : public Potential {
 public:
     LennardJonesNeighbourLists(std::vector<real>, real, class System*);
     LennardJonesNeighbourLists(real, real, std::vector<real>, real, real, class System*);
+    LennardJonesNeighbourLists(real, real, real, real, class System*);
     void   computeForces();
     real computePotential();
     real getPressure () { return m_pressure; }

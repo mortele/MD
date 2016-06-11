@@ -22,6 +22,7 @@ public:
     void setTargetTemperature(real);
     void setSystemSize(std::vector<real>);
     void setupSystem();
+    void generateTestMatrix(double radius);
     void enablePressureSampling(bool enabled);
     int integrate(int Nt);
     bool applyPeriodicBoundaryConditions();
@@ -29,28 +30,34 @@ public:
     void printProgress(int);
     void enableSavingToFile(bool);
     void enableSavingToFile(bool, int);
+    bool saveSnapShot();
     int  getN()                             { return m_n; }
     int  getT()                             { return m_t; }
     bool getPeriodicBoundaryConditions()    { return m_periodicBoundaryConditions; }
     bool getThermostatActive()              { return m_thermostatActive; }
     std::vector<class Atom*>&  getAtoms()   { return m_atoms; }
-    std::vector<real>& getSystemSize()      { return m_systemSize; }
+    std::vector<real>&  getSystemSize()     { return m_systemSize; }
     class Thermostat*   getThermostat()     { return m_thermostat; }
+    class InitialCondition* getInitialCondition() { return m_initialCondition; }
 
 private:
 
     // Internal class for dumping positions to file.
     class FileOutput {
         public:
-            FileOutput(const char*);
+            FileOutput(System* system, const char*);
             ~FileOutput();
             bool saveState(std::vector<class Atom*> atoms, int n);
+            bool saveSnapshot(std::vector<class Atom*> atoms, int n);
             void setFileOutputSkip(int fileOutputSkip);
 
         private:
+            System* m_system = nullptr;
             int m_fileOutputSkip = 1;
             int m_timeStep = 0;
             std::fstream m_outFile;
+            std::fstream m_outFiles;
+            std::fstream m_snapShotFile;
     };
 
     int                 m_skip                          = 0;

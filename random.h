@@ -30,7 +30,7 @@ public:
     static long iy;
     static long iv[NTAB];
     static long seed;
-    static real nextreal();
+    static real nextReal();
     static real nextGaussian(real mean, real standardDeviation);
     static void setSeed(long seed);
 };
