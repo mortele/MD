@@ -23,6 +23,7 @@ void Sampler::sample(int t) {
     m_potentialEnergies[t] = samplePotentialEnergy();
     m_energies[t] = m_kineticEnergies[t] + m_potentialEnergies[t];
     m_instantanousTemperature[t] = (2.0/3.0)*m_kineticEnergies[t] / m_n;
+    m_meanSquareDisplacement[t] = sampleMeanSquareDisplacement();
 
     if (m_pressureSamplingEnabled) {
         m_pressures[t] = samplePressure(m_instantanousTemperature[t]);
@@ -44,14 +45,15 @@ void Sampler::setNtDt(int Nt, real dt) {
     m_kineticEnergies           = new real[Nt+1];
     m_instantanousTemperature   = new real[Nt+1];
     m_pressures                 = new real[Nt+1];
+    m_meanSquareDisplacement    = new real[Nt+1];
 }
 
 real Sampler::sampleKineticEnergy() {
     real kineticEnergy = 0;
     for (int i=0; i < m_n; i++) {
         real v2 = m_atoms.at(i)->getVelocity().at(0)*m_atoms.at(i)->getVelocity().at(0) +
-                    m_atoms.at(i)->getVelocity().at(1)*m_atoms.at(i)->getVelocity().at(1) +
-                    m_atoms.at(i)->getVelocity().at(2)*m_atoms.at(i)->getVelocity().at(2);
+                  m_atoms.at(i)->getVelocity().at(1)*m_atoms.at(i)->getVelocity().at(1) +
+                  m_atoms.at(i)->getVelocity().at(2)*m_atoms.at(i)->getVelocity().at(2);
         kineticEnergy += 0.5 * m_atoms.at(i)->getMass() * v2;
     }
     return kineticEnergy;
@@ -64,8 +66,26 @@ real Sampler::samplePotentialEnergy() {
 real Sampler::samplePressure(real instantaneousTemperature) {
     real pressureFromLennardJones = m_potential->getPressure();
     return instantaneousTemperature * m_density +
-           pressureFromLennardJones / (3 * m_volume);
+            pressureFromLennardJones / (3 * m_volume);
+}
 
+real Sampler::sampleMeanSquareDisplacement() {
+    real meanSquareDisplacement = 0;
+    std::vector<real> dr{0,0,0};
+    std::vector<real> systemSize = m_system->getSystemSize();
+    for (int i=0; i<m_n; i++) {
+        Atom* atom = at(m_atoms, i);
+        for (int k=0; k<3; k++) {
+            at(dr,k) = at(atom->getPosition(),k) - at(atom->getInitialPosition(),k);
+            if (at(dr,k) > at(systemSize,k)*0.5) {
+                at(dr,k) = at(dr,k) - at(systemSize,k);
+            } else if (at(dr,k) < -at(systemSize,k)*0.5) {
+                at(dr,k) = at(dr,k) + at(systemSize,k);
+            }
+            meanSquareDisplacement += at(dr,k)*at(dr,k);
+        }
+    }
+    return meanSquareDisplacement / m_n;
 }
 
 void Sampler::setPressureSamplingEnabled(bool enabled) {

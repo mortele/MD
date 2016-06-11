@@ -128,20 +128,20 @@ int Examples::lennardJonesFCCCellLists() {
 }
 
 int Examples::lennardJonesFCCNeighbourLists() {
-    int   nUnitCells          = 15;    // Number of unit cells in each dimension.
-    real  T                   = 1.0;   // Temperature, in units of 119.8 K.
-    real  targetTemperature   = 1.0;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
+    int   nUnitCells          = 10;    // Number of unit cells in each dimension.
+    real  T                   = 3.0;   // Temperature, in units of 119.8 K.
+    real  targetTemperature   = 3.0;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
     real  b                   = 5.26;  // Lattice constant, in units of 1.0 Å.
-    real  dt                  = 0.01; // Time step.
-    real  tau                 = dt;    // Relaxation time used by the thermostat, in units of 119.8 K.
+    real  dt                  = 0.01;  // Time step.
+    real  tau                 = dt*100;    // Relaxation time used by the thermostat, in units of 119.8 K.
     real  sideLength          = nUnitCells*b; // Size of box sides.
-    real  epsilon             = 1;
-    real  sigma               = 3.405;
+    real  epsilon             = 1.0;
+    real  sigma               = 1.0; // 3.405;
     real  rCut                = 2.5 * sigma;
     real  rNeighbourCut       = 3.0 * sigma;
     std::vector<real> boxSize{sideLength,     // Vector of box size.
-                                sideLength,
-                                sideLength};
+                              sideLength,
+                              sideLength};
 
     if (sideLength < 3*rCut) {
         cout << endl << "### WARNING ###: System size smaller than 3 sigma, may cause segfault." << endl << endl;
@@ -154,10 +154,28 @@ int Examples::lennardJonesFCCNeighbourLists() {
     system->setPeriodicBoundaryConditions(true);
     system->setThermostat                (new BerendsenThermostat(system, targetTemperature, tau, dt));
     system->setSystemSize                (boxSize);
-    system->setThermostatActive          (false);
+    system->setThermostatActive          (true);
     system->enablePressureSampling       (true);
-    system->enableSavingToFile           (false);
+    system->enableSavingToFile           (true);
+
+    system->integrate                    (1000);
+    system->setThermostatActive(false);
     return system->integrate(1000);
+
+    system->setTargetTemperature         (0.6);
+    system->integrate                    (1000);
+
+    system->setTargetTemperature         (0.7);
+    system->integrate                    (1000);
+
+    system->setTargetTemperature         (0.8);
+    system->integrate                    (1000);
+
+    system->setTargetTemperature         (0.9);
+    system->integrate                    (1000);
+
+    system->setTargetTemperature         (1.0);
+    return system->integrate(100);
 }
 
 

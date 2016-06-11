@@ -50,6 +50,11 @@ void FCC::setupInitialCondition() {
                 m_atoms.at(counter+2)->setPosition(atom2);
                 m_atoms.at(counter+3)->setPosition(atom3);
 
+                m_atoms.at(counter+0)->setInitialPosition(atom0);
+                m_atoms.at(counter+1)->setInitialPosition(atom1);
+                m_atoms.at(counter+2)->setInitialPosition(atom2);
+                m_atoms.at(counter+3)->setInitialPosition(atom3);
+
                 counter += 4;
             }
         }

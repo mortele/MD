@@ -12,12 +12,18 @@ Atom::Atom(real_posvel mass) {
 
 void Atom::setPosition(std::vector<real_posvel>  position) {
     for (int k=0; k<3; k++) {
-        m_position.at(k) = position.at(k);
+        at(m_position,k) = at(position,k);
     }
 }
 
 void Atom::setPosition(real_posvel x, int index) {
     m_position.at(index) = x;
+}
+
+void Atom::setInitialPosition(std::vector<real_posvel> initialPosition) {
+    for (int k=0; k<3; k++) {
+        at(m_initialPosition,k) = at(initialPosition,k);
+    }
 }
 
 

@@ -56,6 +56,10 @@ void System:: setThermostatActive(bool thermostatActive) {
     m_thermostatActive = thermostatActive;
 }
 
+void System::setTargetTemperature(real target) {
+    m_thermostat->setTargetTemperature(target);
+}
+
 void System::setSystemSize(std::vector<real> systemSize) {
     m_systemSize = systemSize;
 }
@@ -196,19 +200,21 @@ void System::printProgress(int t) {
             printf("(%5.1f s) ", estimatedTime);
         }
         if (m_t!=0) {
-            printf("Epot/N=%11.6f  Ekin/N=%11.6f  E/N=%11.6f  T=%11.6f  P=%11.6f \n",
+            printf("Epot/N=%11.6f  Ekin/N=%11.6f  E/N=%11.6f  T=%11.6f  P=%11.6f  <r^2(t)>/6t=%11.6g \n",
                    m_sampler->getPotentialEnergies()[t]/m_n,
                    m_sampler->getKineticEnergies()[t]/m_n,
                    m_sampler->getEnergies()[t]/m_n,
                    m_sampler->getInstantanousTemperature()[t],
-                   m_sampler->getPressures()[t]);
+                   m_sampler->getPressures()[t],
+                   m_sampler->getMeanSquareDisplacement()[t] / (6*m_dt*t));
         } else {
-            printf("Epot/N=%11.6s  Ekin/N=%11.6f  E/N=%11.6s  T=%11.6f  P=%11.6f \n",
+            printf("Epot/N=%11.6s  Ekin/N=%11.6f  E/N=%11.6s  T=%11.6f  P=%11.6f  <r^2(t)>/6t=%11.6s \n",
                    " ?",
                    m_sampler->getKineticEnergies()[t]/m_n,
                    " ?",
                    m_sampler->getInstantanousTemperature()[t],
-                   m_sampler->getPressures()[t]);
+                   m_sampler->getPressures()[t],
+                   " ?");
         }
         fflush(stdout);
         m_lastTimeStepTime = m_currentTime-m_oldTime;

@@ -3,7 +3,7 @@
 #include <cmath>
 #include <vector>
 //#include <omp.h>
-#include <mpi.h>
+//#include <mpi.h>
 #include "examples.h"
 #include "system.h"
 #include "atom.h"

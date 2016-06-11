@@ -9,6 +9,7 @@ public:
 
     void setPosition        (std::vector<real_posvel>  position);
     void setPosition        (real_posvel x, int index);
+    void setInitialPosition (std::vector<real_posvel> initialPosition);
     void setVelocity        (std::vector<real_posvel>  velocity);
     void setVelocity        (real_posvel v, int index);
     void setForce           (std::vector<real_posvel>  force);
@@ -35,6 +36,7 @@ public:
     int                       getIndex()            { return m_index; }
     real                      getMass()             { return m_mass; }
     std::vector<real_posvel>& getPosition()         { return m_position; }
+    std::vector<real_posvel>& getInitialPosition()  { return m_initialPosition; }
     std::vector<real_posvel>& getVelocity()         { return m_velocity; }
     std::vector<real_posvel>& getForce()            { return m_force; }
     std::string               getName()             { return m_name; }
@@ -48,5 +50,6 @@ private:
     std::vector<real_posvel> m_position        = std::vector<real_posvel>(3);
     std::vector<real_posvel> m_velocity        = std::vector<real_posvel>(3);
     std::vector<real_posvel> m_force           = std::vector<real_posvel>(3);
+    std::vector<real_posvel> m_initialPosition = std::vector<real_posvel>(3);
 
 };
