@@ -320,9 +320,9 @@ int Examples::computeTemperatureFluctuations() {
                 system->setThermostatActive          (true);
                 system->enablePressureSampling       (true);
                 system->enableSavingToFile           (false);
-
                 system->integrate                    (1000);
                 system->setThermostatActive          (false);
+                system->enableTemperatureFluctuationsMeasurement(true);
                 system->integrate                    (1000);
                 double stddev = std::sqrt(system->getTemperatureVariance());
                 cout << "Temperature std. dev.: " << stddev << endl;
@@ -343,12 +343,12 @@ int Examples::computeTemperatureFluctuations() {
 }
 
 int Examples::computeRadialDistributionFunction() {
-    int   nUnitCells          = 10;    // Number of unit cells in each dimension.
-    real  T                   = 3.0;   // Temperature, in units of 119.8 K.
-    real  targetTemperature   = 3.0;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
+    int   nUnitCells          = 6;    // Number of unit cells in each dimension.
+    real  T                   = 0.3;   // Temperature, in units of 119.8 K.
+    real  targetTemperature   = 0.3;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
     real  b                   = 5.26;  // Lattice constant, in units of 1.0 Å.
     real  dt                  = 0.01;  // Time step.
-    real  tau                 = dt*100;    // Relaxation time used by the thermostat, in units of 119.8 K.
+    real  tau                 = dt*10;    // Relaxation time used by the thermostat, in units of 119.8 K.
     real  sideLength          = nUnitCells*b; // Size of box sides.
     real  epsilon             = 1.0;
     real  sigma               = 1.0; // 3.405;
@@ -367,14 +367,14 @@ int Examples::computeRadialDistributionFunction() {
     system->setPotential                 (new LennardJonesNeighbourLists(epsilon, sigma, boxSize, rCut, rNeighbourCut, system));
     system->setInitialCondition          (new FCC(nUnitCells, b, T));
     system->setPeriodicBoundaryConditions(true);
-    system->setThermostat                (new AndersenThermostat(system, targetTemperature, tau, dt));
+    system->setThermostat                (new BerendsenThermostat(system, targetTemperature, tau, dt));
     system->setSystemSize                (boxSize);
     system->setThermostatActive          (true);
     system->enablePressureSampling       (true);
-    system->enableSavingToFile           (true);
-
+    system->enableSavingToFile           (false);
     system->integrate                    (1000);
     system->setThermostatActive(false);
+    system->enablePairCorrelationMeasurement(true);
     return system->integrate(1000);
 }
 

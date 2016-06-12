@@ -28,11 +28,51 @@ void Sampler::sample(int t) {
     if (m_pressureSamplingEnabled) {
         m_pressures[t] = samplePressure(m_instantanousTemperature[t]);
     }
-    if (m_system->getThermostatActive() == false) {
+    if (m_system->getThermostatActive() == false &&
+        m_temperatureFluctuationsMeasurement) {
         m_cumulativeTemperatureN++;
         m_cumulativeTemperature  += m_instantanousTemperature[t];
         m_cumulativeTemperature2 += m_instantanousTemperature[t] *
                                     m_instantanousTemperature[t];
+    }
+    if (m_pairCorrelationMeasurement) {
+        if (m_pairSamplingBegun == false) {
+            m_pairCorrelationBins = new real[200];
+            for (int i=0; i<200; i++) {
+                m_pairCorrelationBins[i] = 0.0;
+            }
+            m_systemSize        = m_system->getSystemSize();
+            m_pairCorrelationDx = at(m_systemSize,0)*0.5 / 200.0;
+        }
+        for (int i=0; i<m_n; i++) {
+            Atom* atomi = at(m_system->getAtoms(), i);
+            for (int j=i+1; j<m_n; j++) {
+                Atom* atomj = at(m_system->getAtoms(), j);
+                real_posvel dr  = 0;
+                real_posvel dr2 = 0;
+
+                for (int k=0; k<3; k++) {
+                    dr = at(atomi->getPosition(), k) - at(atomj->getPosition(), k);
+                    if (dr > at(m_systemSize,k)*0.5) {
+                        dr = dr - at(m_systemSize,k);
+                    } else if (dr < -at(m_systemSize,k)*0.5) {
+                        dr = dr + at(m_systemSize,k);
+                    }
+                    dr2 += dr*dr;
+                }
+
+                if (dr2 < at(m_systemSize, 0) * 0.5 *
+                          at(m_systemSize, 0) * 0.5 ){
+                    int index = 0;
+                    while (dr2 >= (m_pairCorrelationDx*index)*
+                                  (m_pairCorrelationDx*index)) {
+                        index++;
+                    }
+                    m_pairCorrelationBins[index]++;
+                    m_pairCorrelationN++;
+                }
+            }
+        }
     }
 }
 
@@ -94,8 +134,34 @@ real Sampler::sampleMeanSquareDisplacement() {
     return meanSquareDisplacement / m_n;
 }
 
+void Sampler::samplePairCorrelationFunction() {
+
+}
+
 void Sampler::setPressureSamplingEnabled(bool enabled) {
     m_pressureSamplingEnabled = enabled;
+}
+
+void Sampler::setPairCorrelationMeasurement(bool enabled) {
+    m_pairCorrelationMeasurement = enabled;
+}
+
+void Sampler::setTemperatureFluctuationsMeasurement(bool enabled) {
+    m_temperatureFluctuationsMeasurement = enabled;
+}
+
+void Sampler::writePairCorrelationFunctionToFile() {
+    m_pairOutFile.open("../MD/pairCorrelation.dat", std::ios::out);
+    m_pairOutFile << m_n << endl
+                  << std::setprecision(15)
+                  << m_systemSize.at(0)*0.5 << endl
+                  << m_pairCorrelationN << endl;
+    for (int i=0; i<200; i++) {
+        m_pairOutFile << std::setprecision(15)
+                      << m_pairCorrelationBins[i]
+                      << endl;
+    }
+    m_pairOutFile.close();
 }
 
 real Sampler::getTemperatureVariance() {

@@ -25,6 +25,8 @@ public:
     void generateTestMatrix(double radius);
     void generateMatrix(double, double, int);
     void enablePressureSampling(bool enabled);
+    void enablePairCorrelationMeasurement(bool enabled);
+    void enableTemperatureFluctuationsMeasurement(bool enabled);
     int integrate(int Nt);
     bool applyPeriodicBoundaryConditions();
     void dumpInfoToTerminal();

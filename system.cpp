@@ -84,6 +84,14 @@ void System::enablePressureSampling(bool enabled) {
     m_sampler->setPressureSamplingEnabled(enabled);
 }
 
+void System::enablePairCorrelationMeasurement(bool enabled) {
+    m_sampler->setPairCorrelationMeasurement(enabled);
+}
+
+void System::enableTemperatureFluctuationsMeasurement(bool enabled) {
+    m_sampler->setTemperatureFluctuationsMeasurement(enabled);
+}
+
 
 
 int System::integrate(int Nt) {
@@ -133,6 +141,9 @@ int System::integrate(int Nt) {
         printProgress(Nt);
     }
 
+    if (m_sampler->getPairCorrelationMeasurement()) {
+        m_sampler->writePairCorrelationFunctionToFile();
+    }
     return true;
 }
 
