@@ -28,6 +28,12 @@ void Sampler::sample(int t) {
     if (m_pressureSamplingEnabled) {
         m_pressures[t] = samplePressure(m_instantanousTemperature[t]);
     }
+    if (m_system->getThermostatActive() == false) {
+        m_cumulativeTemperatureN++;
+        m_cumulativeTemperature  += m_instantanousTemperature[t];
+        m_cumulativeTemperature2 += m_instantanousTemperature[t] *
+                                    m_instantanousTemperature[t];
+    }
 }
 
 void Sampler::setPotential(Potential* potential) {
@@ -90,5 +96,11 @@ real Sampler::sampleMeanSquareDisplacement() {
 
 void Sampler::setPressureSamplingEnabled(bool enabled) {
     m_pressureSamplingEnabled = enabled;
+}
+
+real Sampler::getTemperatureVariance() {
+    double T2 = m_cumulativeTemperature2 / m_cumulativeTemperatureN;
+    double T  = m_cumulativeTemperature  / m_cumulativeTemperatureN;
+    return T2-T*T;
 }
 

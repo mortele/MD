@@ -38,7 +38,10 @@ int main(int argc, char** argv) {
     //return Examples::lennardJonesFCCNeighbourLists();
     //return Examples::lennardJonesLiquid();
     //return Examples::loadFromFile();
-    return Examples::lennardJonesFCCNanoPorous();
+    //return Examples::lennardJonesFCCNanoPorous();
+    //return Examples::lennardJonesFCCNanoPorous();
+    //return Examples::computeTemperatureFluctuations();
+    return Examples::computeRadialDistributionFunction();
 }
 
 

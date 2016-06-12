@@ -28,14 +28,18 @@ public:
     real*   getKineticEnergies()          { return m_kineticEnergies; }
     real*   getPotentialEnergies()        { return m_potentialEnergies; }
     real*   getMeanSquareDisplacement()   { return m_meanSquareDisplacement; }
+    real    getTemperatureVariance();
 
 private:
     int                 m_n                         = 0;
     int                 m_Nt                        = 0;
+    int                 m_cumulativeTemperatureN    = 0;
     bool                m_pressureSamplingEnabled   = false;
     real                m_volume                    = 0;
     real                m_density                   = 0;
     real                m_dt                        = 0;
+    real                m_cumulativeTemperature     = 0;
+    real                m_cumulativeTemperature2    = 0;
     real*               m_energies                  = nullptr;
     real*               m_potentialEnergies         = nullptr;
     real*               m_kineticEnergies           = nullptr;

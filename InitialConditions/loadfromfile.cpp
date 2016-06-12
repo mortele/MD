@@ -13,7 +13,7 @@ using std::stringstream;
 
 LoadFromFile::LoadFromFile(char* fileName, System* system) {
     m_fileName = fileName;
-    m_inFile.open("../MD/snapShot.dat", std::ios::in);
+    m_inFile.open(fileName, std::ios::in);
     if (m_inFile.is_open() == false) {
         cout << endl << "### ERROR ###: Could not open file for snapshot. Exiting." << endl << endl;
     }

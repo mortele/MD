@@ -76,6 +76,10 @@ void System::generateTestMatrix(double radius) {
     m_initialCondition->generateTestMatrix(radius);
 }
 
+void System::generateMatrix(double lowerRadius, double upperRadius, int numberOfPores) {
+    m_initialCondition->generateMatrix(lowerRadius, upperRadius, numberOfPores);
+}
+
 void System::enablePressureSampling(bool enabled) {
     m_sampler->setPressureSamplingEnabled(enabled);
 }
@@ -251,7 +255,9 @@ void System::enableSavingToFile(bool dumpToFile) {
     }
     m_dumpToFile = dumpToFile;
     if (dumpToFile) {
-        m_fileOutput->setFileOutputSkip(1);
+        if (m_fileOutput->getFileOutputSkip() == 0) {
+            m_fileOutput->setFileOutputSkip(1);
+        }
     }
 
 }
@@ -261,6 +267,10 @@ void System::enableSavingToFile(bool dumpToFile, int skip) {
     if (dumpToFile) {
         m_fileOutput->setFileOutputSkip(skip);
     }
+}
+
+real System::getTemperatureVariance() {
+    return m_sampler->getTemperatureVariance();
 }
 
 bool System::saveSnapShot() {
@@ -313,7 +323,7 @@ System::FileOutput::FileOutput(System* system, const char* fileName) {
     //m_outFile.open(fileName, std::ios::out);
     const char* fileNameTmp = "../MD/movie.xyz";
     m_outFile.open(fileNameTmp, std::ios::out);
-    m_fileOutputSkip = 1;
+    m_fileOutputSkip = 20;
     m_timeStep = 0;
     m_system = system;
 }

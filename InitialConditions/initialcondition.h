@@ -12,7 +12,7 @@ public:
     virtual void  setupInitialCondition() = 0;
 
     void    removeLinearMomentum();
-    void    generateMatrix();
+    void    generateMatrix(double lowerRadius, double upperRadius, int numberOfPores);
     void    generateTestMatrix(double poreRadius);
     int     getN()                         { return m_n; }
     std::vector<real> getTotalMomentum()   { return m_totalMomentum; }

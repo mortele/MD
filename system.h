@@ -23,6 +23,7 @@ public:
     void setSystemSize(std::vector<real>);
     void setupSystem();
     void generateTestMatrix(double radius);
+    void generateMatrix(double, double, int);
     void enablePressureSampling(bool enabled);
     int integrate(int Nt);
     bool applyPeriodicBoundaryConditions();
@@ -30,6 +31,7 @@ public:
     void printProgress(int);
     void enableSavingToFile(bool);
     void enableSavingToFile(bool, int);
+    real getTemperatureVariance();
     bool saveSnapShot();
     int  getN()                             { return m_n; }
     int  getT()                             { return m_t; }
@@ -50,10 +52,11 @@ private:
             bool saveState(std::vector<class Atom*> atoms, int n);
             bool saveSnapshot(std::vector<class Atom*> atoms, int n);
             void setFileOutputSkip(int fileOutputSkip);
+            int  getFileOutputSkip() { return m_fileOutputSkip; }
 
         private:
             System* m_system = nullptr;
-            int m_fileOutputSkip = 1;
+            int m_fileOutputSkip = 0;
             int m_timeStep = 0;
             std::fstream m_outFile;
             std::fstream m_outFiles;

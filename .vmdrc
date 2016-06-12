@@ -13,8 +13,8 @@ mol addfile movie.xyz autobonds off waitfor all
 mol representation CPK
 
 foreach mid [molinfo list] {
-	mol color {colorID 1}
-	#mol material {Transparent} 
+	#mol color {colorID 1}
+	mol material {Diffuse} 
   	mol delrep 0 $mid
   	mol addrep $mid
 }

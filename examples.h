@@ -9,6 +9,8 @@ public:
     static int lennardJonesFCCNeighbourLists();
     static int lennardJonesLiquid();
     static int loadFromFile();
+    static int lennardJonesFCCNanoPorousTest();
     static int lennardJonesFCCNanoPorous();
+    static int computeTemperatureFluctuations();
 };
 
