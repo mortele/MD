@@ -41,7 +41,8 @@ int main(int argc, char** argv) {
     //return Examples::lennardJonesFCCNanoPorous();
     //return Examples::lennardJonesFCCNanoPorous();
     //return Examples::computeTemperatureFluctuations();
-    return Examples::computeRadialDistributionFunction();
+    //return Examples::computeRadialDistributionFunction();
+    Examples::coldCollapseNeighbourLists();
 }
 
 

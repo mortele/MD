@@ -1,6 +1,7 @@
 TEMPLATE                 = app
 CONFIG                  += console c++11
 CONFIG                  += c++11
+CONFIG                  -= app_bundle
 QMAKE_CXXFLAGS_RELEASE  -= -O2
 QMAKE_CXXFLAGS_RELEASE  += -O3
 #QMAKE_CXXFLAGS_RELEASE  += -fopenmp
@@ -46,7 +47,9 @@ SOURCES += main.cpp \
     Potentials/lennardjonescelllists.cpp \
     Potentials/lennardjonesneighbourlists.cpp \
     Thermostats/andersenthermostat.cpp \
-    InitialConditions/loadfromfile.cpp
+    InitialConditions/loadfromfile.cpp \
+    Potentials/gravitationalneighbourlists.cpp \
+    InitialConditions/uniformrandomcells.cpp
 
 HEADERS += \
     atom.h \
@@ -75,5 +78,7 @@ HEADERS += \
     Potentials/lennardjonescelllists.h \
     Potentials/lennardjonesneighbourlists.h \
     Thermostats/andersenthermostat.h \
-    InitialConditions/loadfromfile.h
+    InitialConditions/loadfromfile.h \
+    Potentials/gravitationalneighbourlists.h \
+    InitialConditions/uniformrandomcells.h
 

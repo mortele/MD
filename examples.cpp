@@ -16,10 +16,12 @@
 #include "Potentials/lennardjonescelllists.h"
 #include "Potentials/lennardjonesneighbourlists.h"
 #include "Potentials/gravitational.h"
+#include "Potentials/gravitationalneighbourlists.h"
 #include "Potentials/nopotential.h"
 #include "InitialConditions/initialcondition.h"
 #include "InitialConditions/twobody.h"
 #include "InitialConditions/randomspherical.h"
+#include "InitialConditions/uniformrandomcells.h"
 #include "InitialConditions/uniform.h"
 #include "InitialConditions/fcc.h"
 #include "InitialConditions/loadfromfile.h"
@@ -47,6 +49,37 @@ int Examples::coldCollapseCluster() {
     system->setPotential                 (new Gravitational(G, eps, system));
     system->setInitialCondition          (new RandomSpherical(n, R0));
     system->setPeriodicBoundaryConditions(false);
+    system->setSystemSize                (boxSize);
+    system->enableSavingToFile           (true, 25);
+    return system->integrate(5000);
+}
+
+int Examples::coldCollapseNeighbourLists() {
+    int   nPerCell      = 20;                     // Number of particles.
+    int   nUnitCells    = 5;
+    int   n             = nPerCell * std::pow(nUnitCells,3);
+    real  dt  = 0.001;                            // Time step.
+    real  eps = 0.01;                             // Smoothing factor.
+    real  b   = 10.0;
+    real  G   = 0.01;
+    real  sigma = 3.405;
+    real  rCut  = 2.5 * sigma;
+    real  nCut  = 3.0 * sigma;
+    real  sideLength = b * nUnitCells;
+    std::vector<real> boxSize{sideLength,         // Vector of box size.
+                              sideLength,
+                              sideLength};
+    if (sideLength < 3*rCut) {
+        cout << endl << "### WARNING ###: System size smaller than 3 sigma, may cause segfault." << endl << endl;
+    }
+
+    System* system = new System          ();
+    system->setIntegrator                (new VelocityVerlet(dt, system));
+    system->setPotential                 (new GravitationalNeighbourLists(G, eps, rCut, nCut, system));
+    //system->setPotential(new NoPotential(system));
+    //system->setInitialCondition          (new UniformRandomCells(nUnitCells, nPerCell, b));
+    system->setInitialCondition          (new Uniform(n, boxSize, 0));
+    system->setPeriodicBoundaryConditions(true);
     system->setSystemSize                (boxSize);
     system->enableSavingToFile           (true, 25);
     return system->integrate(5000);
@@ -196,7 +229,7 @@ int Examples::lennardJonesLiquid() {
     system->setSystemSize                (boxSize);
     system->setThermostatActive          (true);
     system->enablePressureSampling       (true);
-    system->enableSavingToFile           (false);
+    system->enableSavingToFile           (true);
 
     system->integrate                    (1000);
     system->setThermostatActive          (false);
@@ -343,9 +376,9 @@ int Examples::computeTemperatureFluctuations() {
 }
 
 int Examples::computeRadialDistributionFunction() {
-    int   nUnitCells          = 6;    // Number of unit cells in each dimension.
-    real  T                   = 0.3;   // Temperature, in units of 119.8 K.
-    real  targetTemperature   = 0.3;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
+    int   nUnitCells          = 15;    // Number of unit cells in each dimension.
+    real  T                   = 3.0;   // Temperature, in units of 119.8 K.
+    real  targetTemperature   = 3.0;   // Temperature of the heat bath used by the thermostat, in units of 119.8 K.
     real  b                   = 5.26;  // Lattice constant, in units of 1.0 Å.
     real  dt                  = 0.01;  // Time step.
     real  tau                 = dt*10;    // Relaxation time used by the thermostat, in units of 119.8 K.
@@ -373,9 +406,10 @@ int Examples::computeRadialDistributionFunction() {
     system->enablePressureSampling       (true);
     system->enableSavingToFile           (false);
     system->integrate                    (1000);
+    return 1;
     system->setThermostatActive(false);
-    system->enablePairCorrelationMeasurement(true);
-    return system->integrate(1000);
+    //system->enablePairCorrelationMeasurement(true);
+    //return system->integrate(1000);
 }
 
 
