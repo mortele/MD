@@ -68,7 +68,6 @@ void LennardJonesNeighbourLists::computeForces() {
     for (int i=0; i<m_system->getN(); i++) {
         Atom* atom1 = at(m_system->getAtoms(), i);
         vector<Atom*> neighbours = m_neighbourList->getNeighbours(atom1->getIndex());
-
         for (unsigned int j=0; j<neighbours.size(); j++) {
             Atom* atom2 = at(neighbours, j);
 

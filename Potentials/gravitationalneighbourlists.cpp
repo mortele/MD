@@ -9,7 +9,6 @@ GravitationalNeighbourLists::GravitationalNeighbourLists(real G,
                                                          real neighbourCut,
                                                          System* system) :
         Potential(system) {
-
     m_eps               = eps;
     m_systemSize        = system->getSystemSize();
     m_systemSizeHalf    = {m_systemSize[0]/2.0f, m_systemSize[1]/2.0f, m_systemSize[2]/2.0f};
@@ -39,7 +38,6 @@ void GravitationalNeighbourLists::computeForces() {
     for (int i=0; i<m_system->getN(); i++) {
         Atom* atom1 = at(m_system->getAtoms(), i);
         vector<Atom*> neighbours = m_neighbourList->getNeighbours(atom1->getIndex());
-
         for (unsigned int j=0; j<neighbours.size(); j++) {
             Atom* atom2 = at(neighbours, j);
 
@@ -55,10 +53,10 @@ void GravitationalNeighbourLists::computeForces() {
             }
 
             if (atom1 != atom2) {
-                const real r2         = 1.0f / dr2;
+                const real r2         = 1.0f / (dr2+m_eps);
                 const int cut         = (dr2 < m_rCut2);
                 const real f          = - r2 * cut;
-                //m_potentialEnergy     += - std::sqrt(r2) * cut;
+                m_potentialEnergy     += (-std::sqrt(r2) - m_potentialAtCut)* cut;
 
                 for (int k=0; k < 3; k++) {
                     const real df = f * dr[k];

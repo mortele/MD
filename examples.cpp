@@ -56,12 +56,12 @@ int Examples::coldCollapseCluster() {
 
 int Examples::coldCollapseNeighbourLists() {
     int   nPerCell      = 20;                     // Number of particles.
-    int   nUnitCells    = 5;
+    int   nUnitCells    = 10;
     int   n             = nPerCell * std::pow(nUnitCells,3);
-    real  dt  = 0.001;                            // Time step.
-    real  eps = 0.01;                             // Smoothing factor.
-    real  b   = 10.0;
-    real  G   = 0.01;
+    real  dt  = 0.01;                            // Time step.
+    real  eps = 0.0;                             // Smoothing factor.
+    real  b   = 5.26;
+    real  G   = 1.0;
     real  sigma = 3.405;
     real  rCut  = 2.5 * sigma;
     real  nCut  = 3.0 * sigma;
@@ -78,7 +78,8 @@ int Examples::coldCollapseNeighbourLists() {
     system->setPotential                 (new GravitationalNeighbourLists(G, eps, rCut, nCut, system));
     //system->setPotential(new NoPotential(system));
     //system->setInitialCondition          (new UniformRandomCells(nUnitCells, nPerCell, b));
-    system->setInitialCondition          (new Uniform(n, boxSize, 0));
+    //system->setInitialCondition          (new Uniform(n, boxSize, 0));
+    system->setInitialCondition(new FCC(nUnitCells, b, 0));
     system->setPeriodicBoundaryConditions(true);
     system->setSystemSize                (boxSize);
     system->enableSavingToFile           (true, 25);

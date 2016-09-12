@@ -11,7 +11,7 @@ public:
     GravitationalNeighbourLists(real G, real eps, real rCut, real neighbourCut, System* system);
     void computeForces();
     real computePotential();
-    std::string getName() { return "Lennard-Jones (Neighbour Lists)"; }
+    std::string getName() { return "Gravitational (Neighbour Lists)"; }
 
 private:
     real m_eps;
